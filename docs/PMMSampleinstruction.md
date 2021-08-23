@@ -1,5 +1,5 @@
 # Snowfakery Sample for Program Management Module (PMM)
-These instructions explain how to create sample data using for EDA objects using the sample files in the snowfakery_samples directory.
+These instructions explain how to create sample data using for Program Management Module objects using the sample files in the snowfakery_samples directory.
 
 ## Install Snowfakery
 
@@ -34,28 +34,30 @@ To load snowfakery data into a Salesforce org, you also need to install the Sale
 ### Generate Data in a Scratch Org
 1. Navigate to the root folder of the project that is organized wtih source format.
 
-1. Initialize CumulusCI configuration in the project
+2. Initialize CumulusCI configuration in the project
 
    ```
    cci project init
    ```
    Make sure you enter `sfdx` for the source format and indicate that you are extending PMM as part of the setup wizard.
 
-1. Add a snowfakery recipe to the datasets directory
+3. Add a snowfakery recipe yml file to the `datasets` folder directory
 
-1. Create a new scratch org with PMM installed using CumulusCI
+4. Create a new scratch org with PMM installed using CumulusCI
    ```
    cci flow run dev_org --org dev
    ```
 
-1. Load the sample data from the snowfakery 
+5. Load the sample data from the snowfakery 
    ```
    # example below assumes the snowfakery recipe is located datasets/simple.yml
    cci task run generate_and_load_from_yaml -o generator_yaml datasets/simple.yml --org dev
    ```
-
-### Generate Data in a Sandbox 
-
+6. Delete loaded data from the target org
+   ```
+   # A list of objects to delete records from in order of deletion.  If passed via command line, use a comma separated string
+   cci task run delete_data -o objects Opportunity,Contact,Account --org <cci org name>
+   ```
 ### CumulusCI Custom Tasks
 
 1. Add a PMM Custom Task to `cumulusci.yml`
@@ -75,7 +77,7 @@ tasks:
 ```
 2. Run PMM Custom Task
 ```
-# cci task run <name> --org dev
+# cci task run <task name> --org dev
 cci task run generate_pmm_data --org dev
 ```
 ### CumulusCI Custom Flows
@@ -95,7 +97,7 @@ flows:
 ```
 2. Run a Custom Flow
 ```
-cci flow run <name> --org <org>
+cci flow run <flow name> --org <org>
 cci flow run generate_sfdo_data --org dev
 ```
 
