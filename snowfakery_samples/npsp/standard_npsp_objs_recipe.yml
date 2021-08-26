@@ -1,3 +1,15 @@
+- object: Contact
+  nickname: BossContact
+  just_once: True
+  fields:
+    FirstName: Da
+    LastName: Boss
+
+- object: Campaign
+  just_once: True
+  fields:
+    name: The Campaign
+
 - object: npe03__Recurring_Donation__c
   just_once: True
   fields:
@@ -29,10 +41,16 @@
 
 - object: npsp__Address__c
   fields:
-    npsp__MailingStreet__c: 36624 Jefferson Way Way
-    npsp__MailingCity__c: Greenville
-    npsp__MailingPostalCode__c: 63102
-    npsp__MailingState__c: OR
+    npsp__MailingStreet__c: 
+      fake: StreetAddress
+    npsp__MailingCity__c: 
+      fake: City
+    npsp__MailingPostalCode__c: 
+      fake: PostalCode
+    npsp__MailingState__c:
+      fake: State
     npsp__Address_Type__c: Home
     npsp__Household_Account__c:
       reference: Household
+
+
