@@ -10,12 +10,12 @@
 
 - object: Contact
   fields:
-    AccountId:
-      reference: Household
+#    AccountId:
+#      reference: Household
     FirstName:
-      fake: last_name
-    LastName:
       fake: first_name
+    LastName:
+      fake: last_name
     npe01__AlternateEmail__c:
       fake: email
     npe01__HomeEmail__c:

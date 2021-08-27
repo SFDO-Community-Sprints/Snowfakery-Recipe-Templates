@@ -21,20 +21,13 @@
 
 - object: Account
   just_once: True
-  nickname: Household
-  fields:
-    name: The Household
-    RecordType: HH_Account
-
-- object: Account
-  just_once: True
   nickname: Organization
   fields:
-    name: The Organization
+    name:
+      fake: Company
     RecordType: Organization
 
 - object: npsp__Address__c
-  just_once: True
   fields:
     npsp__MailingStreet__c: 36624 Jefferson Way Way
     npsp__MailingCity__c: Greenville
