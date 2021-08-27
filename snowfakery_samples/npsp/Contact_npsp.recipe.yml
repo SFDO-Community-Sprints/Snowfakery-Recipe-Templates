@@ -6,7 +6,7 @@
 # cci task run generate_and_load_from_yaml -o generator_yaml examples/npsp/Contact_npsp.recipe.yml -o num_records 300 -o num_records_tablename Contact --org qa
 
 # Look at examples/salesforce/Contact.recipe.yml for more examples.
-- include_file: standard_npsp_objs_recipe.yml
+# - include_file: standard_npsp_objs_recipe.yml
 
 - object: Contact
   fields:
@@ -42,7 +42,7 @@
       fake: year
     npo02__FirstCloseDate__c:
       date_between:
-        start_date: -1y
+        start_date: -10y
         end_date: today
     npo02__Household_Naming_Order__c:
       random_number:
@@ -50,7 +50,7 @@
         max: 100000
     npo02__LastCloseDate__c:
       date_between:
-        start_date: -1y
+        start_date: -10y
         end_date: today
     npo02__LastMembershipDate__c:
       date_between:
@@ -70,11 +70,14 @@
       date_between:
         start_date: -1y
         end_date: today
-    npo02__Naming_Exclusions__c:
-      random_choice:
-        - Household__c.Name
-        - Household__c.Formal_Greeting__c
-        - Household__c.Informal_Greeting__c
+  ### Removes the contact from household naming
+  #  npo02__Naming_Exclusions__c:
+  #    random_choice:
+  #      - 
+  #      - Household__c.Name
+  #      - Household__c.Formal_Greeting__c
+  #      - Household__c.Informal_Greeting__c
+  ###
     npo02__Soft_Credit_Last_Year__c:
       random_number:
         min: 1
@@ -91,13 +94,16 @@
       random_number:
         min: 1
         max: 100000
-    npo02__SystemHouseholdProcessor__c:
-      random_choice:
-        - All Individual Contacts
-        - All New or Edited Contacts
-        - No Contacts
-    npsp__Current_Address__c:
-      reference: npsp__Address__c
+    ### NPSP v2, deprecated functionality
+    # npo02__SystemHouseholdProcessor__c:
+    #  random_choice:
+    #    - All Individual Contacts
+    #    - All New or Edited Contacts
+    #    - No Contacts
+
+    ### NPSP will set automatically to MailingAddress.
+    # npsp__Current_Address__c:
+    #  reference: npsp__Address__c
     npsp__First_Soft_Credit_Amount__c:
       random_number:
         min: 1
@@ -148,8 +154,7 @@
         - Dr.
         - Prof.
     OtherStreet:
-      fake.text:
-        max_nb_chars: 100
+      fake: streetaddress
     OtherCity:
       fake: city
     OtherState:
@@ -176,8 +181,7 @@
         - State
         - Unknown
     MailingStreet:
-      fake.text:
-        max_nb_chars: 100
+      fake: streetaddress
     MailingCity:
       fake: city
     MailingState:
@@ -220,15 +224,14 @@
     Email:
       fake: email
     Title:
-      fake.text:
-        max_nb_chars: 100
+      fake: job
     Department:
-      fake.text:
-        max_nb_chars: 80
+      fake: bs
     AssistantName:
       fake: name
     LeadSource:
       random_choice:
+        - NULL
         - Web
         - Phone Inquiry
         - Partner Referral
@@ -236,11 +239,10 @@
         - Other
     Birthdate:
       date_between:
-        start_date: -1y
-        end_date: today
+        start_date: -100y
+        end_date: -15y
     Description:
-      fake.text:
-        max_nb_chars: 100
+      fake: paragraph
     EmailBouncedReason:
       fake.text:
         max_nb_chars: 100
