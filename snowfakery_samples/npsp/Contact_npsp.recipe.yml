@@ -10,8 +10,6 @@
 
 - object: Contact
   fields:
-#    AccountId:
-#      reference: Household
     FirstName:
       fake: first_name
     LastName:
@@ -71,13 +69,12 @@
         start_date: -1y
         end_date: today
   ### Removes the contact from household naming
-  #  npo02__Naming_Exclusions__c:
-  #    random_choice:
-  #      - 
-  #      - Household__c.Name
-  #      - Household__c.Formal_Greeting__c
-  #      - Household__c.Informal_Greeting__c
-  ###
+    npo02__Naming_Exclusions__c:
+      random_choice:
+       - NULL
+       - Household__c.Name
+       - Household__c.Formal_Greeting__c
+       - Household__c.Informal_Greeting__c
     npo02__Soft_Credit_Last_Year__c:
       random_number:
         min: 1
