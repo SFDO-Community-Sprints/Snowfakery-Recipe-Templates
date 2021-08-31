@@ -82,8 +82,6 @@
       date_between:
         start_date: -1y
         end_date: today
-    npe03__Recurring_Donation__c:
-      reference: npe03__Recurring_Donation__c
     npsp__Acknowledgment_Date__c:
       date_between:
         start_date: -1y
