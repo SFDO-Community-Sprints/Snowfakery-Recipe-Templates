@@ -1,7 +1,7 @@
 # Snowfakery Recipe that Suffices Your Purpose
 Snowfakery is cool. A snowfakey recipe file generates synthetic data which then can be exported as a format of SQL, JSON, or loaded into a Salesforce org or any database accessible to SQLAlchemy. Once you have a running recipe, it can be reused cumulating the amount of data. It finds its place in the utility - tooling category. 
 
-Snowfakery is awesome because it is formulated. A recipe creator can generate specific data construing around a user story with Snowfakery syntax. Snowfakery supports building a relationship between entities, referencing values created previously, concatenating data from another recipe file, expressing formula and comparison operators.
+Snowfakery is awesome because it is formulatable. A recipe creator can generate specific data construing around a user story with Snowfakery syntax. Snowfakery supports building a relationship between entities, referencing values created previously, concatenating data from another recipe file, expressing formula and comparison operators.
 
 So what is a good Snowfakery recipe?
 ## Before Writing Snowfakery Recipe
@@ -41,7 +41,7 @@ This is an account recipe for example.
 
 ### ----------- [               CLI RUN                ]---------- ###
 
-# cci task run generate_and_load_from_yaml --generator_yaml ssnowfakery_samples/salesforce/Account.recipe.yml --num_records 50 --num_records_tablename Account --org <orgName>
+# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/salesforce/Account.recipe.yml --num_records 50 --num_records_tablename Account --org <orgName>
 # snowfakery --output-format json --output-file src/foo.json snowfakery_samples/salesforce/Account.recipe.yml
 
 ### ----------- [            Recipe Starts             ]---------- ###
@@ -53,10 +53,10 @@ Write something
 ### SQL output
 Once you feel confident that business logic defined in your user story is being addressed in the finished recipe or you want to change gear from hours of building a recipe, the recipe can easily be evaluated for syntax errors by generates records ([Snowfakery CLI](https://snowfakery.readthedocs.io/en/docs/#command-line-interface)). 
 
-`Snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/RD_npsp.recipe.yml`
+`snowfakery --output-format json --output-file src/foo.json snowfakery_samples/salesforce/Account.recipe.yml`
 ### Load Data to Salesforce Org
 Write something
 
-`cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/RD_npsp.recipe.yml --num_records 300 --num_records_tablename npe03__Recurring_Donation__c --org qa`
+`cci task run generate_and_load_from_yaml --generator_yaml ssnowfakery_samples/salesforce/Account.recipe.yml --num_records 50 --num_records_tablename Account --org <orgName>`
 ### Compare Recipe's Output to Your User Story 
 Write something
