@@ -14,8 +14,7 @@ Let's say Account's __US Region__ is the determining factor routing record owner
 You will need:
 
 1. A sufficient amount of Account records from each region - the Northeast, Southwest, West, Southeast, and Midwest.
-2. Employers' Contact related to Accounts
-3. Opportunity records at various stages based on sales amount and number of records related to an account.
+2. Opportunity records at various stages, sales amount and number of records related to an account.
 
 ## While Writing Snowfakery Recipe
 Write something
