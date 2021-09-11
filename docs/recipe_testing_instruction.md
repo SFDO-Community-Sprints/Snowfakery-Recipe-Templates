@@ -10,10 +10,10 @@ The quality of the output is depended on your understanding of Snowfakery and de
 ### User Story
 For example, you got interested in learning Snowfakery in relationship to your upcoming project around testing newly configured Territory Management and Assignment Rules for the new Territory Model. To test the change in a sandbox, you will need a different set of fake accounts and opportunities that are varied by Account attributes that define the new Territory Model. 
 ### Planning
-Let's say Account's __US Region__ is the determining factor routing record ownership and permission. 
+Let's say Account's __US Region__ is the determining factor routing record ownership and team access. 
 You will need:
 
-1. A sufficient amount of Account records from each region - the Northeast, Southwest, West, Southeast, and Midwest.
+1. A sufficient amount of Account records for each region - the Northeast, Southwest, West, Southeast, and Midwest.
 2. Opportunity records at various stages, sales amount and number of records related to an account.
 
 ## While Writing Snowfakery Recipe
