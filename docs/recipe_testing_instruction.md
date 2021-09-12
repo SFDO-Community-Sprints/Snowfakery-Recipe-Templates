@@ -17,7 +17,7 @@ You will need:
 2. Opportunity records at various stages, sales amount and number of records related to an account.
 
 ## While Writing Snowfakery Recipe
-Write something
+See if you can translate your user story and the requirements with Snowfakery. Please utilize [Snowfakery documentation](https://snowfakery.readthedocs.io/en/docs/), [sample recipes](snowfakery_samples), and syntax cheatsheet(coming soon). The recipe writing process may feel like learning a fairy language, but we provide a method to preview data created from your Snowfakey recipe in the [Review Output](#reviewoutput) section.
 
 Link to Sample recipes and Snowfakery cheatsheet
 ### Comment Template
@@ -50,13 +50,18 @@ This is an account recipe for example.
 
 ## Testing Snowfakery Recipe
 Write something
-### SQL Output
-Once you feel confident that the business logic defined in your user story is being addressed in the finished recipe or you want to change gears from hours of building a recipe, the recipe can easily be evaluated for syntax errors by generates records ([Snowfakery CLI](https://snowfakery.readthedocs.io/en/docs/#command-line-interface)). 
+
+## <a id="reviewoutput"></a> Review Output
+Once you feel confident that the business logic defined in your user story is being addressed in the finished recipe or you want to change gears from hours of building a recipe, the recipe can easily be evaluated for syntax errors by generating output file ([Snowfakery CLI](https://snowfakery.readthedocs.io/en/docs/#command-line-interface)). 
 
 `snowfakery --output-format json --output-file src/foo.json snowfakery_samples/salesforce/Account.recipe.yml`
-### Load Data to Salesforce Org
-Write something
+### Load Data to Org (sandbo or dev)
+Loading data into a Salesforce org can be tricky. If you encountered errors while loading data to a sandbox org using Dataloader, the same exact errors can cause the `cci task run generate_and_load_from_yaml` command to fail. The errors can be caused by system and custom validations, wrong order of sObject inserts, invalid metadata, invalid date/time format, or a custom configuration that doesn't fit the recipe scenario. Review the logs to resolve the error case by case.
 
 `cci task run generate_and_load_from_yaml --generator_yaml ssnowfakery_samples/salesforce/Account.recipe.yml --num_records 50 --num_records_tablename Account --org <orgName>`
 ### Compare Recipe's Output to Your User Story 
 Write something
+
+### Advanced (Possibly Automated) Visual Auditing
+- Generate a report from the output
+- Generate a pivot table from the output
