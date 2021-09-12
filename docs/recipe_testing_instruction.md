@@ -55,7 +55,7 @@ Write something
 Once you feel confident that the business logic defined in your user story is being addressed in the finished recipe or you want to change gears from hours of building a recipe, the recipe can easily be evaluated for syntax errors by generating output file ([Snowfakery CLI](https://snowfakery.readthedocs.io/en/docs/#command-line-interface)). 
 
 `snowfakery --output-format json --output-file src/foo.json snowfakery_samples/salesforce/Account.recipe.yml`
-### Load Data to Org (sandbo or dev)
+### Load Data to Org (sandbox, dev, or scratch org)
 Loading data into a Salesforce org can be tricky. If you encountered errors while loading data to a sandbox org using Dataloader, the same exact errors can cause the `cci task run generate_and_load_from_yaml` command to fail. The errors can be caused by system and custom validations, wrong order of sObject inserts, invalid metadata, invalid date/time format, or a custom configuration that doesn't fit the recipe scenario. Review the logs to resolve the error case by case.
 
 `cci task run generate_and_load_from_yaml --generator_yaml ssnowfakery_samples/salesforce/Account.recipe.yml --num_records 50 --num_records_tablename Account --org <orgName>`
