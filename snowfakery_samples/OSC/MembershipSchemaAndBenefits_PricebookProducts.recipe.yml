@@ -1,0 +1,45 @@
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Pricebook2
+# 1-1. Product2
+# 1-2. PricebookEntry
+
+
+### ----------- [ MembershipSchemaAndBenefits_basic.recipe.yml Summary ]---------- ###
+# Query Standard Price Book
+# Create [3] products called "Individual Membership", "Houshold Membership", "Corporate Membership"
+# https://github.com/SFDO-Community-Sprints/MembershipSchemaAndBenefits
+
+
+### ----------- [               CLI RUN                ]---------- ###
+
+# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --num_records 300 --num_records_tablename npe03__Recurring_Donation__c --org qa
+# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml 
+
+### ----------- [            Recipe Starts             ]---------- ###
+
+# Import Pricebook, Product, Price Book Entry
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+
+- object: Pricebook2
+  fields:
+    __pricebook_from_salesforce:
+    SOQLDataset.shuffle:
+        fields: Id
+        from: Pricebook2
+        where: IsStandard = true
+    id: ${{__pricebook_from_salesforce.Id}}
+    isActive: true
+
+- object: Product2
+  fields:
+
+  friend:
+  - object: PricebookEntry
+    fields:
+      IsActive: true
+      UnitPrice: DOUBLE
+      ProductCode: STRING
+      Product2Id: Product2
+      Pricebook2Id: ${{Pricebook2.id}}
+
+
