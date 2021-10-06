@@ -13,11 +13,10 @@
 ### ----------- [               CLI RUN                ]---------- ###
 
 # cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --num_records 300 --num_records_tablename npe03__Recurring_Donation__c --org qa
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml 
+# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --plugin-option org_name qa
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
-# Import Pricebook, Product, Price Book Entry
 - plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
 
 - object: Pricebook2
