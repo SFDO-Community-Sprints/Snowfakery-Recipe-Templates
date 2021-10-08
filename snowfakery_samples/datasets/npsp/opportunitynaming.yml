@@ -1,0 +1,8 @@
+Insert npsp__Opportunity_Naming_Settings__c:
+  sf_object: npsp__Opportunity_Naming_Settings__c
+  fields:
+  - Name
+  - npsp__Attribution__c
+  - npsp__Date_Format__c
+  - npsp__Opportunity_Name_Format__c
+  - npsp__Opportunity_Record_Types__c
