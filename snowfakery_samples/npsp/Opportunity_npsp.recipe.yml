@@ -8,8 +8,9 @@
 
 - include_file: ../salesforce/standard_objs.recipe.yml #this defines standard objects for reference in later sections
 - include_file: standard_npsp_objs_recipe.yml #this defines simple custom objects in the NPSP architecture (referenced later)
+# Before running this recipe, ensure that opportunity naming is set according to your business rules or using the recipe.
 
-#This is a "template" version of an Opportunity definition.  You may want to copy it and create iterations for various Record Types/use cases.  Sample fields and random options are included in the longer definition of a more complex Opportunity below.  If you are running this in a Salesforce environment, your data will be subject to validation rules.
+# This is a "template" version of an Opportunity definition.  You may want to copy it and create iterations for various Record Types/use cases.  Sample fields and random options are included in the longer definition of a more complex Opportunity below.  If you are running this in a Salesforce environment, your data will be subject to validation rules.
 - object: Opportunity
   nickname: GrantOpportunity
   fields:
