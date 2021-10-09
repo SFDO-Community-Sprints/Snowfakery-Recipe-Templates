@@ -29,3 +29,22 @@ tasks:
     run_tests:
         options:
             required_org_code_coverage_percent: 75
+    
+    generate_opp_individual_data:
+            description: Deploy Household Opportunities
+            group: NPSP Mock Data
+            class_path: 
+                cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+            options:
+                generator_yaml: recipes\Opportunity_npsp_Individual.recipe.yml
+                num_records: 10
+                num_records_tablename: Opportunity
+    generate_opp_organization_data:
+            description: Deploy Organization Opportunities
+            group: NPSP Mock Data
+            class_path: 
+                cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+            options:
+                generator_yaml: recipes\Opportunity_npsp_organization.recipe.yml
+                num_records: 10
+                num_records_tablename: Opportunity
