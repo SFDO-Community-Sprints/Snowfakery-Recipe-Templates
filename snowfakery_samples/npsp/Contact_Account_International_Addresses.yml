@@ -93,9 +93,8 @@
       - en_AU   # English (Australia)
       - es_ES   # Spanish (Spain)
       - es_MX   # Spanish (Mexico)
-      - es_CA   # Catalan 
       - fr_FR   # French (France)
-      - fr_CA   # French (Canada)
+      - en_CA   # English (Canada)
       - ja_JP   # Japanese (Japan)
       - nl_NL   # Dutch (Netherlands)
 - object: Contact
@@ -150,9 +149,8 @@
       - en_AU   # English (Australia)
       - es_ES   # Spanish (Spain)
       - es_MX   # Spanish (Mexico)
-      - es_CA   # Catalan 
       - fr_FR   # French (France)
-      - fr_CA   # French (Canada)
+      - en_CA   # English (Canada)
       - ja_JP   # Japanese (Japan)
       - nl_NL   # Dutch (Netherlands)
 - object: Account
