@@ -6,6 +6,10 @@
 # To run this file, use a command such as the following:
 # cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/OpportunitiesWithAllocations.yml -o num_records 1 -o num_records_tablename Account --org qa
 
+## Pre-work
+# Before running this recipe, ensure that opportunity naming is set according to your business rules or using the recipe.
+# To set up default opportunity naming, run:
+# cci task run load_dataset --sql_path snowfakery_samples/datasets/npsp/opportunitynaming.sql --mapping snowfakery_samples/datasets/npsp/opportunitynaming.yml
 
 # Setup Step 1: Create 3 Accounts
 - object: Account
