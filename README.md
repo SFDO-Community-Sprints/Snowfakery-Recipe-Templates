@@ -56,8 +56,8 @@ Multiple steps are required to set up a development-ready environment in your lo
     To create an NPSP-based scratch org from this repo:
 
   1. Run `cci flow run npsp:install_prod --org dev` to deploy this project.
-  1. Run `cci task run generate_and_load_from_yaml -o generator_yaml <INSERT YOUR YAML FILE NAME HERE> --org dev` to load example data.  For example, the YML file might be snowfakery_samples/npsp/Account_Soft_Credit_npsp.recipe.yml
-  1. Run `cci org browser dev` to open the org in your browser.
+  2. Run `cci task run generate_and_load_from_yaml -o generator_yaml <INSERT YOUR YAML FILE NAME HERE> --org dev` to load example data.  For example, the YML file might be snowfakery_samples/npsp/Account_Soft_Credit_npsp.recipe.yml
+  3. Run `cci org browser dev` to open the org in your browser.
 
   ### Instructions for the Collaborators
   - [How to add documentations to this site](docs/index.md) **>>**
