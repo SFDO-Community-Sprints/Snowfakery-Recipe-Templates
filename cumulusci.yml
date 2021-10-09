@@ -13,7 +13,7 @@ sources:
         github: https://github.com/SalesforceFoundation/EDA
     npsp:
         github: https://github.com/SalesforceFoundation/NPSP
-
+      
 tasks:
     robot:
         options:
