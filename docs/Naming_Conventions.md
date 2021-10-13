@@ -4,7 +4,7 @@ This naming convention is intended to encourage clarity and consistency. Getting
 
 ## Directory Structure
 
-The main project should have a directory named docs, orgs, and samples.
+The main project should have directories named `docs`, `orgs`, and `samples`.
 
 - All recipes should be in sub-directories of that directory
 - All documentation (other than the main ReadMe file) should be in the docs directory
