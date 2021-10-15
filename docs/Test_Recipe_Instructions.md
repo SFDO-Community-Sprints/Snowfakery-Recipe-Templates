@@ -17,7 +17,7 @@ You will need:
 2. Opportunity records at various stages, sales amounts, and randomize number of opportunities related to an account.
 
 ## While Writing Snowfakery Recipe
-See if you can translate your user story and the requirements with Snowfakery. Please utilize [Snowfakery documentation](https://snowfakery.readthedocs.io/en/docs/), [sample recipes](snowfakery_samples), and syntax cheatsheet(coming soon). The recipe writing process may feel like learning a fairy language, but Snofakery provides a method to preview data created from your Snowfakey recipe in the [Review Output](#reviewoutput) section.
+See if you can translate your user story and the requirements with Snowfakery. Please utilize [Snowfakery documentation](https://snowfakery.readthedocs.io/en/docs/), [sample recipes](snowfakery_samples), and syntax cheatsheet(coming soon). The recipe writing process may feel like learning a fairy language, but Snowfakery provides a method to preview data created from your Snowfakey recipe in the [Review Output](#reviewoutput) section.
 ### Comment Template
 In this section, You can find an example [comment](https://en.wikipedia.org/wiki/Comment_(computer_programming)#:~:text=In%20computer%20programming%2C%20a%20comment,ignored%20by%20compilers%20and%20interpreters.) template for a Snowfakery recipe. The Data Gen team recommends annotating the purposes of the recipe and the expected outcomes. Although YML is human-readable, a recipe with thoughtful comments is easily maintainable and mutable.
 These are example comment types for a recipe 
@@ -76,6 +76,7 @@ $ cci org browser <orgName>
 If a scratch org is your testing environment, it is pertinent to configure the scratch of definitions and add any metadata dependency to your project directory. Let's use Enterprise Territory Management as an example.
 
 Scratch org setting defined for Enterprise Territory Management
+
 <img width="265" alt="Scratch org Settings" src="https://user-images.githubusercontent.com/33381679/137429168-8adc5896-6228-4aa5-805f-100e42e11ab8.png">
 
 Metadata dependency is added in the `force-app` directory for the new Territory Model and configuration setting
