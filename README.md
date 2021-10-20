@@ -25,8 +25,7 @@ Multiple steps are required to set up a development-ready environment in your lo
 4. Install [Python](https://www.python.org/downloads/)
 5. Install [pipx](https://github.com/pipxproject/pipx) by ruuning `$ pip3 install pipx`
 6. Install [CumulusCI](https://cumulusci.readthedocs.io/en/latest/install.html)
-7. Install [Snowfakery](https://github.com/SFDO-Tooling/Snowfakery) without CumulusCI by running `$ pipx install snowfakery`
-8. (optional) [CumulusCI extension for VSC](https://marketplace.visualstudio.com/items?itemName=CumulusCI.cci)
+7. (optional) [CumulusCI extension for VSC](https://marketplace.visualstudio.com/items?itemName=CumulusCI.cci)
 
 ### Setup
 
