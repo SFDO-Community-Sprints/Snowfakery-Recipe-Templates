@@ -1,0 +1,7 @@
+## Run this only once to set up a new NPSP org with reasonable naming settings
+- object: npsp__Opportunity_Naming_Settings__c
+  fields:
+    Name: Defaulted from Snowfakery
+    npsp__Attribution__c: Both
+    npsp__Date_Format__c: yyyy-MM-dd
+    npsp__Opportunity_Name_Format__c: "{!Account.Name} {!Amount} {!RecordType.Name} {!CloseDate}"
