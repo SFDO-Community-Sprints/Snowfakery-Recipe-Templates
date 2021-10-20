@@ -12,13 +12,16 @@
 # https://powerofus.force.com/s/article/NPSP-Recurring-Donations-Overview-and-Setup
 
 ### ----------- [               CLI RUN                ]---------- ###
-
+# Use this command to run this recipe in a Salesforce org
+# To run this command, you must have Enhanced Recurring Donations enabled in the target org
 # cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/RD_npsp.recipe.yml --num_records 300 --num_records_tablename npe03__Recurring_Donation__c --org qa
+
+# Use this command to run this recipe locally
 # snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/RD_npsp.recipe.yml
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
-- macro: commomfields
+- macro: commonfields
   fields:
     npe03__Amount__c:
       random_number:
@@ -102,9 +105,11 @@
             when: ${{npsp__PaymentMethod__c != 'Credit Card'}}
             pick: NULL
 
+### ----------- [            MACRO ENDS, REST OF RECIPE BEGINS             ]---------- ###
+
 - object: npe03__Recurring_Donation__c
   count: 5
-  include: commomfields
+  include: commonfields
   fields:
     
     npe03__Contact__c: 
@@ -114,12 +119,14 @@
             FirstName:
               fake: FirstName
             LastName:
-              fake: LastName 
+              fake: LastName
+            Phone: 
+              fake: phone_number
     Name: RD for ${{Contact.FirstName}} ${{Contact.LastName}}  
 
 - object: npe03__Recurring_Donation__c
   count: 5
-  include: commomfields
+  include: commonfields
   fields:
     
     npe03__Organization__c: 
