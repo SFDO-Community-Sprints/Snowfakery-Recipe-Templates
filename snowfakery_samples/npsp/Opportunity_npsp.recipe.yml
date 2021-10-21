@@ -1,10 +1,21 @@
 ## NPSP Opportunities Example
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Opportunity (2)
 
-# To run this code against an org called 'qa':
+### ----------- [ Opportunity_npsp.recipe.yml Summary ]---------- ###
+# This recipe creates 2 Opportunities and includes Account information from other files.
 #
-# cci task run generate_and_load_from_yaml -o generator_yaml examples/npsp/Opportunity_npsp.recipe.yml -o num_records 300 -o num_records_tablename Opportunity --org qa
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Opportunity_npsp.recipe.yml -o num_records 300 -o num_records_tablename Account --org dev
 #
-# Look at examples/salesforce/Opportunity.recipe.yml for non-NPSP examples.
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Opportunity_npsp.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+
 
 - include_file: ../salesforce/standard_objs.recipe.yml #this defines standard objects for reference in later sections
 - include_file: standard_npsp_objs_recipe.yml #this defines simple custom objects in the NPSP architecture (referenced later)
@@ -82,8 +93,6 @@
       date_between:
         start_date: -1y
         end_date: today
-    npe03__Recurring_Donation__c:
-      reference: npe03__Recurring_Donation__c
     npsp__Acknowledgment_Date__c:
       date_between:
         start_date: -1y
