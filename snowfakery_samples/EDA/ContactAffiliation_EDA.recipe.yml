@@ -9,6 +9,7 @@
 # - include_file: standard_EDA_objs_recipe.yml
 
 - include_file: Contact_EDA.macro.yml
+- include_file: Account_EDA.macro.yml
 - include_file: Affiliation_EDA.macro.yml
 
 - object: Account
