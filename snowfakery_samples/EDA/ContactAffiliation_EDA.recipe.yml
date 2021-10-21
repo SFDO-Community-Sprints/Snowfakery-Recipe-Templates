@@ -12,34 +12,49 @@
 - include_file: Affiliation_EDA.macro.yml
 
 - object: Account
-  nickname: Academic_Program
+  nickname: Educational_Institution
   fields:
-    RecordType: Academic_Program
-    Name: 'Academic Program'
+    __educational_institution_from_csv:
+      Dataset.shuffle:
+        dataset: data/educational-institution.csv
+    RecordType: Sports_Organization
+    RecordType: Educational_Institution
+    Name: ${{__educational_institution_from_csv.name}}
+
+- object: Account
+  nickname: University_Department
+  fields:
+    __departments_programs_from_csv:
+      Dataset.shuffle:
+        dataset: data/departments-programs.csv
+    RecordType: University_Department
+    ParentId:
+      reference: Educational_Institution
+    Name: ${{__departments_programs_from_csv.department}}
+  friends:
+    - object: Account
+      nickname: Academic_Program
+      fields:
+        RecordType: Academic_Program
+        Name: "Academic Program"
+        ParentId:
+          reference: University_Department
 
 - object: Account
   nickname: Business_Organization
   fields:
     RecordType: Business_Organization
-    Name: 'Business Organization'
-
-- object: Account
-  nickname: Educational_Institution
-  fields:
-    RecordType: Educational_Institution
-    Name: 'Educational Institution'
+    Name:
+      fake: company
 
 - object: Account
   nickname: Sports_Organization
   fields:
+    __sports_organizations_from_csv:
+      Dataset.shuffle:
+        dataset: data/sports-organizations.csv
     RecordType: Sports_Organization
-    Name: 'Sports Organization'
-
-- object: Account
-  nickname: University_Department
-  fields:
-    RecordType: University_Department
-    Name: 'University Department'
+    Name: ${{__sports_organizations_from_csv.name}}
 
 - object: Contact
   include: eda_contact_base
