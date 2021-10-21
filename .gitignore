@@ -25,3 +25,4 @@ robot/DataGenerationTool/results/
 node_modules
 snowfakery_samples/temp/
 !snowfakery_samples/temp/README.md
+foo.json
