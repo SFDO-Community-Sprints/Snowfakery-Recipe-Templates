@@ -15,13 +15,13 @@
     # Open countries.csv once for each field that will use it
     __countries1_from_csv:
       Dataset.shuffle:
-        dataset: countries.csv
+        dataset: data/countries.csv
     __countries2_from_csv:
       Dataset.shuffle:
-        dataset: countries.csv
+        dataset: data/countries.csv
     __countries3_from_csv:
       Dataset.shuffle:
-        dataset: countries.csv
+        dataset: data/countries.csv
     # EDA Contact Details section
     Salutation:
       random_choice:
