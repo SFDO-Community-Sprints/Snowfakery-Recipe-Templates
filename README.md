@@ -43,22 +43,12 @@ $ git clone https://github.com/SFDO-Community-Sprints/Snowfakery-Recipe-Template
 
 - [Set up CumulusCI](https://cumulusci.readthedocs.io/en/latest/get_started.html) : this repository includes a project initialization in cumulusci.yml file. You can skip the project initialization `cci project init`
 
-### Create a Scratch Org and Load Data
+### Set up the right flavor of scratch org
+If you want to use a scratch org to play with Snowfakery, you may want to install NPSP or EDA as well.
+- Run `cci org scratch dev dev --default` to create a new scratch org and set it as a default
+- **Install EDA** Run `cci flow run eda:net_new_org --org dev`
+- **Install NPSP** Run `cci flow run npsp:install_prod --org dev`
 
-Choose NPSP or EDA CCI flow (not both!):
-
-    To create an EDA-based scratch org from this repo:
-
-1. Run `cci flow run eda:trial_org --org dev` to deploy this project.
-2. Run `cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_objects.yml --org dev` to load example data.
-3. Run `cci org browser dev` to open the org in your browser.
-
-
-    To create an NPSP-based scratch org from this repo:
-
-1. Run `cci flow run npsp:install_prod --org dev` to deploy this project.
-2. Run `cci task run generate_and_load_from_yaml -o generator_yaml <INSERT YOUR YAML FILE NAME HERE> --org dev` to load example data. For example, the YML file might be snowfakery_samples/npsp/Account_Soft_Credit_npsp.recipe.yml
-3. Run `cci org browser dev` to open the org in your browser.
 
 ### Instructions for the Collaborators
 
@@ -69,6 +59,8 @@ There are several open issues suggesting new recipes we need and fixes to existi
 - Create a pull request that explains what recipe you are adding/changing, and include any special testing instructions we should know about.
 
 ## Snowfakery CLI
+
+Most of our work in this repo is around creating recipes for use directly within Salesforce, so the final work should make sense within a Salesforce context. That said, Snowfakery has its own CLI that can output a file of data instead of adding it to Salesforce.
 
 ```
 # To view the list of options for running a snowfakery recipe file
@@ -89,13 +81,6 @@ $ snowfakery --output-format json --output-file src/foo.json snowfakery_samples/
 ```
 
 - Snowfakery Cheatsheet (link coming soon)
-
-## CumulusCI CLI Useful Commands
-
-- Salesforce Sample Instructions
-- NPSP Sample Instrucitons
-- [EDA Sample Instructions](docs/EDASampleInstructions.md)
-- [PMM Sample Instructions](docs/PMMSampleinstruction.md)
 
 ## Additional Useful References
 
