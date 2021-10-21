@@ -1,0 +1,90 @@
+## NPSP Households with Contacts Example
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Account (household type)
+# 1-1. Contact (between 1 and 3)
+### ----------- [ Households_with_contacts.recipe.yml Summary ]---------- ###
+# This recipe creates a single Household Account record, and 
+# then add between 1 and 3 Contacts to that Household.
+#
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Households_with_contacts.recipe.yml -o num_records 30 -o num_records_tablename Account --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Households_with_contacts.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+
+- object: Account
+  nickname: A Household
+  fields:
+    name: Placeholder
+    RecordType: HH_Account # this is the developer name for the household recordtype
+    BillingStreet:
+      fake: streetaddress
+    BillingCity:
+      fake: city
+    BillingState:
+      fake: state
+    BillingPostalCode:
+      fake: postalcode
+    BillingCountry: United States #hardcoded to US here for simplicity
+    # Primary Contact will be auto-populated later by NPSP
+  friends:
+    - object: Contact
+      count:
+        random_number:
+          min: 1
+          max: 3
+      fields: 
+        AccountId:
+          reference: A Household
+        FirstName:
+          fake: FirstName
+        LastName:
+          fake: LastName
+    # If you're not familiar with NPSP, there is automation to populate the standard Email and Phone fields based on the data below.
+        npe01__AlternateEmail__c:
+          fake: Email
+        npe01__HomeEmail__c:
+          fake: Email
+        npe01__WorkEmail__c:
+          fake: Email
+        npe01__Preferred_Email__c:
+          random_choice:
+            - Personal 
+            - Work
+            - Alternate      
+        npe01__WorkPhone__c:
+          fake: PhoneNumber
+        HomePhone:
+          fake: PhoneNumber
+        OtherPhone:
+          fake: PhoneNumber
+        MobilePhone:
+          fake: PhoneNumber
+        npe01__PreferredPhone__c:
+          random_choice:
+            - Home 
+            - Work
+            - Mobile
+            - Other     
+        Salutation:
+          random_choice:
+            - Mr.
+            - Ms.
+            - Mrs.
+            - Dr.
+            - Prof. 
+        Title:
+          fake: job
+        Department:
+          fake: bs
+        Birthdate:
+          date_between:
+            start_date: -100y
+            end_date: -15y
+
+
