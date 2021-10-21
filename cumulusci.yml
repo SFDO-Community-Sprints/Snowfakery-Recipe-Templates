@@ -29,3 +29,15 @@ tasks:
     run_tests:
         options:
             required_org_code_coverage_percent: 75
+
+    npsp_account:
+        group: NPSP
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        options:
+            generator_yaml: snowfakery_samples\npsp\Account_npsp.recipe.yml
+
+    npsp_contact:
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        group: NPSP
+        options:
+            generator_yaml: snowfakery_samples\npsp\Contact_npsp.recipe.yml
