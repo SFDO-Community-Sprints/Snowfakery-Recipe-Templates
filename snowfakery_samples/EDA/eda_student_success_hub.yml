@@ -9,13 +9,14 @@
 # Run this to generate records in an output JSON file:
 # snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json
 
-# Create Univesity Department
+# Create University Department
 - object: Account
   nickname: SampleAcademicDepartment
   fields:
     name: Sample Academic Department
     RecordType: "University_Department"
 
+# Create Advising Pool; dependency for Queue Topic Setting
 - object: sfal__AdvisingPool__c
   nickname: AdvisingPool
   fields:
@@ -23,7 +24,9 @@
       reference: SampleAcademicDepartment
     sfal__Description__c: ${{fake.Text(max_nb_chars=200)}}
 
+# Objects nested with Topic
 - object: sfal__Topic__c
+  nickname: SampleTopic
   fields:
     sfal__Label__c:
       random_choice:
@@ -51,3 +54,43 @@
           reference: AdvisingPool
         sfal__Topic__c:
           reference: sfal__Topic__c
+
+# Appointment Location object is dependency for Availability Location
+- object: sfal__AppointmentLocation__c
+  nickname: SampleAppointmentLocation
+  fields:
+    sfal__AdditionalDetails__c: ${{fake.Paragraph(nb_sentences=5)}}
+    sfal__Building__c: ${{fake.Text(max_nb_chars=20)}}
+    sfal__Campus__c: ${{fake.Text(max_nb_chars=20)}}
+    sfal__MeetingLink__c: ${{fake.SafeDomainName}}
+    sfal__Phone__c: ${{fake.PhoneNumber}}
+    sfal__Room__c: ${{fake.Text(max_nb_chars=12)}}
+    sfal__SortOrder__c: 1
+    sfal__Type__c: ${{fake.Text(max_nb_chars=12)}}
+
+# Objects nested with Availability
+- object: sfal__Availability__c
+  fields:
+    name: Available Slot
+    sfal__AppointmentType__c:
+      random_choice:
+        - Phone
+        - In-person
+        - Video Call
+    sfal__AttendeeLimit__c:
+      random_number:
+        min: 2
+        max: 5
+  friends:
+    - object: sfal__AvailabilityLocation__c
+      fields:
+        sfal__Availability__c:
+          reference: sfal__Availability__c
+        sfal__Location__c:
+          reference: SampleAppointmentLocation
+    - object: sfal__AvailabilityTopic__c
+      fields:
+        sfal__Availability__c:
+          reference: sfal__Availability__c
+        sfal__Topic__c:
+          reference: SampleTopic
