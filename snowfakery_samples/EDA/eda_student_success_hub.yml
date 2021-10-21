@@ -21,7 +21,7 @@
   fields:
     sfal__Account__c:
       reference: SampleAcademicDepartment
-    sfal__Description__c: ${{fake.Text(max_nb_chars=500)}}
+    sfal__Description__c: ${{fake.Text(max_nb_chars=200)}}
 
 - object: sfal__Topic__c
   fields:
