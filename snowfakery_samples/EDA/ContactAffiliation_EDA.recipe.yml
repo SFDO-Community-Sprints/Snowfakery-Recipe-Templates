@@ -1,0 +1,89 @@
+## EDA Contacts Example
+
+# To run this code against a fresh scratch org called ("qa"):
+#
+# cci flow run eda:trial_org --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Contact_EDA.recipe.yml -o num_records 300 -o num_records_tablename Contact --org qa
+
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+# - include_file: standard_EDA_objs_recipe.yml
+
+- include_file: Contact_EDA.macro.yml
+- include_file: Affiliation_EDA.macro.yml
+
+- object: Account
+  nickname: Academic_Program
+  fields:
+    RecordType: Academic_Program
+    Name: 'Academic Program'
+
+- object: Account
+  nickname: Business_Organization
+  fields:
+    RecordType: Business_Organization
+    Name: 'Business Organization'
+
+- object: Account
+  nickname: Educational_Institution
+  fields:
+    RecordType: Educational_Institution
+    Name: 'Educational Institution'
+
+- object: Account
+  nickname: Sports_Organization
+  fields:
+    RecordType: Sports_Organization
+    Name: 'Sports Organization'
+
+- object: Account
+  nickname: University_Department
+  fields:
+    RecordType: University_Department
+    Name: 'University Department'
+
+- object: Contact
+  include: eda_contact_base
+  friends:
+    - object: hed__Affiliation__c
+      include: eda_affiliation_base
+      fields:
+        hed__Account__c:
+          reference: Academic_Program
+        hed__Contact__c:
+          reference: Contact
+        hed__Primary__c: True
+
+    - object: hed__Affiliation__c
+      include: eda_affiliation_base
+      fields:
+        hed__Account__c:
+          reference: Business_Organization
+        hed__Contact__c:
+          reference: Contact
+        hed__Primary__c: True
+
+    - object: hed__Affiliation__c
+      include: eda_affiliation_base
+      fields:
+        hed__Account__c:
+          reference: Educational_Institution
+        hed__Contact__c:
+          reference: Contact
+        hed__Primary__c: True
+        
+    - object: hed__Affiliation__c
+      include: eda_affiliation_base
+      fields:
+        hed__Account__c:
+          reference: Sports_Organization
+        hed__Contact__c:
+          reference: Contact
+        hed__Primary__c: True
+    - object: hed__Affiliation__c
+      include: eda_affiliation_base
+      fields:
+        hed__Account__c:
+          reference: University_Department
+        hed__Contact__c:
+          reference: Contact
+        hed__Primary__c: True
