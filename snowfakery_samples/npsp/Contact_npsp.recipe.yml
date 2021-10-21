@@ -1,182 +1,52 @@
 ## NPSP Contacts Example
-
-# To run this code against a fresh scratch org called ("qa"):
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Contact (1)
+### ----------- [ Contact_npsp.recipe.yml Summary ]---------- ###
+# This recipe creates a single Contact record, and NPSP will auto-create the associated Household Account and Address objects.
 #
-# cci flow run npsp:install_prod --org qa
-# cci task run generate_and_load_from_yaml -o generator_yaml examples/npsp/Contact_npsp.recipe.yml -o num_records 300 -o num_records_tablename Contact --org qa
-
-# Look at examples/salesforce/Contact.recipe.yml for more examples.
-# - include_file: standard_npsp_objs_recipe.yml
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Contact_npsp.recipe.yml -o num_records 300 -o num_records_tablename Contact --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Contact_npsp.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
 
 - object: Contact
   fields:
     FirstName:
-      fake: first_name
+      fake: FirstName
     LastName:
-      fake: last_name
+      fake: LastName
+# If you're not familiar with NPSP, there is automation to populate the standard Email and Phone fields based on the data below.
     npe01__AlternateEmail__c:
-      fake: email
+      fake: Email
     npe01__HomeEmail__c:
-      fake: email
-    npe01__Primary_Address_Type__c:
-      random_choice:
-        - Home
-        - Work
-        - Other
-    npe01__Secondary_Address_Type__c:
-      random_choice:
-        - Home
-        - Work
-        - Other
+      fake: Email
     npe01__WorkEmail__c:
-      fake: email
+      fake: Email
+    npe01__Preferred_Email__c:
+      random_choice:
+        - Personal 
+        - Work
+        - Alternate      
     npe01__WorkPhone__c:
-      fake: phone_number
-    npo02__Best_Gift_Year_Total__c:
-      random_number:
-        min: 1
-        max: 100000
-    npo02__Best_Gift_Year__c:
-      fake: year
-    npo02__FirstCloseDate__c:
-      date_between:
-        start_date: -10y
-        end_date: today
-    npo02__Household_Naming_Order__c:
-      random_number:
-        min: 1
-        max: 100000
-    npo02__LastCloseDate__c:
-      date_between:
-        start_date: -10y
-        end_date: today
-    npo02__LastMembershipDate__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npo02__LastMembershipLevel__c:
-      fake.text:
-        max_nb_chars: 100
-    npo02__LastMembershipOrigin__c:
-      fake.text:
-        max_nb_chars: 100
-    npo02__MembershipEndDate__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npo02__MembershipJoinDate__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-  ### Removes the contact from household naming
-    npo02__Naming_Exclusions__c:
+      fake: PhoneNumber
+    HomePhone:
+      fake: PhoneNumber
+    OtherPhone:
+      fake: PhoneNumber
+    MobilePhone:
+      fake: PhoneNumber
+    npe01__PreferredPhone__c:
       random_choice:
-       - NULL
-       - Household__c.Name
-       - Household__c.Formal_Greeting__c
-       - Household__c.Informal_Greeting__c
-    npo02__Soft_Credit_Last_Year__c:
-      random_number:
-        min: 1
-        max: 100000
-    npo02__Soft_Credit_This_Year__c:
-      random_number:
-        min: 1
-        max: 100000
-    npo02__Soft_Credit_Total__c:
-      random_number:
-        min: 1
-        max: 100000
-    npo02__Soft_Credit_Two_Years_Ago__c:
-      random_number:
-        min: 1
-        max: 100000
-    ### NPSP v2, deprecated functionality
-    # npo02__SystemHouseholdProcessor__c:
-    #  random_choice:
-    #    - All Individual Contacts
-    #    - All New or Edited Contacts
-    #    - No Contacts
-
-    ### NPSP will set automatically to MailingAddress.
-    # npsp__Current_Address__c:
-    #  reference: npsp__Address__c
-    npsp__First_Soft_Credit_Amount__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__First_Soft_Credit_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Largest_Soft_Credit_Amount__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Largest_Soft_Credit_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Last_Soft_Credit_Amount__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Number_of_Soft_Credits_Last_N_Days__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Number_of_Soft_Credits_Last_Year__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Number_of_Soft_Credits_This_Year__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Number_of_Soft_Credits_Two_Years_Ago__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Number_of_Soft_Credits__c:
-      random_number:
-        min: 1
-        max: 100000
-    # npsp__Primary_Affiliation__c:
-    #   reference: Organization # you need to have defined an Account with the nickname Organization
-    Salutation:
-      random_choice:
-        - Mr.
-        - Ms.
-        - Mrs.
-        - Dr.
-        - Prof.
-    OtherStreet:
-      fake: streetaddress
-    OtherCity:
-      fake: city
-    OtherState:
-      fake: state
-    OtherPostalCode:
-      fake: postalcode
-    OtherCountry:
-      fake: country
-    OtherLatitude:
-      fake: latitude
-    OtherLongitude:
-      fake: longitude
-    OtherGeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
+        - Home 
+        - Work
+        - Mobile
+        - Other     
     MailingStreet:
       fake: streetaddress
     MailingCity:
@@ -185,72 +55,20 @@
       fake: state
     MailingPostalCode:
       fake: postalcode
-    MailingCountry:
-      fake: country
-    MailingLatitude:
-      fake: latitude
-    MailingLongitude:
-      fake: longitude
-    MailingGeocodeAccuracy:
+    MailingCountry: United States #hardcoded to US here for simplicity
+    npe01__Primary_Address_Type__c: Home #hardcoded to home for simplicity
+    Salutation:
       random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
-    Phone:
-      fake: phone_number
-    Fax:
-      fake: phone_number
-    MobilePhone:
-      fake: phone_number
-    HomePhone:
-      fake: phone_number
-    OtherPhone:
-      fake: phone_number
-    AssistantPhone:
-      fake: phone_number
-    # ReportsToId:
-    #   reference: BossContact # you need to have defined this Contact elsewhere
-    Email:
-      fake: email
+        - Mr.
+        - Ms.
+        - Mrs.
+        - Dr.
+        - Prof. 
     Title:
       fake: job
     Department:
       fake: bs
-    AssistantName:
-      fake: name
-    LeadSource:
-      random_choice:
-        - NULL
-        - Web
-        - Phone Inquiry
-        - Partner Referral
-        - Purchased List
-        - Other
     Birthdate:
       date_between:
         start_date: -100y
         end_date: -15y
-    Description:
-      fake: paragraph
-    EmailBouncedReason:
-      fake.text:
-        max_nb_chars: 100
-    EmailBouncedDate: ${{fake.date}}T${{fake.time}}Z
-    CleanStatus:
-      random_choice:
-        - Matched
-        - Different
-        - Acknowledged
-        - NotFound
-        - Inactive
-        - Pending
-        # - SelectMatch  # causes problems
-        - Skipped
