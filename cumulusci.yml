@@ -41,3 +41,11 @@ tasks:
         group: NPSP
         options:
             generator_yaml: snowfakery_samples\npsp\Contact_npsp.recipe.yml
+
+flows:
+    npsp_org:
+        steps:
+            1:
+                task: npsp_account
+            2:
+                task: npsp_contact
