@@ -1,0 +1,45 @@
+## EDA Account Example
+
+# To run this code against a fresh scratch org called ("qa"):
+#
+# cci flow run eda:trial_org --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Affiliation_EDA.recipe.yml -o num_records 300 -o num_records_tablename hed__Affiliation__c --org qa
+
+# Look at snowfakery_samples/salesforce/Account.recipe.yml for more examples.
+# - include_file: standard_EDA_objs_recipe.yml
+
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+
+- macro: eda_affiliation_base
+  fields:
+    hed__Account__c:
+      SalesforceQuery.random_record:
+        from: Account
+        # Limit to Accounts that have a default EDA mapping
+        # Exclude Accounts with a RecordType ('Sample Account for Entitlements')
+        where: RecordTypeId != null AND RecordType.Name!='Administrative'
+    hed__Contact__c:
+      SalesforceQuery.random_record:
+        from: Contact
+    hed__Role__c:
+      random_choice:
+        - Student
+        - Prospect
+        - Applicant
+        - Faculty
+        - Employee
+    hed__Status__c:
+      random_choice:
+        - Current
+        - Former
+    hed__StartDate__c:
+      date_between:
+        start_date: -5y
+        end_date: -1d
+    #hed__EndDate__c:
+    #hed__Primary__c:
+    #  random_choice:
+    #    - ${{'Off'}}
+    #    - ${{'On'}}
+    hed__Description__c:
+      ${{fake.Paragraph(nb_sentences=5)}}
