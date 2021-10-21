@@ -8,10 +8,12 @@
 # Create a set of 5 Opportunities with an Opportunity Contact Role and Contact under 1  Account.
 
 ### ----------- [               CLI RUN                ]---------- ###
-
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml --org qa
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
-
+# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Opportunity_npsp_soft_credit.recipe.yml -o num_records 300 -o num_records_tablename Account --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Opportunity_npsp_soft_credit.recipe.yml
+#
 ### ----------- [            Recipe Starts             ]---------- ###
 
 ## create an account
