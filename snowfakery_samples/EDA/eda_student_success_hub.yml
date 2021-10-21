@@ -1,7 +1,14 @@
 # Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
-# Creates 2 Contacts
-# Creates 2 Opportunties (will be default record type unless you specify otherwise) for each Contact
-# Creates 2 Account Soft Credits for each Opportunity, splitting the amount between the two new Accounts 50/50
+# Work in progress that creates data for the following objects:
+# Account (University Department)
+# Advising Pool
+# Appointment Location
+# Availability
+# Availability Location
+# Availability Topic
+# User Topic Setting
+# Role Topic Setting
+# Queue Topic Setting
 
 # Run this to generate data in a scratch org:
 # cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
