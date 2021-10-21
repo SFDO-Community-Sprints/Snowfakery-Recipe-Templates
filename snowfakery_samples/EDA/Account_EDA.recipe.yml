@@ -8,53 +8,7 @@
 # Look at snowfakery_samples/salesforce/Account.recipe.yml for more examples.
 # - include_file: standard_EDA_objs_recipe.yml
 
+- include_file: Account_EDA.macro.yml
+
 - object: Account
-  fields:
-    RecordType:
-      random_choice:
-        - Academic_Program
-        - Business_Organization
-        - Educational_Institution
-        - HH_Account
-        - Sports_Organization
-        - University_Department
-    Name:
-      if:
-        - choice:
-            when: ${{RecordType=='HH_Account'}}
-            pick:
-              fake: last_name
-        - choice:
-            pick:
-              fake: company
-    Phone:
-      fake: phone_number
-    #Parent Account
-    Website:
-      if:
-        - choice:
-            when: ${{RecordType!='HH_Account'}}
-            pick:
-              fake: url
-    BillingStreet:
-      fake: streetaddress
-    BillingCity:
-      fake: city
-    BillingState:
-      fake: state
-    BillingPostalCode:
-      fake: postalcode
-    BillingCountry:
-      fake: country
-    ShippingStreet:
-      fake: streetaddress
-    ShippingCity:
-      fake: city
-    ShippingState:
-      fake: state
-    ShippingPostalCode:
-      fake: postalcode
-    ShippingCountry:
-      fake: country
-    Description:
-      ${{fake.Paragraph(nb_sentences=5)}}
+  include: eda_account_base
