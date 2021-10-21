@@ -1,0 +1,53 @@
+# Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
+# Creates 2 Contacts
+# Creates 2 Opportunties (will be default record type unless you specify otherwise) for each Contact
+# Creates 2 Account Soft Credits for each Opportunity, splitting the amount between the two new Accounts 50/50
+
+# Run this to generate data in a scratch org:
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
+
+# Run this to generate records in an output JSON file:
+# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json
+
+# Create Univesity Department
+- object: Account
+  nickname: SampleAcademicDepartment
+  fields:
+    name: Sample Academic Department
+    RecordType: "University_Department"
+
+- object: sfal__AdvisingPool__c
+  nickname: AdvisingPool
+  fields:
+    sfal__Account__c:
+      reference: SampleAcademicDepartment
+    sfal__Description__c: ${{fake.Text(max_nb_chars=500)}}
+
+- object: sfal__Topic__c
+  fields:
+    sfal__Label__c:
+      random_choice:
+        - Transcripts
+        - Grades
+        - Program Questions
+  friends:
+    - object: sfal__UserTopicSetting__c # create User Topic Setting associated with the Topic
+      fields:
+        sfal__DefaultAppointmentDuration__c: 30
+        sfal__Topic__c:
+          reference: sfal__Topic__c
+    - object: sfal__RoleTopicSetting__c
+      fields:
+        sfal__RoleName__c:
+          random_choice:
+            - Course Advisor
+            - Program Advisor
+            - Student Services
+        sfal__Topic__c:
+          reference: sfal__Topic__c
+    - object: sfal__QueueTopicSetting__c
+      fields:
+        sfal__AdvisingPool__c:
+          reference: AdvisingPool
+        sfal__Topic__c:
+          reference: sfal__Topic__c
