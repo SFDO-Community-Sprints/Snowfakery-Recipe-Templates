@@ -1,0 +1,60 @@
+## EDA Account Example
+
+# To run this code against a fresh scratch org called ("qa"):
+#
+# cci flow run eda:trial_org --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Account_EDA.recipe.yml -o num_records 300 -o num_records_tablename Acount --org qa
+
+# Look at snowfakery_samples/salesforce/Account.recipe.yml for more examples.
+# - include_file: standard_EDA_objs_recipe.yml
+
+- object: Account
+  fields:
+    RecordType:
+      random_choice:
+        - Academic_Program
+        - Business_Organization
+        - Educational_Institution
+        - HH_Account
+        - Sports_Organization
+        - University_Department
+    Name:
+      if:
+        - choice:
+            when: ${{RecordType=='HH_Account'}}
+            pick:
+              fake: last_name
+        - choice:
+            pick:
+              fake: company
+    Phone:
+      fake: phone_number
+    #Parent Account
+    Website:
+      if:
+        - choice:
+            when: ${{RecordType!='HH_Account'}}
+            pick:
+              fake: url
+    BillingStreet:
+      fake: streetaddress
+    BillingCity:
+      fake: city
+    BillingState:
+      fake: state
+    BillingPostalCode:
+      fake: postalcode
+    BillingCountry:
+      fake: country
+    ShippingStreet:
+      fake: streetaddress
+    ShippingCity:
+      fake: city
+    ShippingState:
+      fake: state
+    ShippingPostalCode:
+      fake: postalcode
+    ShippingCountry:
+      fake: country
+    Description:
+      ${{fake.Paragraph(nb_sentences=5)}}
