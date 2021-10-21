@@ -3,6 +3,18 @@
 # Creates 2 Opportunties (will be default record type unless you specify otherwise) for each Contact
 # Creates 2 Account Soft Credits for each Opportunity, splitting the amount between the two new Accounts 50/50
 
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 10 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Account_Soft_Credit_npsp.recipe.yml -o num_records 10 -o num_records_tablename Contact --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Account_Soft_Credit_npsp.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.# First, let's create the Account
+
+
 # Run this to generate data in a scratch org:
 # cci task run generate_and_load_from_yaml -o generator_yaml ../Snowfakery-new/examples/npsp/Account_Soft_Credit_npsp.recipe.yml -o num_records 10 -o num_records_tablename Contact --org qa
 
