@@ -46,7 +46,7 @@ $ git clone https://github.com/SFDO-Community-Sprints/Snowfakery-Recipe-Template
 ### Set up the right flavor of scratch org
 If you want to use a scratch org to play with Snowfakery, you may want to install NPSP or EDA as well.
 - Run `cci org scratch dev dev --default` to create a new scratch org and set it as a default
-- **Install EDA** Run `cci flow run eda:net_new_org --org dev`
+- **Install EDA** Run `cci flow run eda:trial_org --org dev`
 - **Install NPSP** Run `cci flow run npsp:install_prod --org dev`
 
 
