@@ -14,10 +14,10 @@
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe in a Salesforce org
 # To run this command, you must have Enhanced Recurring Donations enabled in the target org
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/RD_npsp.recipe.yml --num_records 300 --num_records_tablename npe03__Recurring_Donation__c --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/RD_npsp.recipe.yml --org dev
 
 # Use this command to run this recipe locally
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/RD_npsp.recipe.yml
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/RD_npsp.recipe.yml
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
