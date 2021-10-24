@@ -100,12 +100,14 @@
 - object: Case
   nickname: SampleAdvisingCase
   fields:
-    ContactId: Contact
+    ContactId:
+      reference: Contact
     Subject: ${{fake.Text(max_nb_chars=80)}}
     Description: ${{fake.Paragraph(nb_sentences=3)}}
     # sfal__IsAdviseeRecord__c: true #field is not editable by system admins
     hed__Category__c: "Other"
-    sfal__AdvisingPool__c: AdvisingPool
+    sfal__AdvisingPool__c:
+      reference: AdvisingPool
     sfal__Location__c: "Other"
     hed__Location__c: "Other"
 
