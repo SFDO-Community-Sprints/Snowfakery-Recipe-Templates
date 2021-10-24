@@ -1,14 +1,16 @@
 # Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
 # Work in progress that creates data for the following objects:
-# Account (University Department)
-# Advising Pool
-# Appointment Location
-# Availability
-# Availability Location
-# Availability Topic
-# User Topic Setting
-# Role Topic Setting
-# Queue Topic Setting
+#   Contact
+#   Case (Advising)
+#   Account (University Department)
+#   Advising Pool
+#   Appointment Location
+#   Availability
+#   Availability Location
+#   Availability Topic
+#   User Topic Setting
+#   Role Topic Setting
+#   Queue Topic Setting
 
 # Run this to generate data in a scratch org:
 # cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
@@ -16,7 +18,7 @@
 # Run this to generate records in an output JSON file:
 # snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json
 
-# Create Contact
+# Create Contact; dependency for Case (Advising)
 - object: Contact
   fields:
     LastName:
@@ -78,7 +80,7 @@
     - object: hed__Affiliation__c
       fields:
         hed__Account__c:
-          random_reference: Account
+          reference: SampleAcademicDepartment
         hed__Contact__c:
           reference: Contact
         hed__Primary__c: "True"
@@ -93,6 +95,19 @@
             start_date: today
             end_date: +1y
         hed__Role__c: "Student"
+
+# Create Case (Advising) record; dependency for Appointment, Appointment Attendee, Alert, Prediction, Success Plan, Task
+- object: Case
+  nickname: SampleAdvisingCase
+  fields:
+    ContactId: Contact
+    Subject: ${{fake.Text(max_nb_chars=80)}}
+    Description: ${{fake.Paragraph(nb_sentences=3)}}
+    # sfal__IsAdviseeRecord__c: true #field is not editable by system admins
+    hed__Category__c: "Other"
+    sfal__AdvisingPool__c: AdvisingPool
+    sfal__Location__c: "Other"
+    hed__Location__c: "Other"
 
 # Create University Department
 - object: Account
