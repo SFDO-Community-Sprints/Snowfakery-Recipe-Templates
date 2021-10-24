@@ -1,13 +1,16 @@
 # This will create an Organization Account then create 5 Contacts and corresponding Affiliations
 # NPSP will create the associated Household Accounts for each Contact
 
-# Run this to generate data in a scratch org:
-# cci task run generate_and_load_from_yaml -o generator_yaml ../Snowfakery-new/examples/npsp/Affiliations_Account_npsp.recipe.yml -o num_records 10 -o num_records_tablename Account --org qa
-
-# Run this to generate records in an output JSON file:
-# snowfakery ./Affiliations_npsp.recipe.yml --output-format=json --output-file=foo.json
-
-# First, let's create the Account
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 10 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Affiliations_Account_npsp.recipe.yml -o num_records 10 -o num_records_tablename Contact --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Affiliations_Account_npsp.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.# First, let's create the Account
 - object: Account
   count: 1
   nickname: Organization

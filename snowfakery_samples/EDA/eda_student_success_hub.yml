@@ -1,0 +1,260 @@
+# Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
+# Work in progress that creates data for the following objects:
+#   Contact
+#   Case (Advising Record)
+#   Account (University Department)
+#   Advising Pool
+#   Queue Waiting Room Resource
+#   Appointment Location
+#   Availability
+#   Availability Location
+#   Availability Topic
+#   User Topic Setting
+#   Role Topic Setting
+#   Queue Topic Setting
+#   Appointment
+#   Appointment Attendee
+
+# Run this to generate data in a scratch org:
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
+
+# Run this to generate records in an output JSON file (NOTE: update the org_name to the CCI org you are using)
+# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json --plugin-option org_name dev
+
+# Load plugin for querying Salesforce, used to link records to internal advisor user
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+
+# Create Contact; dependency for Case (Advising)
+- object: Contact
+  fields:
+    LastName:
+      fake: LastName
+    FirstName:
+      fake: FirstName
+    MailingStreet:
+      fake.text:
+        max_nb_chars: 100
+    MailingCity:
+      fake: city
+    MailingState:
+      fake: state
+    MailingPostalCode:
+      fake: postalcode
+    MailingCountry: "United States"
+    MailingLatitude:
+      fake: latitude
+    MailingLongitude:
+      fake: longitude
+    MailingGeocodeAccuracy:
+      random_choice:
+        - Address
+        - NearAddress
+        - Block
+        - Street
+        - ExtendedZip
+        - Zip
+        - Neighborhood
+        - City
+        - County
+        - State
+        - Unknown
+    Phone:
+      fake: phone_number
+    MobilePhone:
+      fake: phone_number
+    HomePhone:
+      fake: phone_number
+    hed__PreferredPhone__c: "Mobile Phone"
+    Email:
+      fake: Email
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    Birthdate:
+      date_between:
+        start_date: -50y
+        end_date: -18y
+    Description:
+      fake.text:
+        max_nb_chars: 100
+  friends:
+    # Set primary department
+    - object: hed__Affiliation__c
+      fields:
+        hed__Account__c:
+          reference: SampleAcademicDepartment
+        hed__Contact__c:
+          reference: Contact
+        hed__Primary__c: "True"
+        hed__Description__c:
+          fake: catch_phrase
+        hed__StartDate__c:
+          date_between:
+            start_date: -1y
+            end_date: today
+        hed__EndDate__c:
+          date_between:
+            start_date: today
+            end_date: +1y
+        hed__Role__c: "Student"
+
+# Create Case (Advising) record; dependency for Appointment, Appointment Attendee, Alert, Prediction, Success Plan, Task
+- object: Case
+  nickname: SampleAdvisingCase
+  fields:
+    ContactId:
+      reference: Contact
+    Subject: ${{fake.Text(max_nb_chars=80)}}
+    Description: ${{fake.Paragraph(nb_sentences=3)}}
+    # sfal__IsAdviseeRecord__c: true #field is not editable by system admins
+    hed__Category__c: "Other"
+    sfal__AdvisingPool__c:
+      reference: AdvisingPool
+    sfal__Location__c: "Other"
+    hed__Location__c: "Other"
+
+# Create University Department
+- object: Account
+  nickname: SampleAcademicDepartment
+  fields:
+    name: Sample Academic Department
+    RecordType: "University_Department"
+
+# Create Advising Pool; dependency for Queue Topic Setting
+- object: sfal__AdvisingPool__c
+  nickname: AdvisingPool
+  fields:
+    sfal__Account__c:
+      reference: SampleAcademicDepartment
+    sfal__Description__c: ${{fake.Text(max_nb_chars=200)}}
+  friends:
+    # Create Queue Waiting Room Resource
+    - object: sfal__QueueWaitingRoomResource__c
+      fields:
+        sfal__AdvisingPool__c:
+          reference: AdvisingPool
+        sfal__SortOrder__c: 1
+        sfal__User__c:
+          SalesforceQuery.find_record:
+            from: User
+            where: UserType='Standard'
+
+# Objects nested with Topic
+- object: sfal__Topic__c
+  nickname: SampleTopic
+  fields:
+    Name:
+      random_choice:
+        - Transcripts
+        - Grades
+        - Program Questions
+    sfal__SortOrder__c: 1
+    sfal__Label__c: ${{SampleTopic.Name}}
+  friends:
+    - object: sfal__UserTopicSetting__c # create User Topic Setting associated with the Topic
+      fields:
+        sfal__DefaultAppointmentDuration__c: 30
+        sfal__Topic__c:
+          reference: sfal__Topic__c
+        sfal__User__c:
+          SalesforceQuery.find_record:
+            from: User
+            where: UserType='Standard'
+    - object: sfal__RoleTopicSetting__c
+      fields:
+        sfal__RoleName__c:
+          random_choice:
+            - Course Advisor
+            - Program Advisor
+            - Student Services
+        sfal__Topic__c:
+          reference: sfal__Topic__c
+    - object: sfal__QueueTopicSetting__c
+      fields:
+        sfal__AdvisingPool__c:
+          reference: AdvisingPool
+        sfal__Topic__c:
+          reference: sfal__Topic__c
+
+# Appointment Location object is dependency for Availability Location and Appointment
+- object: sfal__AppointmentLocation__c
+  nickname: SampleAppointmentLocation
+  fields:
+    sfal__AdditionalDetails__c: ${{fake.Paragraph(nb_sentences=5)}}
+    sfal__Building__c: ${{fake.Text(max_nb_chars=20)}}
+    sfal__Campus__c: ${{fake.Text(max_nb_chars=20)}}
+    sfal__MeetingLink__c: ${{fake.SafeDomainName}}
+    sfal__Phone__c: ${{fake.PhoneNumber}}
+    sfal__Room__c: ${{fake.Text(max_nb_chars=12)}}
+    sfal__SortOrder__c: 1
+    sfal__Type__c: ${{fake.Text(max_nb_chars=12)}}
+
+# Objects nested with Availability
+- object: sfal__Availability__c
+  fields:
+    name: "Available Slot"
+    sfal__AppointmentType__c:
+      random_choice:
+        - Phone
+        - In-person
+        - Video Call
+    sfal__AttendeeLimit__c:
+      random_number:
+        min: 2
+        max: 5
+  friends:
+    - object: sfal__AvailabilityLocation__c
+      fields:
+        sfal__Availability__c:
+          reference: sfal__Availability__c
+        sfal__Location__c:
+          reference: SampleAppointmentLocation
+    - object: sfal__AvailabilityTopic__c
+      fields:
+        sfal__Availability__c:
+          reference: sfal__Availability__c
+        sfal__Topic__c:
+          reference: SampleTopic
+
+# Objects nested with Appointment
+- object: sfal__Appointment__c
+  nickname: SampleAppointment
+  fields:
+    Name: ${{fake.Sentence(nb_words=5)}}
+    sfal__AppointmentLocation__c:
+      reference: SampleAppointmentLocation
+    sfal__AdditionalConnectionInformation__c: ${{fake.Sentence(nb_words=10)}}
+    sfal__AttendeeLimit__c: 3
+    sfal__Description__c: ${{fake.Paragraph(nb_sentences=2)}}
+    sfal__StartDateTime__c: ${{fake.date_between(start_date='-10d',end_date='today')}}T${{fake.time}}Z
+    sfal__EndDateTime__c: ${{fake.date_between(start_date='today',end_date='+1w')}}T${{fake.time}}Z
+    sfal__IsDiscoverable__c: true
+    sfal__IsWebMeeting__c: true
+    sfal__Location__c: ${{fake.Text(max_nb_chars=100)}}
+    sfal__RelatedCase__c:
+      reference: SampleAdvisingCase
+    sfal__RelatedTopic__c:
+      reference: SampleTopic
+    sfal__Topic__c: ${{fake.Word}}
+    sfal__WebMeetingLink__c: ${{fake.Url}}
+    sfal__Type__c: "Scheduled"
+  friends:
+    - object: sfal__AppointmentAttendee__c
+      fields:
+        sfal__AdviseeRecord__c:
+          reference: SampleAdvisingCase
+        sfal__Appointment__c:
+          reference: SampleAppointment
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Role__c: "Organizer"
+        sfal__Status__c:
+          random_choice:
+            - Attending
+            - Cancelled
+            - No Show
+            - Checked In
+        sfal__StatusComments__c: ${{fake.Text(max_nb_chars=50)}}
