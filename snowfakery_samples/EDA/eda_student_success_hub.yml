@@ -1,9 +1,10 @@
 # Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
 # Work in progress that creates data for the following objects:
 #   Contact
-#   Case (Advising)
+#   Case (Advising Record)
 #   Account (University Department)
 #   Advising Pool
+#   Queue Waiting Room Resource
 #   Appointment Location
 #   Availability
 #   Availability Location
@@ -19,6 +20,8 @@
 
 # Run this to generate records in an output JSON file:
 # snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json
+
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
 
 # Create Contact; dependency for Case (Advising)
 - object: Contact
@@ -127,6 +130,17 @@
     sfal__Account__c:
       reference: SampleAcademicDepartment
     sfal__Description__c: ${{fake.Text(max_nb_chars=200)}}
+  friends:
+    # Create Queue Waiting Room Resource
+    - object: sfal__QueueWaitingRoomResource__c
+      fields:
+        sfal__AdvisingPool__c:
+          reference: AdvisingPool
+        sfal__SortOrder__c: 1
+        sfal__User__c:
+          SalesforceQuery.find_record:
+            from: User
+            where: UserType='Standard'
 
 # Objects nested with Topic
 - object: sfal__Topic__c
