@@ -11,6 +11,8 @@
 #   User Topic Setting
 #   Role Topic Setting
 #   Queue Topic Setting
+#   Appointment
+#   Appointment Attendee
 
 # Run this to generate data in a scratch org:
 # cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
@@ -199,6 +201,7 @@
         sfal__Topic__c:
           reference: SampleTopic
 
+# Objects nested with Appointment
 - object: sfal__Appointment__c
   nickname: SampleAppointment
   fields:
@@ -220,3 +223,19 @@
     sfal__Topic__c: ${{fake.Word}}
     sfal__WebMeetingLink__c: ${{fake.Url}}
     sfal__Type__c: "Scheduled"
+  friends:
+    - object: sfal__AppointmentAttendee__c
+      fields:
+        sfal__AdviseeRecord__c:
+          reference: SampleAdvisingCase
+        sfal__Appointment__c:
+          reference: SampleAppointment
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Role__c: "Organizer"
+        sfal__Status__c:
+          random_choice:
+            - Attending
+            - Cancelled
+            - No Show
+            - Checked In
+        sfal__StatusComments__c: ${{fake.Text(max_nb_chars=50)}}
