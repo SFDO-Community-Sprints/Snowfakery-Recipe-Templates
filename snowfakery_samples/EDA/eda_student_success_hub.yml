@@ -35,11 +35,13 @@
 - object: sfal__Topic__c
   nickname: SampleTopic
   fields:
-    sfal__Label__c:
+    Name:
       random_choice:
         - Transcripts
         - Grades
         - Program Questions
+    sfal__SortOrder__c: 1
+    sfal__Label__c: ${{SampleTopic.Name}}
   friends:
     - object: sfal__UserTopicSetting__c # create User Topic Setting associated with the Topic
       fields:
