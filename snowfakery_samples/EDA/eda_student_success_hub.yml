@@ -18,9 +18,10 @@
 # Run this to generate data in a scratch org:
 # cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
 
-# Run this to generate records in an output JSON file:
-# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json
+# Run this to generate records in an output JSON file (NOTE: update the org_name to the CCI org you are using)
+# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json --plugin-option org_name dev
 
+# Load plugin for querying Salesforce, used to link records to internal advisor user
 - plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
 
 # Create Contact; dependency for Case (Advising)
@@ -159,6 +160,10 @@
         sfal__DefaultAppointmentDuration__c: 30
         sfal__Topic__c:
           reference: sfal__Topic__c
+        sfal__User__c:
+          SalesforceQuery.find_record:
+            from: User
+            where: UserType='Standard'
     - object: sfal__RoleTopicSetting__c
       fields:
         sfal__RoleName__c:
