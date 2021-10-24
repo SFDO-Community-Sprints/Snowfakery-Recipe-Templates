@@ -159,7 +159,7 @@
         sfal__Topic__c:
           reference: sfal__Topic__c
 
-# Appointment Location object is dependency for Availability Location
+# Appointment Location object is dependency for Availability Location and Appointment
 - object: sfal__AppointmentLocation__c
   nickname: SampleAppointmentLocation
   fields:
@@ -198,3 +198,25 @@
           reference: sfal__Availability__c
         sfal__Topic__c:
           reference: SampleTopic
+
+- object: sfal__Appointment__c
+  nickname: SampleAppointment
+  fields:
+    Name: ${{fake.Sentence(nb_words=5)}}
+    sfal__AppointmentLocation__c:
+      reference: SampleAppointmentLocation
+    sfal__AdditionalConnectionInformation__c: ${{fake.Sentence(nb_words=10)}}
+    sfal__AttendeeLimit__c: 3
+    sfal__Description__c: ${{fake.Paragraph(nb_sentences=2)}}
+    sfal__StartDateTime__c: ${{fake.date_between(start_date='-10d',end_date='today')}}T${{fake.time}}Z
+    sfal__EndDateTime__c: ${{fake.date_between(start_date='today',end_date='+1w')}}T${{fake.time}}Z
+    sfal__IsDiscoverable__c: true
+    sfal__IsWebMeeting__c: true
+    sfal__Location__c: ${{fake.Text(max_nb_chars=100)}}
+    sfal__RelatedCase__c:
+      reference: SampleAdvisingCase
+    sfal__RelatedTopic__c:
+      reference: SampleTopic
+    sfal__Topic__c: ${{fake.Word}}
+    sfal__WebMeetingLink__c: ${{fake.Url}}
+    sfal__Type__c: "Scheduled"
