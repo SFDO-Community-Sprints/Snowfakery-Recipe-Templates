@@ -33,15 +33,15 @@ tasks:
     npsp_settings:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
-            generator_yaml: snowfakery_samples\npsp\NPSP_Settings.recipe.yml
+            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
 
- 
+
 flows:
 # cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
     npsp_scratch:
         description: Requires default org to be set. Installs npsp and creates a bunch of default settings to make the data look more realistic
         steps:
-            1: 
+            1:
                 flow: npsp:install_prod
                 options:
                     org: dev
@@ -50,5 +50,4 @@ flows:
             3:
                 task: generate_and_load_from_yaml
                 options:
-                    generator_yaml: snowfakery_samples\npsp\NPSP_Settings.recipe.yml
-
+                    generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
