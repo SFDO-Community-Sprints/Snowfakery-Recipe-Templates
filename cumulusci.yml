@@ -13,6 +13,8 @@ sources:
         github: https://github.com/SalesforceFoundation/EDA
     npsp:
         github: https://github.com/SalesforceFoundation/NPSP
+    sal:
+        github: https://github.com/SalesforceFoundation/SAL-CumulusCI
 
 tasks:
     robot:
