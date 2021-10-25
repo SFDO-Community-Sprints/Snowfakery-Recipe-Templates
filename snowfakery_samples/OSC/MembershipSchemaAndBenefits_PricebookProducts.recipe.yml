@@ -17,12 +17,12 @@
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
-- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+- plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset
 
 - object: Pricebook2
   fields:
     __pricebook_from_salesforce:
-    SOQLDataset.shuffle:
+      SOQLDataset.shuffle:
         fields: Id
         from: Pricebook2
         where: IsStandard = true
@@ -30,15 +30,28 @@
     isActive: true
 
 - object: Product2
+  just_once: true
   fields:
+    Name: Membership
+    ProductCode: MEMBER-ANNUAL
+    Description: 
+      fake.text:
+        max_nb_chars: 50
+    StockKeepingUnit: #sku
+    Family:
+      random_choice:
+        - Annual Membership
+        # - Seasonal Membership
 
-  friend:
+  friends:
   - object: PricebookEntry
+    just_once: true
     fields:
       IsActive: true
-      UnitPrice: DOUBLE
-      ProductCode: STRING
-      Product2Id: Product2
+      UnitPrice: 250
+      ProductCode: ${{Product2.ProductCode}}-BASE
+      Product2Id: 
+        reference: Product2
       Pricebook2Id: ${{Pricebook2.id}}
 
 

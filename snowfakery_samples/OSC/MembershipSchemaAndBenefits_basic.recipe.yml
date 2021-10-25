@@ -90,6 +90,64 @@
 
     Membership__c: REFERENCE
     OpportunityId: REFERENCE
-    PricebookEntryId: REFERENCE
+    PricebookEntryId: 
+      reference: PricebookEntryId
     Product2Id: REFERENCE
     ProductCode: STRING
+
+- object: Membership__c
+  fields:
+
+- object: Opportunity
+  fields:
+    AccountId:
+      reference: Account # you need to have declared an account elsewhere
+    Name:
+      fake: name
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: today
+    StageName:
+      random_choice:
+        - Prospecting
+        - Qualification
+        - Needs Analysis
+        - Value Proposition
+        - Id. Decision Makers
+        - Perception Analysis
+        - Proposal/Price Quote
+        - Negotiation/Review
+        - Closed Won
+        - Closed Lost
+        - Pledged
+    Amount:
+      random_number:
+        min: 1
+        max: 100000
+    ContactId:
+      reference: Contact
+    npe01__Contact_Id_for_Role__c:
+      fake.text:
+        max_nb_chars: 100
+    npe01__Member_Level__c:
+      random_choice:
+        - Gold
+        - Silver
+        - Bronze
+    npe01__Membership_End_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    npe01__Membership_Origin__c:
+      random_choice:
+        - New
+        - Renewal
+        - Reacquire
+    npe01__Membership_Start_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
