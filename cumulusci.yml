@@ -44,6 +44,14 @@ tasks:
         group: OSC
         options:
             generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml
+    
+    load_membership_opportunities:
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        group: OSC
+        options:
+            generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml
+            num_records: 10
+            num_records_tablename: Opportunity
 
 flows:
     osc_memberships_project:
@@ -53,3 +61,5 @@ flows:
                 task: activate_standard_pricebook
             2:
                 task: load_membership_products
+            3:
+                task: load_membership_opportunities
