@@ -22,7 +22,7 @@ Multiple steps are required to set up a development-ready environment in your lo
 1. Install [Visual Studio Code](https://code.visualstudio.com/)
 2. Install [SFDX extension for VSC](https://developer.salesforce.com/tools/vscode/)
 3. Install [Git](https://git-scm.com/downloads)
-4. Install [CumulusCI](https://cumulusci.readthedocs.io/en/latest/install.html)
+4. Install [CumulusCI](https://cumulusci.readthedocs.io/en/latest/get_started.html)
 5. (optional) [CumulusCI extension for VSC](https://marketplace.visualstudio.com/items?itemName=CumulusCI.cci)
 
 ### Setup
