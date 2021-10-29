@@ -32,14 +32,45 @@ tasks:
         options:
             required_org_code_coverage_percent: 75
 
+    activate_standard_pricebook:
+        description: Activate standard price book
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            apex: >
+                pricebook2 book = [SELECT Id FROM pricebook2 WHERE isStandard = true];
+                book.isActive = true;
+                update book;
+
+    load_membership_products:
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        group: OSC
+        options:
+            generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml
+    
+    load_membership_opportunities:
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        group: OSC
+        options:
+            generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml
+            num_records: 10
+            num_records_tablename: Opportunity
+
+flows:
+    osc_memberships_project:
+        description: OSC Membership Schema and Benefits project
+        steps:
+            1: 
+                task: activate_standard_pricebook
+            2:
+                task: load_membership_products
+            3:
+                task: load_membership_opportunities
     npsp_settings:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
             generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
 
-
-flows:
-# cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
+    # cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
     npsp_scratch:
         description: Requires default org to be set. Installs npsp and creates a bunch of default settings to make the data look more realistic
         steps:
@@ -53,3 +84,4 @@ flows:
                 task: generate_and_load_from_yaml
                 options:
                     generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
+

@@ -1,0 +1,184 @@
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Account (1)
+# 1-1. Contact - (2) Household Members
+# 1-2. Pricebook2 (Query)
+# 1-3. Product2 (Query)
+# 1-4. PricebookEntry (Query)
+# 1-7. Opportunity (1)
+# 1-8. OpportunityLineItem (1)
+# 1-5. Membership__c (1)
+# 1-6. Membership_Contact_Role__c (automaticakly handled by Apex)
+
+
+### ----------- [ MembershipSchemaAndBenefits_basic.recipe.yml Summary ]---------- ###
+# Household Account with two contacts
+# Query Standard Price Book, PricebookEntry, Product2
+# Pick one out of [3] products called "Individual Membership", "Houshold Membership", "Corporate Membership"
+# Membership record is specific to a related account and opportunity records.
+# Membership Contact role differenciates the membership details on each household member.
+# There is an apex trigger handler that creates a membership contact role for primary contact.
+# https://github.com/SFDO-Community-Sprints/MembershipSchemaAndBenefits
+
+
+### ----------- [               CLI RUN                ]---------- ###
+
+# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --num_records 1 --num_records_tablename Opportunity --org dev
+# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --plugin-option org_name dev
+
+### ----------- [            Recipe Starts             ]---------- ###
+
+- plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset
+
+- object: Account
+  count: 1
+  fields:
+    Name: ${{fake.firstname}} ${{fake.lastname}} Household
+
+  # MembershipSchemaAndBenefits custom fields -- expected to be handled by Apex
+    # First_Membership_Start_Date__c: DATE
+    # Membership_End_Date__c: DATE
+    Membership_Status__c: 
+      random_choice:
+        - Former
+        - Lapsed
+        - Renewal
+        - Current
+    Membership_Type__c:
+      random_choice:
+        - Individual
+        - Household
+        - Corporate
+    # Primary_Membership__c: # Apex automated
+    #   reference: 
+
+
+- object: Contact
+  count: 2
+  fields:
+    # MembershipSchemaAndBenefits custom fields -- expected to be handled by Apex
+    # Last_Membership_Start_Date__c: DATE
+    # First_Membership_Start_Date__c: DATE
+    # Membership_End_Date__c: DATE
+    Membership_Status__c: ${{Account.Membership_Status__c}}
+    Membership_Type__c: ${{Account.Membership_Type__c}}
+    FirstName: ${{fake.firstname}}
+    LastName: ${{fake.lastname}}
+    Email: ${{fake.email}}
+    AccountId:
+      reference: Account
+
+- object: Opportunity
+  count: 1
+  fields:
+    AccountId:
+      reference: Account
+    Type: Membership
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: today
+    Name: ${{Account.Name}}-${{Type}}-${{(CloseDate).year}}
+    Description:
+      fake.text:
+        max_nb_chars: 100
+
+    StageName: Closed Won
+
+    ContactId:
+      reference: Contact
+    
+    # NPSP fields
+    # npe01__Membership_Start_Date__c: ${{CloseDate}}
+    # npe01__Membership_End_Date__c: ${{date(CloseDate)+relativedelta(months=12)}}
+    # npe01__Membership_Origin__c:
+    #   random_choice:
+    #     - New
+    #     - Renewal
+    #     - Reacquire
+    
+    __pricebookentry_from_salesforce:
+      SOQLDataset.shuffle:
+        fields: UnitPrice 
+        from: PricebookEntry
+        where: name like '%membership'
+    Amount: ${{__pricebookentry_from_salesforce.UnitPrice}}
+
+    __pricebook_from_salesforce:
+      SOQLDataset.shuffle:
+        fields: Id 
+        from: Pricebook2
+    Pricebook2Id: ${{__pricebook_from_salesforce.Id}}
+
+- object: OpportunityLineItem
+  fields:
+    Quantity: 1
+    Description:
+      fake.text:
+        max_nb_chars: 30
+
+    OpportunityId:
+      reference: Opportunity
+
+    __pricebookentry_from_salesforce:
+      SOQLDataset.shuffle:
+        fields: Id, UnitPrice, Product2Id
+        from: PricebookEntry
+        where: Product2.name like '${{Account.Membership_Type__c}} membership' 
+    UnitPrice: ${{__pricebookentry_from_salesforce.UnitPrice}}
+
+    Product2Id: ${{__pricebookentry_from_salesforce.Product2Id}}
+
+    # Membership__c:
+    Membership__c:
+      - object: Membership__c
+        fields:
+          __product_from_salesforce:
+            SOQLDataset.shuffle:
+              fields: Id, Name
+              from: Product2
+              where: Id = '${{OpportunityLineItem.Product2Id}}'
+
+          name: ${{Account.Name}}-${{__product_from_salesforce.Name}}
+          Origin__c:
+            random_choice:
+              - New
+              - Renewed
+              - Reacquired
+          Primary__c: true
+          Status__c:
+            random_choice:
+              - Former
+              - Lapsed
+              - Renewal
+              - Current
+          Type__c:
+            if:
+              - choice: 
+                  when: ${{__product_from_salesforce.Name == 'Individual Membership'}}
+                  pick: Individual
+              - choice: 
+                  when: ${{__product_from_salesforce.Name == 'Household Membership'}}
+                  pick: Household
+              - choice: 
+                  when: ${{__product_from_salesforce.Name == 'Corporate Membership'}}
+                  pick: Corporate
+
+          Does_Not_Expire__c: false
+          Start_Date__c: ${{Opportunity.CloseDate}}
+          End_Date__c: ${{date(Start_Date__c)+relativedelta(months=12)}}
+
+          Account__c:
+            reference: Account
+
+## Apex automated
+# - object: Membership_Contact_Role__c
+#   fields:
+#     Name: STRING
+#     Start_Date__c: DATE
+#     End_Date__c: DATE
+#     Role__c: PICKLIST
+
+#     Is_Primary__c: BOOLEAN
+
+#     Membership__c: REFERENCE
+#     Contact__c: REFERENCE
