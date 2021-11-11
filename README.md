@@ -22,10 +22,8 @@ Multiple steps are required to set up a development-ready environment in your lo
 1. Install [Visual Studio Code](https://code.visualstudio.com/)
 2. Install [SFDX extension for VSC](https://developer.salesforce.com/tools/vscode/)
 3. Install [Git](https://git-scm.com/downloads)
-4. Install [Python](https://www.python.org/downloads/)
-5. Install [pipx](https://github.com/pipxproject/pipx) by ruuning `$ pip3 install pipx`
-6. Install [CumulusCI](https://cumulusci.readthedocs.io/en/latest/install.html)
-7. (optional) [CumulusCI extension for VSC](https://marketplace.visualstudio.com/items?itemName=CumulusCI.cci)
+4. Install [CumulusCI](https://cumulusci.readthedocs.io/en/latest/get_started.html)
+5. (optional) [CumulusCI extension for VSC](https://marketplace.visualstudio.com/items?itemName=CumulusCI.cci)
 
 ### Setup
 
@@ -46,9 +44,9 @@ $ git clone https://github.com/SFDO-Community-Sprints/Snowfakery-Recipe-Template
 ### Set up the right flavor of scratch org
 If you want to use a scratch org to play with Snowfakery, you may want to install NPSP or EDA as well.
 - Run `cci org scratch dev dev --default` to create a new scratch org and set it as a default
-- **Install EDA** Run `cci flow run eda:net_new_org --org dev`
+- **Install EDA** Run `cci flow run eda:trial_org --org dev`
+- Optional for EDA orgs: **Install Advisor Link** Run `cci flow run sal:install_base --org dev`
 - **Install NPSP** Run `cci flow run npsp:install_prod --org dev`
-
 
 ### Instructions for the Collaborators
 
