@@ -34,15 +34,15 @@ tasks:
         group: NPSP
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
-            generator_yaml: snowfakery_samples\npsp\Account_npsp.recipe.yml
+            generator_yaml: snowfakery_samples/npsp/Account_npsp.recipe.yml
 
     npsp_contact:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         group: NPSP
         options:
-            generator_yaml: snowfakery_samples\npsp\Contact_npsp.recipe.yml
+            generator_yaml: snowfakery_samples/npsp/Contact_npsp.recipe.yml
             
-   npsp_settings:
+    npsp_settings:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
             generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
