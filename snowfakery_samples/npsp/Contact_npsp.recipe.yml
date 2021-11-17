@@ -65,7 +65,9 @@
         - Dr.
         - Prof. 
     Title:
-      fake: job
+      random_choice:
+        - CEO
+        - fake: job
     Department:
       fake: bs
     Birthdate:
