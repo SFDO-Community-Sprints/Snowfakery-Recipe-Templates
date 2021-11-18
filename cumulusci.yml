@@ -46,7 +46,7 @@ tasks:
         group: OSC
         options:
             generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml
-    
+
     load_membership_opportunities:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         group: OSC
@@ -55,20 +55,21 @@ tasks:
             num_records: 10
             num_records_tablename: Opportunity
 
+    npsp_settings:
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        options:
+            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
+
 flows:
     osc_memberships_project:
         description: OSC Membership Schema and Benefits project
         steps:
-            1: 
+            1:
                 task: activate_standard_pricebook
             2:
                 task: load_membership_products
             3:
                 task: load_membership_opportunities
-    npsp_settings:
-        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
-        options:
-            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
 
     # cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
     npsp_scratch:
@@ -84,4 +85,3 @@ flows:
                 task: generate_and_load_from_yaml
                 options:
                     generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
-
