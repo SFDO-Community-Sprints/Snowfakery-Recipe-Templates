@@ -72,13 +72,7 @@
     OtherPhone:
       fake: PhoneNumber
     MobilePhone:
-      fake: PhoneNumber
-    npe01__PreferredPhone__c:
-      random_choice:
-        - Home 
-        - Work
-        - Mobile
-        - Other     
+      fake: PhoneNumber   
     Salutation:
       random_choice:
         - Mr.
