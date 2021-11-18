@@ -1,0 +1,109 @@
+## Campaigns with Campaign Members Example
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Campaign
+# 1-1. Account
+# 1-2. Contact (related to Account)
+# 1-3. Campaign Member (related to Campaign and Contact)
+### ----------- [ Campaigns_CampaignMembers.recipe.yml Summary ]---------- ###
+# This recipe creates a single Campaign record, a single Account record, a single Contact record, and then adds that Contact record to the Account as well as to the Campaign as a Campaign Member.
+#
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 3 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/salesforce/Campaigns_CampaignMembers.recipe.yml -o num_records 3 -o num_records_tablename Campaign --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/salesforce/Campaigns_CampaignMembers.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+
+# First we'll create a Campaign record.
+- object: Campaign
+  nickname: Campaign1
+  fields:
+    name: 
+      fake: CatchPhrase
+    IsActive: true
+    Status:
+      random_choice:
+        - Planned
+        - In Progress
+        - Completed
+        - Aborted
+    StartDate:
+      date_between:
+        start_date: -1y
+        end_date: +1y
+    EndDate:
+      date_between:
+        start_date: +1y
+        end_date: +2y
+    #   if:
+    #     - choice:
+    #         when: ${{npe5__Status__c=='Former'}}
+    #         pick:
+    #           date_between:
+    #             start_date: -3m
+    #             end_date: -1d
+    #     - choice:
+    #         pick: null
+# Next we'll create the Account record that the Contact will be related to.
+- object: Account
+  nickname: Account1
+  fields:
+    name: 
+      fake: Company
+# Next we'll create the Contact record.
+- object: Contact
+  nickname: Contact1
+  # count:
+  #   random_number:
+  #     min: 1
+  #     max: 3
+  fields:
+    AccountId:
+      reference: Account1
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+    HomePhone:
+      fake: PhoneNumber
+    OtherPhone:
+      fake: PhoneNumber
+    MobilePhone:
+      fake: PhoneNumber
+    npe01__PreferredPhone__c:
+      random_choice:
+        - Home 
+        - Work
+        - Mobile
+        - Other     
+    Salutation:
+      random_choice:
+        - Mr.
+        - Ms.
+        - Mrs.
+        - Dr.
+        - Prof. 
+    Title:
+      fake: job
+    Department:
+      fake: bs
+    Birthdate:
+      date_between:
+        start_date: -100y
+        end_date: -15y
+# Finally, let's create the Campaign Member related to both the Campaign and the Contact.
+  friends:
+    - object: CampaignMember
+      count: 1
+      fields: 
+        Status:
+          random_choice:
+            - Sent
+            - Responded
+        CampaignId:
+          reference: Campaign1
+        ContactId:
+          reference: Contact1
