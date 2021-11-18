@@ -1,0 +1,64 @@
+## NPSP Contact Campaign Campaigin Member Example
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Contact (1)
+# 1-1. Campaign (1)
+# 1-2. Campaign Member (1)
+### ----------- [ Contact_Campaign_CampaignMember.recipe.yml Summary ]---------- ###
+# This recipe creates a single Contact record, and NPSP will auto-create the associated Household Account and Address objects. It creates a Campagin and adds the Contacts to the Campaign. 
+# 
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Contact_npsp.recipe.yml -o num_records 300 -o num_records_tablename Contact --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Contact_npsp.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+
+- object: Contact
+  fields:
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+# If you're not familiar with NPSP, there is automation to populate the standard Email and Phone fields based on the data below.
+    npe01__AlternateEmail__c:
+      fake: Email
+    npe01__HomeEmail__c:
+      fake: Email
+    npe01__WorkEmail__c:
+      fake: Email
+    npe01__Preferred_Email__c:
+      random_choice:
+        - Personal 
+        - Work
+        - Alternate      
+    Salutation:
+      random_choice:
+        - Mr.
+        - Ms.
+        - Mrs.
+        - Dr.
+        - Prof. 
+    Title:
+      fake: job
+
+- object: Campaign
+  just_once: True
+  fields: 
+    Name: ${{fake.Bs}} Campaign
+    Status: In Progress
+    IsActive: True
+    Description:
+      fake: Bs
+
+- object: CampaignMember
+  fields:
+    ContactId:
+      reference: Contact
+    Status: Sent
+    CampaignId: 
+      reference: Campaign
+
