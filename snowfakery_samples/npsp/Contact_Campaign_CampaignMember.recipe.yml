@@ -53,12 +53,30 @@
     IsActive: True
     Description:
       fake: Bs
+  friends:
+  - object: CampaignMemberStatus
+    fields: 
+      CampaignId:
+        reference: Campaign
+      Label: On List
+      HasResponded: False
+  - object: CampaignMemberStatus
+    fields: 
+      CampaignId:
+        reference: Campaign
+      Label: Attended
+      HasResponded: True
 
 - object: CampaignMember
   fields:
     ContactId:
       reference: Contact
-    Status: Sent
+    Status:       
+      random_choice:
+       - Sent
+       - Responded
+       - Attended
+       - On List
     CampaignId: 
       reference: Campaign
 
