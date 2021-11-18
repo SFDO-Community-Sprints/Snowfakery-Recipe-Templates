@@ -76,15 +76,14 @@
         start_date: -100y
         end_date: -15y
 # Finally, let's create the Campaign Member related to both the Campaign and the Contact.
-  friends:
-    - object: CampaignMember
-      count: 1
-      fields: 
-        Status:
-          random_choice:
-            - Sent
-            - Responded
-        CampaignId:
-          reference: Campaign1
-        ContactId:
-          reference: Contact1
+- object: CampaignMember
+  count: 1
+  fields: 
+    Status:
+      random_choice:
+        - Sent
+        - Responded
+    CampaignId:
+      reference: Campaign1
+    ContactId:
+      reference: Contact1
