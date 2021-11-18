@@ -1,20 +1,17 @@
 ### ------------- [          ORDER OF INSERT         ]------------ ###
-# 1-0. Product2 [3]
-# 1-1. PricebookEntry [3]
-
+# 1-0. Product2 [1/3]
+# 1-1. PricebookEntry [1/3]
 
 ### ----------- [ Products_Standard_npsp.recipe.yml Summary ]---------- ###
-# This recipe creates [3] products called "Individual Membership", "Houshold Membership", "Corporate Membership"
-# Create 3 Price book entries to the standard price book
-# Run only once as each product entity is unique
+# This recipe creates [1] product among three choices: "Individual Membership", "Houshold Membership", "Corporate Membership"
+# Creates 1 Pricebook entry to the standard price book
 # This recipe queries into a connected cci org to retrieve Standard Pricebook Id
-
-
 
 ### ----------- [               CLI RUN                ]---------- ###
 
 # cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/Products_Standard_npsp.recipe.yml --org dev
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Products_Standard_npsp.recipe.yml --plugin-option org_name dev
+
 ### ----------- [            Recipe Starts             ]---------- ###
 
 - plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset
@@ -57,48 +54,3 @@
         from: Pricebook2
     Pricebook2Id: ${{__pricebook_from_salesforce.Id}}
         
-# - object: Product2
-#   nickname: p2
-#   fields:
-#     Name: Houshold Membership
-#     ProductCode: HSHLD-MEMBER-ANNUAL
-#     Description: 
-#       fake.text:
-#         max_nb_chars: 50
-#     StockKeepingUnit: #sku
-#     Family: Annual Membership  
-
-# - object: PricebookEntry
-#   fields:
-#     IsActive: true
-#     UnitPrice: 250
-#     Product2Id: 
-#       reference: p2
-#     __pricebook_from_salesforce:
-#       SOQLDataset.shuffle:
-#         fields: Id 
-#         from: Pricebook2
-#     Pricebook2Id: ${{__pricebook_from_salesforce.Id}}
-
-# - object: Product2
-#   nickname: p3
-#   fields:
-#     Name: Corporate Membership
-#     ProductCode: CRPRT-MEMBER-ANNUAL
-#     Description: 
-#       fake.text:
-#         max_nb_chars: 50
-#     StockKeepingUnit: #sku
-#     Family: Annual Membership  
-
-# - object: PricebookEntry
-#   fields:
-#     IsActive: true
-#     UnitPrice: 250
-#     Product2Id: 
-#       reference: p3
-#     __pricebook_from_salesforce:
-#       SOQLDataset.shuffle:
-#         fields: Id 
-#         from: Pricebook2
-#     Pricebook2Id: ${{__pricebook_from_salesforce.Id}}
