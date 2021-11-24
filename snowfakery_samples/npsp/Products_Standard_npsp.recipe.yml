@@ -10,7 +10,7 @@
 ### ----------- [               CLI RUN                ]---------- ###
 
 # cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/Products_Standard_npsp.recipe.yml --org dev
-# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Products_Standard_npsp.recipe.yml --plugin-option org_name dev
+# snowfakery snowfakery_samples/npsp/Products_Standard_npsp.recipe.yml --output-format json --output-file snowfakery_samples/temp/output.json --plugin-option org_name dev
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
