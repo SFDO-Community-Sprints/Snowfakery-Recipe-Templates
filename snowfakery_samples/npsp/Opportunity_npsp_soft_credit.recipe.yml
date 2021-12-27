@@ -8,12 +8,10 @@
 # Create a set of 5 Opportunities with an Opportunity Contact Role and Contact under 1  Account.
 
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Opportunity_npsp_soft_credit.recipe.yml -o num_records 300 -o num_records_tablename Account --org dev
-#
-# Use this command to run this recipe locally and output to a JSON file called output.json
-# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Opportunity_npsp_soft_credit.recipe.yml
-#
+
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
+# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
+
 ### ----------- [            Recipe Starts             ]---------- ###
 
 ## create an account
@@ -21,25 +19,13 @@
   fields:
     name:
       fake: company
+    npsp__Primary_Contact__c: NULL
+      
 
-## create several contacts
-- object: Contact
-  count: 5
-  fields:
-    Firstname:
-      fake: FirstName
-    Lastname:
-      fake: LastName
-    npe01__AlternateEmail__c:
-      fake: email
-    npe01__HomeEmail__c:
-      fake: email
-    npe01__WorkEmail__c:
-      fake: email
-    npe01__WorkPhone__c:
-      fake: phone_number
+## create several opportunities
   friends:
     - object: Opportunity # create opportunity to be linked with each contact
+      count: 5
       nickname: GrantOpportunity
       fields:
         Name: Grant Opportunity
@@ -50,7 +36,8 @@
           random_number:
             min: 1
             max: 100000
-        CloseDate: 2021-10-10
+            step: 100
+        CloseDate: ${{fake.datethisyear}}
         StageName:
           random_choice:
             Prospecting: 50%
@@ -61,7 +48,20 @@
             OpportunityId:
               reference: Opportunity
             ContactId:
-              random_reference: Contact
+              - object: Contact
+                fields:
+                  Firstname:
+                    fake: FirstName
+                  Lastname:
+                    fake: LastName
+                  npe01__AlternateEmail__c:
+                    fake: email
+                  npe01__HomeEmail__c:
+                    fake: email
+                  npe01__WorkEmail__c:
+                    fake: email
+                  npe01__WorkPhone__c:
+                    fake: phone_number
             Role:
               random_choice:
                 Influencer: 20%
@@ -70,3 +70,4 @@
                 Honoree: 20%
                 Donor: 20%
                 Grant Manager: 20%
+            IsPrimary: true
