@@ -2,10 +2,11 @@
 
 ### ------------- [          ORDER OF INSERT         ]------------ ###
 # 1-0. Account (1)
-# 1-1. Contact + Opportunity + OpportunityContactRole (5)
+# 1-1. Opportunity + OpportunityContactRole + Contact (5)
 
 ### ----------- [ Opportunity_npsp_soft_credit.recipe.yml Summary ]---------- ###
-# Create a set of 5 Opportunities with an Opportunity Contact Role and Contact under 1  Account.
+# Create a set of 5 Opportunities with an Opportunity Contact Role and Contact under 1 Account.
+# The account
 
 ### ----------- [               CLI RUN                ]---------- ###
 
@@ -19,7 +20,6 @@
   fields:
     name:
       fake: company
-    npsp__Primary_Contact__c: NULL
       
 
 ## create several opportunities
