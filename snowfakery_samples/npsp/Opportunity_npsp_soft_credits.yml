@@ -20,9 +20,10 @@
     name:
       fake: company
 
-## create several contacts
+## create several opportunities
   friends:
     - object: Opportunity # create opportunity to be linked with each contact
+      count: 5
       nickname: GrantOpportunity
       fields:
         Name: Grant Opportunity
@@ -66,3 +67,4 @@
                 Honoree: 20%
                 Donor: 20%
                 Grant Manager: 20%
+            IsPrimary: true
