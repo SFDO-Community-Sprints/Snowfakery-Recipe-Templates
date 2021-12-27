@@ -9,7 +9,7 @@
 
 ### ----------- [               CLI RUN                ]---------- ###
 
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml --org qa
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
 # snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
 
 ### ----------- [            Recipe Starts             ]---------- ###
@@ -19,6 +19,8 @@
   fields:
     name:
       fake: company
+    npsp__Primary_Contact__c:
+      
 
 ## create several opportunities
   friends:
