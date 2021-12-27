@@ -19,7 +19,7 @@
   fields:
     name:
       fake: company
-    npsp__Primary_Contact__c:
+    npsp__Primary_Contact__c: NULL
       
 
 ## create several opportunities
@@ -36,7 +36,8 @@
           random_number:
             min: 1
             max: 100000
-        CloseDate: 2021-10-10
+            step: 100
+        CloseDate: ${{fake.datethisyear}}
         StageName:
           random_choice:
             Prospecting: 50%
