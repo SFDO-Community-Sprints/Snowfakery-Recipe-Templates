@@ -21,21 +21,6 @@
       fake: company
 
 ## create several contacts
-- object: Contact
-  count: 5
-  fields:
-    Firstname:
-      fake: FirstName
-    Lastname:
-      fake: LastName
-    npe01__AlternateEmail__c:
-      fake: email
-    npe01__HomeEmail__c:
-      fake: email
-    npe01__WorkEmail__c:
-      fake: email
-    npe01__WorkPhone__c:
-      fake: phone_number
   friends:
     - object: Opportunity # create opportunity to be linked with each contact
       nickname: GrantOpportunity
@@ -59,7 +44,20 @@
             OpportunityId:
               reference: Opportunity
             ContactId:
-              random_reference: Contact
+              - object: Contact
+                fields:
+                  Firstname:
+                    fake: FirstName
+                  Lastname:
+                    fake: LastName
+                  npe01__AlternateEmail__c:
+                    fake: email
+                  npe01__HomeEmail__c:
+                    fake: email
+                  npe01__WorkEmail__c:
+                    fake: email
+                  npe01__WorkPhone__c:
+                    fake: phone_number
             Role:
               random_choice:
                 Influencer: 20%
