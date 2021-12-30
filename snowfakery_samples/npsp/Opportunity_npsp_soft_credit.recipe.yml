@@ -10,7 +10,7 @@
 
 ### ----------- [               CLI RUN                ]---------- ###
 
-# cci task run snowfakery --recipe snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Opportunity_npsp_soft_credit.recipe.yml
 # snowfakery --output-format json --output-file src/foo.json snowfakery_samples/npsp/Opportunity_npsp_soft_credits.yml
 
 ### ----------- [            Recipe Starts             ]---------- ###
