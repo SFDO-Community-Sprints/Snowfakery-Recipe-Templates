@@ -1,5 +1,6 @@
 - plugin: faker_edu.Provider
 - include_file: eda_macros.yml
+
 - macro: incl_department
   fields:
     Name:
@@ -8,8 +9,6 @@
       - object: hed__Facility__c
         fields:
           Name: ${{fake.lastname+" Building"}}
-        include: incl_hed__Address__c
-          
 
 - macro: incl_faculty_member
   fields:

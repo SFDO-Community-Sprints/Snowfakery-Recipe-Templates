@@ -127,10 +127,7 @@
       random_number:
         min: 2020
         max: 2030
-    hed__Seasonal_End_Year__c:
-      random_number:
-        min: ${{hed__Seasonal_Start_Year__c}}
-        max: 2030
+
 - macro: incl_hed__Affiliation__c
   fields:
     __hed__Account__c__disabled: "OPTIONAL REFERENCE SKIPPED: ['Account']"
