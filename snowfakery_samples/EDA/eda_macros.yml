@@ -18,15 +18,13 @@
     hed__MailingCountry__c:
       fake: country
     hed__MailingCounty__c:
-      fake.text:
-        max_nb_chars: 80
+      fakeword
     hed__MailingPostalCode__c:
       fake: postalcode
     hed__MailingState__c:
       fake: state
     hed__MailingStreet2__c:
-      fake.text:
-        max_nb_chars: 100
+      NULL
     hed__MailingStreet__c:
       fake: street_address
     __hed__Parent_Account__c__disabled: "OPTIONAL REFERENCE SKIPPED: ['Account']"
@@ -78,10 +76,6 @@
         - "10"
         - "11"
         - "12"
-    hed__Seasonal_End_Year__c:
-      random_number:
-        min: 1
-        max: 10000
     hed__Seasonal_Start_Day__c:
       random_choice:
         - "1"
@@ -131,8 +125,12 @@
         - "12"
     hed__Seasonal_Start_Year__c:
       random_number:
-        min: 1
-        max: 10000
+        min: 2020
+        max: 2030
+    hed__Seasonal_End_Year__c:
+      random_number:
+        min: ${{hed__Seasonal_Start_Year__c}}
+        max: 2030
 - macro: incl_hed__Affiliation__c
   fields:
     __hed__Account__c__disabled: "OPTIONAL REFERENCE SKIPPED: ['Account']"
