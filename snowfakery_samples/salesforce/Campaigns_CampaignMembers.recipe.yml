@@ -21,7 +21,7 @@
 - object: Campaign
   nickname: Campaign1
   fields:
-    name: 
+    Name: 
       fake: CatchPhrase
     IsActive: true
     Status:
@@ -42,7 +42,7 @@
 - object: Account
   nickname: Account1
   fields:
-    name: 
+    Name: 
       fake: Company
 # Next we'll create the Contact record.
 - object: Contact
@@ -69,15 +69,12 @@
         - Prof. 
     Title:
       fake: job
-    Department:
-      fake: bs
     Birthdate:
       date_between:
         start_date: -100y
         end_date: -15y
 # Finally, let's create the Campaign Member related to both the Campaign and the Contact.
 - object: CampaignMember
-  count: 1
   fields: 
     Status:
       random_choice:
