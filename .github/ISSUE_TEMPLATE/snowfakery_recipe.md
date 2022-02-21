@@ -2,7 +2,7 @@
 name: Snowfakery Recipe Request
 about: Ask for a snowfakery recipe to solve a specific problem
 title: ''
-labels: 'recipe'
+labels: recipe
 assignees: ''
 
 ---
