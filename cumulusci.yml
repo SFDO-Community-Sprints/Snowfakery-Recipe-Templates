@@ -80,7 +80,7 @@ flows:
                 options:
                     org: dev
             2:
-                flow: npsp:enable_rd2
+                flow: npsp:enable_rd2_managed
             3:
                 task: generate_and_load_from_yaml
                 options:
