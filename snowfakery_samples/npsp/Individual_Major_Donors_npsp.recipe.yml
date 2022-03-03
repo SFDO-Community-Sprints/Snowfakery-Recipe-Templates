@@ -1,0 +1,129 @@
+## NPSP Individual Major Donors Example
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# ...
+### ----------- [ Contact_npsp.recipe.yml Summary ]---------- ###
+# This recipe creates ...
+#
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe ... times in a Salesforce scratch org called "dev":
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+- object: Account
+  count: 1
+  nickname: MajorDonorHHAccount
+  fields:
+    name: Household
+    RecordType: HH_Account
+
+- object: Contact #NPSP will set this Contact as Primary for the household and add a donor contact role and hard credit for all Opportunities
+  count: 1
+  nickname: MajorDonorContact
+  fields:
+    AccountId: 
+      reference: MajorDonorHHAccount
+    FirstName: 
+      fake: FirstName
+    LastName: 
+      fake: LastName
+
+- object: Opportunity 
+  count: 
+    random_number: 
+      min: 1
+      max: 9
+  fields:
+    AccountId:
+      reference: MajorDonorHHAccount
+    Name: Major Donor Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
+    Amount:
+      random_number:
+        min: 10000
+        max: 500000
+    RecordType: MajorGift
+    CloseDate:
+      date_between:
+        start_date: -8y
+        end_date: +1y #assuming major gifts are planned in the coming year
+    StageName: 
+      if:
+        - choice: 
+            when: ${{date(CloseDate) <= today}}
+            pick: Closed Won #assumptions: (a) there are no Closed Lost Opportunities (b) Close Date is accurate
+        - choice:
+            pick:
+              random_choice:
+                - Prospecting
+                - Qualification
+                - Needs Analysis
+                - Value Proposition
+                - Id. Decision Makers
+                - Perception Analysis
+                - Proposal/Price Quote
+                - Negotiation/Review
+                - Closed Lost
+                #- Pledged NPSP Sales Process does not include the Pledged value by default
+
+
+- object: npsp__Engagement_Plan_Template__c
+  nickname: MajorGivingEngagementPlan
+  count: 1
+  fields:
+    Name: Major Giving Engagement Plan
+    npsp__Description__c: 
+      fake: Sentence
+    #npsp__Default_Assignee__c:
+    npsp__Skip_Weekends__c: true
+    npsp__Reschedule_To__c: Monday
+  friends:
+    - object: npsp__Engagement_Plan_Task__c
+      count: 3
+      fields:
+        npsp__Engagement_Plan_Template__c:
+          reference: MajorGivingEngagementPlan
+        Name:
+            fake: Sentence #this recipe could be enhanced with realistic tasks
+        npsp__Type__c:
+          random_choice:
+            - Call
+            - Meeting
+            - Other
+            - Email
+        npsp__Priority__c:
+          random_choice:
+            - High
+            - Medium
+            - Low
+        npsp__Status__c:
+          random_choice:
+            - Not Started
+            - In Progress
+            - Completed
+            - Waiting on someone else
+            - Deferred
+        npsp__Send_Email__c: false
+        npsp__Reminder__c: false
+        npsp__Comments__c:
+          fake: Paragraph
+
+
+
+#      count:
+#      fields:
+#        npsp_Account__c:
+#          reference:  MajorDonorHHAccount
+#        npsp__
+
+
+
+
+
+
+
+
+    
