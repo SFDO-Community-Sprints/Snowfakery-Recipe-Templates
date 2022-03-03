@@ -20,7 +20,6 @@
 ### ----------- [            Important Notes           ]---------- ###
 # Within the sections that generate Opportunites and Payments, please make sure the StageNames and Record Types are appropriate for your org
 #
-#
 ### ----------- [            Recipe Starts             ]---------- ###
 #
 # Creating the Organization Account which is the Corporate Sponsor
@@ -54,8 +53,6 @@
       min: 1
       max: 5
   fields:
-#    npsp__Primary_Affiliation__c: 
-#      reference: donor_acct # this creates the association with the Account
     FirstName:
       fake: FirstName
     LastName:
@@ -157,7 +154,7 @@
     npsp__Primary_Contact__c: 
       random_reference: Contact #snowfakery doesn't currently generate random reference on nickname, so this needs to be the object name
     npe01__Do_Not_Automatically_Create_Payment__c: TRUE #because we are creating them from this recipe
-# adding related Payment record
+  # adding related Payment record
   friends: 
     - object: npe01__OppPayment__c
       nickname: payment
@@ -181,6 +178,7 @@
             - choice:
                 pick: null
         npe01__Scheduled_Date__c: ${{donation.CloseDate}}
+    # adding a Contact that will be used for partial soft credit
     - object: Contact
       nickname: influencer
       count: 1
@@ -218,6 +216,7 @@
           fake: PostalCode
         MailingCountry: United States # hardcoded to US here for simplicity
         npe01__Primary_Address_Type__c: Home # hardcoded to home for simplicity
+    # adding a partial soft credit for the influencer
     - object: npsp__Partial_Soft_Credit__c
       count: 1
       fields:
