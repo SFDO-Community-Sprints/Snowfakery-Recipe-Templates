@@ -54,8 +54,8 @@
       min: 1
       max: 5
   fields:
-    npsp__Primary_Affiliation__c: 
-      reference: donor_acct # this creates the association with the Account
+#    npsp__Primary_Affiliation__c: 
+#      reference: donor_acct # this creates the association with the Account
     FirstName:
       fake: FirstName
     LastName:
@@ -122,6 +122,8 @@
           reference: contact
         npe5__Organization__c:
           reference: donor_acct
+        npe5__Role__c: ${{contact.Title}}
+        npe5__Primary__c: TRUE
 
 # Let's create Opportunites (5-10) with associated payment records
 - object: Opportunity
@@ -143,7 +145,7 @@
       random_number:
         min: 500
         max: 50000
-    Name: ${{donor_acct.Name}} ${{Amount}} ${{RecordType}} ${{CloseDate}}
+    Name: ${{donor_acct.Name}} ${{RecordType}} ${{CloseDate}}
     StageName:
       random_choice: #ensure these stages match valid stages in your org
         - Closed Won
@@ -178,6 +180,7 @@
                 pick: ${{donation.CloseDate}}                  
             - choice:
                 pick: null
+        npe01__Scheduled_Date__c: ${{donation.CloseDate}}
     - object: Contact
       nickname: influencer
       count: 1
