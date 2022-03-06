@@ -32,6 +32,18 @@ tasks:
         options:
             required_org_code_coverage_percent: 75
 
+    npsp_account:
+        group: NPSP
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        options:
+            generator_yaml: snowfakery_samples/npsp/Account_npsp.recipe.yml
+
+    npsp_contact:
+        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+        group: NPSP
+        options:
+            generator_yaml: snowfakery_samples/npsp/Contact_npsp.recipe.yml
+            
     activate_standard_pricebook:
         description: Activate standard price book
         class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
@@ -59,7 +71,7 @@ tasks:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
             generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
-
+            
 flows:
     osc_memberships_project:
         description: OSC Membership Schema and Benefits project
@@ -70,7 +82,14 @@ flows:
                 task: load_membership_products
             3:
                 task: load_membership_opportunities
-
+                
+    npsp_org:
+        steps:
+            1:
+                task: npsp_account
+            2:
+                task: npsp_contact  
+                
     # cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
     npsp_scratch:
         description: Requires default org to be set. Installs npsp and creates a bunch of default settings to make the data look more realistic
