@@ -90,10 +90,10 @@
       reference: Contact
     Status:       
       random_choice:
-        - Sent
-        - Responded
-        - Attended
-        - On List
+      - Sent
+      - Responded
+      - Attended
+      - On List
     CampaignId: 
       reference: Campaign
 
