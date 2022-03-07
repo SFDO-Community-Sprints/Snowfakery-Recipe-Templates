@@ -8,6 +8,7 @@
 # Look at snowfakery_samples/salesforce/Account.recipe.yml for more examples.
 # - include_file: standard_EDA_objs_recipe.yml
 
+- plugin: faker_edu.Provider
 - macro: eda_account_base
   fields:
     RecordType:
@@ -24,6 +25,14 @@
             when: ${{RecordType=='HH_Account'}}
             pick:
               fake: last_name
+        - choice:
+            when: ${{RecordType=='Educational_Institution'}}
+            pick:
+              fake: institution_name
+        - choice:
+            when: ${{RecordType=='University_Department'}}
+            pick:
+              fake: department_name
         - choice:
             pick:
               fake: company

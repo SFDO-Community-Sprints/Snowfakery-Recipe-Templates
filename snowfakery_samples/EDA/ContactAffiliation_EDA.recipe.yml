@@ -8,6 +8,8 @@
 # Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
 # - include_file: standard_EDA_objs_recipe.yml
 
+- plugin: faker_edu.Provider
+
 - include_file: Contact_EDA.macro.yml
 - include_file: Account_EDA.macro.yml
 - include_file: Affiliation_EDA.macro.yml
@@ -15,23 +17,16 @@
 - object: Account
   nickname: Educational_Institution
   fields:
-    __educational_institution_from_csv:
-      Dataset.shuffle:
-        dataset: data/educational-institution.csv
-    RecordType: Sports_Organization
     RecordType: Educational_Institution
-    Name: ${{__educational_institution_from_csv.name}}
+    Name: institution_name
 
 - object: Account
   nickname: University_Department
   fields:
-    __departments_programs_from_csv:
-      Dataset.shuffle:
-        dataset: data/departments-programs.csv
     RecordType: University_Department
     ParentId:
       reference: Educational_Institution
-    Name: ${{__departments_programs_from_csv.department}}
+    Name: department_name
   friends:
     - object: Account
       nickname: Academic_Program
