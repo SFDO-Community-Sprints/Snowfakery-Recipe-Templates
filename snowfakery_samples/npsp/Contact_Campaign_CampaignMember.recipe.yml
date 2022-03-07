@@ -13,10 +13,10 @@
 # 
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples\npsp\Contact_Campaign_CampaignMember.recipe.yml -o num_records 300 -o num_records_tablename Contact --org dev
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Contact_Campaign_CampaignMember.recipe.yml --run_until_recipe_repeated 300 --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
-# snowfakery snowfakery_samples\npsp\Contact_Campaign_CampaignMember.recipe.yml --target-number 5 Contact --output-format json --output-file snowfakery_samples/temp/output.json
+# snowfakery snowfakery_samples/npsp/Contact_Campaign_CampaignMember.recipe.yml --output-format json --output-file snowfakery_samples/temp/output.json
 #
 ### ----------- [            Recipe Starts             ]---------- ###
 #
@@ -56,10 +56,10 @@
     Name: ${{fake.Bs | title}} Campaign
     Type:
       random_choice:
-       - Conference
-       - Webinar
-       - Email
-       - Telemarketing    
+        - Conference
+        - Webinar
+        - Email
+        - Telemarketing    
     Status: In Progress
     IsActive: True
     Description:
@@ -90,10 +90,10 @@
       reference: Contact
     Status:       
       random_choice:
-       - Sent
-       - Responded
-       - Attended
-       - On List
+        - Sent
+        - Responded
+        - Attended
+        - On List
     CampaignId: 
       reference: Campaign
 
