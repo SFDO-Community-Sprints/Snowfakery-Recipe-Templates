@@ -26,23 +26,7 @@
     npe03__Amount__c:
       random_number:
         min: 10
-        max: 500
-
-    npe03__Installment_Period__c:
-      random_choice:
-        - Monthly
-        - Yearly
-        - Weekly
-        - 1st and 15th
-    npsp__Day_of_Month__c:
-      if:
-        - choice:
-            when: ${{npe03__Installment_Period__c == 'Monthly'}}
-            pick: ${{random_number(min=1,max=29)}}
-        - choice:
-            when: ${{npe03__Installment_Period__c != 'Monthly'}}
-            pick: NULL
-
+        max: 1200 # divide by will get a new amount that's just the installment amount
     # uncomment this line if you want to disable the first installment of Opportunity Auto-Creation
     #npsp__DisableFirstInstallment__c: true
     npsp__StartDate__c: # when value is unassigned, it defaults to current date.
@@ -107,10 +91,46 @@
 
 ### ----------- [            MACRO ENDS, REST OF RECIPE BEGINS             ]---------- ###
 
+
+### ----------- [            MACRO TEMPLATE                                ] --------- ###
+
+### ----------- [            MACRO TEMPLATE  ENDS                              ] --------- ###
+### None - Divide By. What happens to the Amount field
 - object: npe03__Recurring_Donation__c
   count: 5
-  include: commonfields
+  nickname: None-Divide
   fields:
+    npe03__Date_Established__c:
+      fake: date
+    npe03__Open_Ended_Status__c: None # this is a status to look for
+    npe03__Schedule_Type__c:
+      random_choice:
+        - Divide By
+        - null
+  # amount will change to value in Installment Amount
+    npe03__Amount__c:
+      random_number:
+        min: 60
+        max: 1200
+    npe03__Installment_Period__c:
+      random_choice:
+        - Monthly
+        - Yearly
+        - Weekly
+        - 1st and 15th
+        - Quarterly
+    npe03__Installments__c:
+        random_number:
+          min: 2
+          max: 12
+    npsp__Day_of_Month__c:
+      if:
+        - choice:
+            when: ${{npe03__Installment_Period__c == 'Monthly'}}
+            pick: ${{random_number(min=1,max=31)}} # check the change from 31 to Last Day of Month
+        - choice:
+            when: ${{npe03__Installment_Period__c != 'Monthly'}}
+            pick: NULL
     npe03__Contact__c:
       reference:
         - object: Contact
@@ -121,8 +141,140 @@
               fake: LastName
             Phone:
               fake: phone_number
-    Name: RD for ${{Contact.FirstName}} ${{Contact.LastName}}
+    Name: None-Divide By RD Amount ${{npe03__Amount__c}}/${{npe03__Installments__c}} for ${{Contact.FirstName}} ${{Contact.LastName}}
+### Current Year Value ###
 
+- object: npe03__Recurring_Donation__c
+  count: 5
+  nickname: CurrentYearValue
+  fields:
+    npe03__Open_Ended_Status__c:
+      random_choice:
+          - None # this is a status to look for
+          - Open
+          - Closed
+    npe03__Schedule_Type__c:
+      random_choice:
+        - Divide By
+        - Multiply By
+        - null
+
+    npe03__Installment_Period__c:
+      random_choice:
+        - Monthly
+        - Yearly
+        - Weekly
+        - 1st and 15th
+        - Quarterly
+
+    npsp__Day_of_Month__c:
+      if:
+        - choice:
+            when: ${{npe03__Installment_Period__c == 'Monthly'}}
+            pick: ${{random_number(min=1,max=31)}} # check the change from 31 to Last Day of Month
+        - choice:
+            when: ${{npe03__Installment_Period__c != 'Monthly'}}
+            pick: NULL
+    npe03__Contact__c:
+      reference:
+        - object: Contact
+          fields:
+            FirstName:
+              fake: FirstName
+            LastName:
+              fake: LastName
+            Phone:
+              fake: phone_number
+    npsp__CurrentYearValue__c: 23 # checking that this gets set to 0 during migration and then recalculated during nightly job
+    Name: CurrentYearValue RD for ${{Contact.FirstName}} ${{Contact.LastName}}
+## Day of Month
+- object: npe03__Recurring_Donation__c
+  count: 5
+  nickname: DayOfMonth
+  fields:
+    npe03__Open_Ended_Status__c:
+      random_choice:
+          - None # this is a status to look for
+          - Open
+          - Closed
+    npe03__Schedule_Type__c:
+      random_choice:
+        - Divide By
+        - Multiply By
+        - null
+
+    npe03__Installment_Period__c:
+      random_choice:
+        - Monthly
+        - Yearly
+        - Weekly
+        - 1st and 15th
+        - Quarterly
+
+    npsp__Day_of_Month__c: ${{random_number(min=27,max=31)}} # check the change from 31 to Last Day of Month
+    npsp__Always_Use_Last_Day_Of_Month__c:
+      random_choice:
+        - true
+        - false
+    ## if either Day of Month is 29-31 or always use last day of month is checked, then Day of Month will update to Last Day of Month
+    npe03__Contact__c:
+      reference:
+        - object: Contact
+          fields:
+            FirstName:
+              fake: FirstName
+            LastName:
+              fake: LastName
+            Phone:
+              fake: phone_number
+    Name: DayOfMonth RD ${{npsp__Day_of_Month__c}} for ${{Contact.FirstName}} ${{Contact.LastName}}
+## Effective Date
+- object: npe03__Recurring_Donation__c
+  count: 5
+  nickname: EffectiveDate
+  fields:
+    npe03__Open_Ended_Status__c:
+      random_choice:
+          - None # this is a status to look for
+          - Open
+          - Closed
+    npe03__Schedule_Type__c:
+      random_choice:
+        - Divide By
+        - Multiply By
+        - null
+
+    npe03__Installment_Period__c:
+      random_choice:
+        - Monthly
+        - Yearly
+        - Weekly
+        - 1st and 15th
+        - Quarterly
+
+    npsp__Day_of_Month__c:
+      if:
+        - choice:
+            when: ${{npe03__Installment_Period__c == 'Monthly'}}
+            pick: ${{random_number(min=1,max=31)}} # check the change from 31 to Last Day of Month
+        - choice:
+            when: ${{npe03__Installment_Period__c != 'Monthly'}}
+            pick: NULL
+    npsp__StartDate__c:
+      fake: date # check that this is updated to close date of first opp
+    npe03__Contact__c:
+      reference:
+        - object: Contact
+          fields:
+            FirstName:
+              fake: FirstName
+            LastName:
+              fake: LastName
+            Phone:
+              fake: phone_number
+    Name: EffectiveDate RD ${{npsp__StartDate__c}} for ${{Contact.FirstName}} ${{Contact.LastName}}
+
+## These are test cases through page 23 in the upgrade guide ##
 - object: npe03__Recurring_Donation__c
   count: 5
   include: commonfields
