@@ -120,7 +120,13 @@
         npe5__Organization__c:
           reference: donor_acct
         npe5__Role__c: ${{contact.Title}}
-        npe5__Primary__c: TRUE
+        npe5__Primary__c:
+          if:
+            - choice:
+                when: ${{npe5__Status__c=='Former'}}
+                pick: FALSE
+            - choice:
+                pick: TRUE
 
 # Let's create Opportunites (5-10) with associated payment records
 - object: Opportunity
