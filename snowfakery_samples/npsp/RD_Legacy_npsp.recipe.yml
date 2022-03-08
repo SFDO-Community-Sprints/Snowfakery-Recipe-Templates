@@ -33,72 +33,22 @@
       date_between:
         start_date: -180d
         end_date: +120d
-    npe03__Date_Established__c: ${{npsp__StartDate__c}} # when value is unassigned, it defaults to current date.
-    npsp__InstallmentFrequency__c:
-      if:
-        - choice:
-            when: ${{npe03__Installment_Period__c == 'Monthly'}}
-            pick: ${{random_number(min=1,max=6)}}
-        - choice:
-            when: ${{npe03__Installment_Period__c == 'Yearly'}}
-            pick: ${{random_number(min=1,max=2)}}
-        - choice:
-            when: ${{npe03__Installment_Period__c == 'Weekly'}}
-            pick: ${{random_number(min=1,max=3)}}
-        - choice:
-            when: ${{npe03__Installment_Period__c == '1st and 15th'}}
-            pick: 1
-    npsp__RecurringType__c:
-      random_choice:
-        - Fixed
-        - Open
-    npe03__Installments__c:
-      if:
-        - choice:
-            when: ${{npsp__RecurringType__c == 'Fixed'}}
-            pick: ${{random_number(min=1,max=12)}}
-        - choice:
-            when: ${{npsp__RecurringType__c != 'Fixed'}}
-            pick: NULL
-    npsp__Status__c:
-        if:
-        - choice:
-            when: ${{date(npsp__StartDate__c) <= today - relativedelta(months=4) }}
-            pick: Lapsed
-        - choice:
-            when: ${{date(npsp__StartDate__c) <= today - relativedelta(months=6) }}
-            pick: Closed
-        - choice:
-            when: ${{date(npsp__StartDate__c) <= today - relativedelta(months=2) }}
-            pick: Paused
-        - choice:
-            when: ${{date(npsp__StartDate__c) >= today }}
-            pick: Active
-
-    npsp__PaymentMethod__c:
-      random_choice:
-        Credit Card: 60%
-        Check: 20%
-        ACH: 20%
-    npsp__CardLast4__c:
-      if:
-        - choice:
-            when: ${{npsp__PaymentMethod__c == 'Credit Card'}}
-            pick: ${{random_number(min=0000,max=9999)}}
-        - choice:
-            when: ${{npsp__PaymentMethod__c != 'Credit Card'}}
-            pick: NULL
-
+- macro: RandomContact
+  fields:
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+    Phone:
+      fake: phone_number
 ### ----------- [            MACRO ENDS, REST OF RECIPE BEGINS             ]---------- ###
 
 
-### ----------- [            MACRO TEMPLATE                                ] --------- ###
-
-### ----------- [            MACRO TEMPLATE  ENDS                              ] --------- ###
 ### None - Divide By. What happens to the Amount field
 - object: npe03__Recurring_Donation__c
   count: 5
   nickname: None-Divide
+  include: commonfields
   fields:
     npe03__Date_Established__c:
       fake: date
@@ -134,19 +84,14 @@
     npe03__Contact__c:
       reference:
         - object: Contact
-          fields:
-            FirstName:
-              fake: FirstName
-            LastName:
-              fake: LastName
-            Phone:
-              fake: phone_number
+          include: RandomContact
     Name: None-Divide By RD Amount ${{npe03__Amount__c}}/${{npe03__Installments__c}} for ${{Contact.FirstName}} ${{Contact.LastName}}
 ### Current Year Value ###
 
 - object: npe03__Recurring_Donation__c
   count: 5
   nickname: CurrentYearValue
+  include: commonfields
   fields:
     npe03__Open_Ended_Status__c:
       random_choice:
@@ -158,7 +103,10 @@
         - Divide By
         - Multiply By
         - null
-
+    npe03__Amount__c:
+      random_number:
+        min: 20
+        max: 1000
     npe03__Installment_Period__c:
       random_choice:
         - Monthly
@@ -178,18 +126,13 @@
     npe03__Contact__c:
       reference:
         - object: Contact
-          fields:
-            FirstName:
-              fake: FirstName
-            LastName:
-              fake: LastName
-            Phone:
-              fake: phone_number
+          include: RandomContact
     npsp__CurrentYearValue__c: 23 # checking that this gets set to 0 during migration and then recalculated during nightly job
     Name: CurrentYearValue RD for ${{Contact.FirstName}} ${{Contact.LastName}}
 ## Day of Month
 - object: npe03__Recurring_Donation__c
   count: 5
+  include: commonfields
   nickname: DayOfMonth
   fields:
     npe03__Open_Ended_Status__c:
@@ -217,19 +160,16 @@
         - true
         - false
     ## if either Day of Month is 29-31 or always use last day of month is checked, then Day of Month will update to Last Day of Month
+    npsp__StartDate__c:
+      fake: date
     npe03__Contact__c:
       reference:
         - object: Contact
-          fields:
-            FirstName:
-              fake: FirstName
-            LastName:
-              fake: LastName
-            Phone:
-              fake: phone_number
+          include: RandomContact
     Name: DayOfMonth RD ${{npsp__Day_of_Month__c}} for ${{Contact.FirstName}} ${{Contact.LastName}}
 ## Effective Date
 - object: npe03__Recurring_Donation__c
+  include: commonfields
   count: 5
   nickname: EffectiveDate
   fields:
@@ -265,13 +205,7 @@
     npe03__Contact__c:
       reference:
         - object: Contact
-          fields:
-            FirstName:
-              fake: FirstName
-            LastName:
-              fake: LastName
-            Phone:
-              fake: phone_number
+          include: RandomContact
     Name: EffectiveDate RD ${{npsp__StartDate__c}} for ${{Contact.FirstName}} ${{Contact.LastName}}
 
 ## These are test cases through page 23 in the upgrade guide ##
