@@ -6,7 +6,7 @@
 # 1-4. npe03__Recurring_Donation__c (5) - Household
 
 ### ----------- [ RD_npsp.recipe.yml Summary ]---------- ###
-# This recipe creates a set of 10 Recurring Donation records, at random # of Open-ended and Fixed-length donations, 
+# This recipe creates a set of 10 Recurring Donation records, at random # of Open-ended and Fixed-length donations,
 # related to 5 Contact and 5 Organization Account.
 # This recipe is specifically for Enhanced Recurring Donations
 # https://powerofus.force.com/s/article/NPSP-Recurring-Donations-Overview-and-Setup
@@ -28,7 +28,7 @@
         min: 10
         max: 500
 
-    npe03__Installment_Period__c: 
+    npe03__Installment_Period__c:
       random_choice:
         - Monthly
         - Yearly
@@ -52,16 +52,16 @@
     npe03__Date_Established__c: ${{npsp__StartDate__c}} # when value is unassigned, it defaults to current date.
     npsp__InstallmentFrequency__c:
       if:
-        - choice: 
+        - choice:
             when: ${{npe03__Installment_Period__c == 'Monthly'}}
             pick: ${{random_number(min=1,max=6)}}
-        - choice: 
+        - choice:
             when: ${{npe03__Installment_Period__c == 'Yearly'}}
             pick: ${{random_number(min=1,max=2)}}
-        - choice: 
+        - choice:
             when: ${{npe03__Installment_Period__c == 'Weekly'}}
             pick: ${{random_number(min=1,max=3)}}
-        - choice: 
+        - choice:
             when: ${{npe03__Installment_Period__c == '1st and 15th'}}
             pick: 1
     npsp__RecurringType__c:
@@ -70,24 +70,24 @@
         - Open
     npe03__Installments__c:
       if:
-        - choice: 
+        - choice:
             when: ${{npsp__RecurringType__c == 'Fixed'}}
             pick: ${{random_number(min=1,max=12)}}
-        - choice: 
+        - choice:
             when: ${{npsp__RecurringType__c != 'Fixed'}}
             pick: NULL
     npsp__Status__c:
         if:
-        - choice: 
+        - choice:
             when: ${{date(npsp__StartDate__c) <= today - relativedelta(months=4) }}
             pick: Lapsed
-        - choice: 
+        - choice:
             when: ${{date(npsp__StartDate__c) <= today - relativedelta(months=6) }}
             pick: Closed
-        - choice: 
+        - choice:
             when: ${{date(npsp__StartDate__c) <= today - relativedelta(months=2) }}
             pick: Paused
-        - choice: 
+        - choice:
             when: ${{date(npsp__StartDate__c) >= today }}
             pick: Active
 
@@ -111,8 +111,7 @@
   count: 5
   include: commonfields
   fields:
-    
-    npe03__Contact__c: 
+    npe03__Contact__c:
       reference:
         - object: Contact
           fields:
@@ -120,22 +119,19 @@
               fake: FirstName
             LastName:
               fake: LastName
-            Phone: 
+            Phone:
               fake: phone_number
-    Name: RD for ${{Contact.FirstName}} ${{Contact.LastName}}  
+    Name: RD for ${{Contact.FirstName}} ${{Contact.LastName}}
 
 - object: npe03__Recurring_Donation__c
   count: 5
   include: commonfields
   fields:
-    
-    npe03__Organization__c: 
-      reference: 
+    npe03__Organization__c:
+      reference:
         - object: Account
           fields:
             Name:
               fake: company
             RecordType: Organization
     Name: RD for ${{Account.Name}}
-    
-    
