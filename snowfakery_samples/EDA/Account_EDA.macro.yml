@@ -9,6 +9,7 @@
 # - include_file: standard_EDA_objs_recipe.yml
 
 - plugin: faker_edu.Provider
+
 - macro: eda_account_base
   fields:
     RecordType:
