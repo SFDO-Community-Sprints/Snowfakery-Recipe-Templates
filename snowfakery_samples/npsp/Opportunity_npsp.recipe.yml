@@ -45,6 +45,34 @@
         start_date: -1y
         end_date: +1m
     StageName: Closed Won    
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    npsp__Acknowledgment_Status__c:
+      random_choice:
+        - To Be Acknowledged
+        - Acknowledged
+        - Do Not Acknowledge
+        - Email Acknowledgment Now
+        - Email Acknowledgment Not Sent
+    npsp__Acknowledgment_Date__c:
+      if:
+        - choice:
+            when: ${{npsp__Acknowledgment_Status__c=='Acknowledged'}}
+            pick:
+              date_between:
+                start_date: ${{CloseDate}}
+                end_date: ${{date(Opportunity.CloseDate)+relativedelta(days=14)}}
+        - choice:
+            pick: null
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
 
 ### Scenario 2: Create a Grant Opportunity 
 - object: Opportunity
@@ -64,6 +92,40 @@
         start_date: +1m
         end_date: +1y
     StageName: Prospecting
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    npsp__Requested_Amount__c:
+      random_number:
+        min: 100
+        max: 100000
+    npsp__Grant_Program_Area_s__c:
+      fake.text:
+        max_nb_chars: 100
+    npsp__Grant_Contract_Number__c: ${{fake.Swift(length=8)}}
+    npsp__Grant_Contract_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    npsp__Grant_Period_Start_Date__c:
+      date_between:
+        start_date: ${{npsp__Grant_Contract_Date__c}}
+        end_date: ${{date(Opportunity.npsp__Grant_Contract_Date__c)+relativedelta(days=60)}}
+    npsp__Grant_Period_End_Date__c:
+      date_between:
+        start_date: ${{date(Opportunity.npsp__Grant_Period_Start_Date__c)+relativedelta(days=90)}}
+        end_date: ${{date(Opportunity.npsp__Grant_Period_Start_Date__c)+relativedelta(months=36)}}
+    npsp__Grant_Requirements_Website__c:
+      fake: url
+    npsp__Is_Grant_Renewal__c:
+      random_choice:
+        - choice:
+            probability: 20%
+            pick: true
+        - choice:
+            probability: 80%
+            pick: false
 
 ### Scenario 3: Create an In-Kind Donation Opportunity 
 - object: Opportunity
