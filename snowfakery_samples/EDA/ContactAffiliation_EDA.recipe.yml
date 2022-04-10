@@ -7,7 +7,7 @@
 # To run this code against a fresh scratch org called ("qa"):
 #
 # cci flow run eda:trial_org --org qa
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Contact_EDA.recipe.yml -o num_records 300 -o num_records_tablename Contact --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/ContactAffiliation_EDA.recipe.yml -o num_records 300 -o num_records_tablename Contact --org qa
 
 # Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
 # - include_file: standard_EDA_objs_recipe.yml
