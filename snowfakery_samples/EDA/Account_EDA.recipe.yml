@@ -1,0 +1,18 @@
+## EDA Account Example
+
+# Requirments
+# Install cci: See https://cumulusci.readthedocs.io/en/latest/get_started.html
+# Install the fake_edu Faker: See https://pypi.org/project/faker-edu/
+
+# To run this code against a fresh scratch org called ("qa"):
+#
+# cci flow run eda:trial_org --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Account_EDA.recipe.yml -o num_records 300 -o num_records_tablename Account --org qa
+
+# Look at snowfakery_samples/salesforce/Account.recipe.yml for more examples.
+# - include_file: standard_EDA_objs_recipe.yml
+
+- include_file: Account_EDA.macro.yml
+
+- object: Account
+  include: eda_account_base
