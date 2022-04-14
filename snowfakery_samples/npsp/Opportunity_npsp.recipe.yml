@@ -4,7 +4,8 @@
 # 1-1. Opportunity (6)
 
 ### ----------- [ Opportunity_npsp.recipe.yml Summary ]---------- ###
-# This recipe creates 1 Account and 6 Opportunities, one for each NPSP Opportunity Record Type
+# This recipe creates 1 Account and 6 Opportunities, one for each NPSP Opportunity Record Type,
+# with field values particular to that RecordType
 #
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe 30 times in a Salesforce scratch org called "dev":
@@ -13,9 +14,13 @@
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Opportunity_npsp.recipe.yml
 #
+# $ cci task run get_existing_record_types
+# The above command gives this result, reminding us of the DEVELOPER name to use for each Record Type:
+# Found existing Record Types: defaultdict(<class 'list'>, {'Account': ['HH_Account', 'Organization'], 'Opportunity':
+#                    ['NPSP_Default', 'Donation', 'Grant', 'InKindGift', 'MajorGift', 'MatchingGift', 'Membership']})
 ### ----------- [            Recipe Starts             ]---------- ###
 #
-# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+# Look at snowfakery_samples/salesforce/Account_npsp.recipe.yml for more examples.
 
 # Setup Step 1: Create 1 Account
 - object: Account
@@ -24,8 +29,6 @@
   fields:
     Name:
       fake: company
-# Found existing Record Types: defaultdict(<class 'list'>, {'Account': ['HH_Account', 'Organization'], 'Opportunity':
-#                    ['NPSP_Default', 'Donation', 'Grant', 'InKindGift', 'MajorGift', 'MatchingGift', 'Membership']})
 
 ### Scenario 1: Create a Donation Opportunity 
 - object: Opportunity
@@ -183,7 +186,34 @@
       date_between:
         start_date: -1y
         end_date: +1m
-    StageName: Solicitation
+    StageName: Cultivating      #Solicitation
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    npsp__Requested_Amount__c:
+      random_number:
+        min: 100
+        max: 100000
+    npsp__Qualified_Date__c:
+      date_between:
+                start_date: ${{date(Opportunity.CloseDate)-relativedelta(months=12)}}
+                end_date: ${{date(Opportunity.CloseDate)-relativedelta(days=28)}}
+    npsp__Ask_Date__c:
+      date_between:
+                start_date: ${{(npsp__Qualified_Date__c)}}
+                end_date: ${{date(Opportunity.CloseDate)-relativedelta(days=7)}}
+    npsp__Gift_Strategy__c:
+      random_choice:
+        - New Donor
+        - Renewal
+        - Upgrade
+    npsp__Grant_Program_Area_s__c:
+      fake.text:
+        max_nb_chars: 100
+    npsp__Closed_Lost_Reason__c:
+      fake.text:
+        max_nb_chars: 100
 
 ### Scenario 5: Create a Matching Gift Opportunity 
 - object: Opportunity
@@ -203,6 +233,17 @@
         start_date: -6m
         end_date: +1m
     StageName: Posted
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
 
 ### Scenario 6: Create a Membership Opportunity 
 - object: Opportunity
@@ -222,3 +263,48 @@
         start_date: -1y
         end_date: +1m
     StageName: Posted
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    npe01__Membership_Start_Date__c:
+      date_between:
+        start_date: ${{CloseDate}}
+        end_date: ${{date(CloseDate)+relativedelta(days=30)}}
+    npe01__Membership_End_Date__c: 
+      random_choice:
+        - choice:
+            probability: 80%
+            pick: ${{date(npe01__Membership_Start_Date__c)+relativedelta(months=12)}}
+        - choice:
+            probability: 20%
+            pick: ${{date(npe01__Membership_Start_Date__c)+relativedelta(months=24)}}
+    npe01__Member_Level__c:
+      random_choice:
+        - choice:
+            probability: 20%
+            pick: Gold
+        - choice:
+            probability: 40%
+            pick: Silver
+        - choice:
+            probability: 40%
+            pick: Bronze
+    npe01__Membership_Origin__c:
+      random_choice:
+        - choice:
+            probability: 20%
+            pick: New
+        - choice:
+            probability: 70%
+            pick: Renewal
+        - choice:
+            probability: 10%
+            pick: Reacquire
