@@ -1,0 +1,13 @@
+- sf_object: Contact
+  api: smart
+  
+- sf_object: Account
+  api: smart
+
+- sf_object: ProgramEngagement__c
+  api: bulk
+  bulk_mode: serial
+
+- sf_object: ServiceDelivery__c
+  api: bulk
+  bulk_mode: serial

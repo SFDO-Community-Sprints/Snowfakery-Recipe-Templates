@@ -1,0 +1,1038 @@
+# This recipe loads Accounts, Contacts, Programs, Program Engagements, Services, Cohorts and Service Deliveries.
+
+# cci task run generate_and_load_from_yaml --generator_yaml datasets/pmm-unmanaged-kim.recipe.yml --num_records {NUMBER OF CONTACTS HERE}--num_records_tablename Contact --loading_rules datasets/pmm-unmanaged-kim.load.yml --org {YOUR ORG HERE}
+
+- var: lnamevar
+  value:
+      fake: last_name
+
+#Program Macro  - add these fields to every Program record
+- macro: AllProgram
+  fields:
+      Name: ${{fake.word}} Program
+      Description__c:
+          fake.sentence:
+              nb_words: 15
+      StartDate__c:
+          date_between:
+              start_date: -1y
+              end_date: -4m
+      EndDate__c:
+          date_between:
+              start_date: +5d
+              end_date: +2y
+      ProgramIssueArea__c:
+          random_choice:
+              - Housing
+              - Employment
+              - Education
+              - Legal
+              - Counseling
+              - Food and Nutrition
+              - Advocacy
+      Status__c:
+          random_choice:
+              - Planned
+              - Active
+              - Completed
+              - Canceled
+      ShortSummary__c:
+          fake.sentence:
+              nb_words: 15
+      TargetPopulation__c:
+          fake.sentence:
+              nb_words: 15
+
+#Program Cohort Macro  - add these fields to every Program Cohort record
+- macro: AllCohort
+  fields:
+      Name: ${{fake.word}} ${{count}} Cohort
+      Description__c:
+          fake.sentence:
+              nb_words: 15
+      Status__c:
+          random_choice:
+              - Planned
+              - Active
+              - Completed
+              - Canceled
+
+# Program A
+- object: Program__c
+  just_once: TRUE
+  nickname: ProgramA
+  count: 1
+  include: AllProgram
+  friends:
+      # Create Program Cohorts
+      - object: ProgramCohort__c
+        count:
+            random_number:
+                min: 0
+                max: 4
+        nickname: ProgramCohort
+        include: AllCohort
+        fields:
+            StartDate__c:
+                date_between:
+                    start_date: ${{Program__c.StartDate__c}}
+                    end_date: -1d
+            EndDate__c:
+                date_between:
+                    start_date: +1d
+                    end_date: ${{Program__c.EndDate__c}}
+            Program__c:
+                reference: Program__c
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceA1
+  fields:
+      Program__c:
+          reference: ProgramA
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA11
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA12
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA13
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceA2
+  fields:
+      Program__c:
+          reference: ProgramA
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA21
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA22
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA23
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceA3
+  fields:
+      Program__c:
+          reference: ProgramA
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA31
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA32
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionA33
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceA3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+# Program B
+- object: Program__c
+  just_once: TRUE
+  nickname: ProgramB
+  count: 1
+  include: AllProgram
+  friends:
+      # Create Program Cohorts
+      - object: ProgramCohort__c
+        count:
+            random_number:
+                min: 0
+                max: 4
+        nickname: ProgramCohort
+        include: AllCohort
+        fields:
+            StartDate__c:
+                date_between:
+                    start_date: ${{Program__c.StartDate__c}}
+                    end_date: -1d
+            EndDate__c:
+                date_between:
+                    start_date: +1d
+                    end_date: ${{Program__c.EndDate__c}}
+            Program__c:
+                reference: Program__c
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceB1
+  fields:
+      Program__c:
+          reference: ProgramB
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB11
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB12
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB13
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceB2
+  fields:
+      Program__c:
+          reference: ProgramB
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB21
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB22
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB23
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceB3
+  fields:
+      Program__c:
+          reference: ProgramB
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB31
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB32
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionB33
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceB3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+# Program C
+- object: Program__c
+  just_once: TRUE
+  nickname: ProgramC
+  count: 1
+  include: AllProgram
+  friends:
+      # Create Program Cohorts
+      - object: ProgramCohort__c
+        count:
+            random_number:
+                min: 0
+                max: 4
+        nickname: ProgramCohort
+        include: AllCohort
+        fields:
+            StartDate__c:
+                date_between:
+                    start_date: ${{Program__c.StartDate__c}}
+                    end_date: -1d
+            EndDate__c:
+                date_between:
+                    start_date: +1d
+                    end_date: ${{Program__c.EndDate__c}}
+            Program__c:
+                reference: Program__c
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceC1
+  fields:
+      Program__c:
+          reference: ProgramC
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC11
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC12
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC13
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC1
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceC2
+  fields:
+      Program__c:
+          reference: ProgramC
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC21
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC22
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC23
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC2
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: Service__c
+  just_once: TRUE
+  count: 1
+  nickname: ServiceC3
+  fields:
+      Program__c:
+          reference: ProgramC
+      Name: ${{Program__c.Name}} ${{fake.word}} Service
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC31
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC32
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+- object: ServiceSession__c
+  just_once: TRUE
+  count: 1
+  nickname: SvcSessionC33
+  fields:
+    ServiceSchedule__c:
+        - object: ServiceSchedule__c
+          fields:
+            Service__c:
+                reference: ServiceC3
+            Name: ${{Service__c.Name}} ${{fake.word}} Schedule
+    Name: ${{ServiceSchedule__c.Name}} ${{fake.word}} Session
+    SessionStart__c:
+        date_between:
+            start_date: ${{ServiceSchedule__c.Service__c.Program__c.StartDate__c}}
+            end_date: -1d
+#    SessionEnd__c:
+#        reference: SessionStart__c
+    Status__c:
+        random_choice:
+            - Pending
+            - Complete
+            - Canceled
+
+# Create Household Contacts
+- object: Contact
+  nickname: HHContact
+  count: 1
+  fields:
+      AccountId:
+          - object: Account
+            nickname: HH
+            count: 1
+            fields:
+                #RecordType: Household_Account #this was manually created record type.
+                Name: ${{lnamevar}} Household
+                BillingStreet: ${{fake.street_address}}
+                BillingCity: ${{fake.city}}
+                BillingState: ${{fake.state_abbr}}
+                BillingPostalCode: ${{fake.postcode}}
+                BillingCountry: United States
+                Phone: ${{fake.phone_number}}
+      FirstName: ${{fake.first_name}}
+      LastName: ${{lnamevar}}
+      IsClient__c:
+          random_choice:
+              - True
+              - False
+      Email: ${{fake.email}}
+      Phone: ${{fake.phone_number}}
+      MobilePhone: ${{fake.phone_number}}
+      HomePhone: ${{fake.phone_number}}
+      OtherPhone: ${{fake.phone_number}}
+      MailingStreet: ${{BillingStreet}}
+      MailingCity: ${{BillingCity}}
+      MailingState: ${{BillingState}}
+      MailingPostalCode: ${{BillingPostalCode}}
+      MailingCountry: United States
+  friends:
+      - object: ProgramEngagement__c
+        count:
+            random_number:
+                min: 1
+                max: 3
+        fields:
+            Name: Test PE #Fix to include the actual name of the PE since the PB is turned off.
+            Program__c:
+                random_choice:
+                    - reference: ProgramA
+                    - reference: ProgramB
+                    - reference: ProgramC
+            Contact__c:
+                reference: HHContact
+            Stage__c:
+                random_choice:
+                    - Applied
+                    - Application Denied
+                    - Waitlisted
+                    - Enrolled
+                    - Active
+                    - Completed
+                    - Withdrawn
+            Role__c:
+                random_choice:
+                    - Client
+                    - Volunteer
+                    - Service Provider
+            #ApplicationDate: Add this in the same as it would have been with the Process Builder, which is now turned off.
+            #StartDate: Add this in the same as it would have been with the Process Builder, which is now turned off.
+            #EndDate: Add this in the same as it would have been with the Process Builder, which is now turned off.
+        friends:
+            # Create Service Deliveries
+            - object: ServiceDelivery__c
+              count:
+                  random_number:
+                      min: 1
+                      max: 10
+              fields:
+                  Name: Test Service Delivery #Fix to include the actual name of the PE since the PB is turned off.
+                  AttendanceStatus__c:
+                      random_choice:
+                          - Present
+                          - Unexcused Absence
+                          - Excused Absence
+                  Contact__c:
+                      reference: HHContact
+                  DeliveryDate__c:
+                      date_between:
+                          start_date: -1y
+                          end_date: today
+                  ProgramEngagement__c:
+                      reference: ProgramEngagement__c
+                  Quantity__c: 1
+                  Service__c:
+                      if:
+                          - choice:
+                                when: ${{ProgramEngagement__c.Program__c == ProgramA}}
+                                pick:
+                                    random_choice:
+                                        - reference: ServiceA1
+                                        - reference: ServiceA2
+                                        - reference: ServiceA3
+                          - choice:
+                                when: ${{ProgramEngagement__c.Program__c == ProgramB}}
+                                pick:
+                                    random_choice:
+                                        - reference: ServiceB1
+                                        - reference: ServiceB2
+                                        - reference: ServiceB3
+                          - choice:
+                                when: ${{ProgramEngagement__c.Program__c == ProgramC}}
+                                pick:
+                                    random_choice:
+                                        - reference: ServiceC1
+                                        - reference: ServiceC2
+                                        - reference: ServiceC3
+                  ServiceSession__c:
+                      if:
+                          - choice:
+                                when: ${{Service__c == ServiceA1}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionA11
+                                        - reference: SvcSessionA12
+                                        - reference: SvcSessionA13
+                                when: ${{Service__c == ServiceA2}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionA21
+                                        - reference: SvcSessionA22
+                                        - reference: SvcSessionA23
+                                when: ${{Service__c == ServiceA3}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionA31
+                                        - reference: SvcSessionA32
+                                        - reference: SvcSessionA33
+                                when: ${{Service__c == ServiceB1}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionB11
+                                        - reference: SvcSessionB12
+                                        - reference: SvcSessionB13
+                                when: ${{Service__c == ServiceB2}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionB21
+                                        - reference: SvcSessionB22
+                                        - reference: SvcSessionB23
+                                when: ${{Service__c == ServiceB3}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionB31
+                                        - reference: SvcSessionB32
+                                        - reference: SvcSessionB33
+                                when: ${{Service__c == ServiceC1}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionC11
+                                        - reference: SvcSessionC12
+                                        - reference: SvcSessionC13
+                                when: ${{Service__c == ServiceC2}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionC21
+                                        - reference: SvcSessionC22
+                                        - reference: SvcSessionC23
+                                when: ${{Service__c == ServiceC3}}
+                                pick:
+                                    random_choice:
+                                        - reference: SvcSessionC31
+                                        - reference: SvcSessionC32
+                                        - reference: SvcSessionC33
