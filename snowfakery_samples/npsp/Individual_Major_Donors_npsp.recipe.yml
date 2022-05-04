@@ -93,30 +93,23 @@
                 #- Pledged NPSP Sales Process does not include the Pledged value by default
 
 
+
 - object: npsp__Engagement_Plan_Template__c
   nickname: MajorGivingEngagementPlanTemplate
   count: 1
   fields:
     Name: Major Giving Engagement Plan
-    npsp__Description__c: 
-      fake: Sentence
+    npsp__Description__c: Follow-up tasks for major donors
     #npsp__Default_Assignee__c:
     npsp__Skip_Weekends__c: true
     npsp__Reschedule_To__c: Monday
   friends:
     - object: npsp__Engagement_Plan_Task__c
-      count: 3
       fields:
         npsp__Engagement_Plan_Template__c:
           reference: MajorGivingEngagementPlanTemplate
-        Name:
-            fake: Sentence #this recipe could be enhanced with realistic tasks
-        npsp__Type__c:
-          random_choice:
-            - Call
-            - Meeting
-            - Other
-            - Email
+        Name: Call donor to thank them
+        npsp__Type__c: Call
         npsp__Priority__c:
           random_choice:
             - High
@@ -133,7 +126,53 @@
         npsp__Reminder__c: false
         npsp__Comments__c:
           fake: Paragraph
-        npsp__Days_After__c: 
+        npsp__Days_After__c: 2
+    - object: npsp__Engagement_Plan_Task__c
+      fields:
+        npsp__Engagement_Plan_Template__c:
+          reference: MajorGivingEngagementPlanTemplate
+        Name: Schedule in-person meeting
+        npsp__Type__c: Meeting
+        npsp__Priority__c:
+          random_choice:
+            - High
+            - Medium
+            - Low
+        npsp__Status__c:
+          random_choice:
+            - Not Started
+            - In Progress
+            - Completed
+            - Waiting on someone else
+            - Deferred
+        npsp__Send_Email__c: false
+        npsp__Reminder__c: false
+        npsp__Comments__c:
+          fake: Paragraph
+        npsp__Days_After__c: 14
+    - object: npsp__Engagement_Plan_Task__c
+      fields:
+        npsp__Engagement_Plan_Template__c:
+          reference: MajorGivingEngagementPlanTemplate
+        Name: Invite to gala
+        npsp__Type__c: Email
+        npsp__Priority__c:
+          random_choice:
+            - High
+            - Medium
+            - Low
+        npsp__Status__c:
+          random_choice:
+            - Not Started
+            - In Progress
+            - Completed
+            - Waiting on someone else
+            - Deferred
+        npsp__Send_Email__c: false
+        npsp__Reminder__c: false
+        npsp__Comments__c:
+          fake: Paragraph
+        npsp__Days_After__c: 30
 
 
 
