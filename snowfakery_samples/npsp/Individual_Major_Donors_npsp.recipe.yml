@@ -51,6 +51,7 @@
     random_number: 
       min: 1
       max: 9
+  nickname: MajorGiftOpportunity
   fields:
     AccountId:
       reference: MajorDonorHHAccount
@@ -134,10 +135,11 @@
     npsp__Account__c:
       reference: MajorDonorHHAccount
     #npsp__Contact__c: uncomment this if you want to map to a Contact
+      #reference: MajorDonorContact
     #npsp__Opportunity__c: uncomment this line if you want to map to an Opportunity
+      #reference: MajorGiftOpportunity
     npsp__Engagement_Plan_Template__c:
       reference: MajorGivingEngagementPlanTemplate
-    
 
 
 
@@ -146,6 +148,3 @@
 
 
 
-
-
-    
