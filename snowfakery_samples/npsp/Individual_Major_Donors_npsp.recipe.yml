@@ -13,11 +13,16 @@
 #
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe in a Salesforce scratch org called "dev":
-# cci task run snowfakery --recipe snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --org dev 
-# TODO: add ability to run recipe multiple times
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --org dev
+#
+# Use this command to run this recipe 100 times in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --org dev --run-until-recipe-repeated 100
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --target-number 100 Contact
 #
 ### ----------- [            Recipe Starts             ]---------- ###
 
