@@ -72,15 +72,13 @@
             pick: Closed Won #assumptions: (a) there are no Closed Lost Opportunities (b) Close Date is accurate
         - choice:
             pick:
-              random_choice:
-                - Prospecting
+              random_choice: # Use the values from the Major Gift Sales Process
+                - Identification
                 - Qualification
-                - Needs Analysis
-                - Value Proposition
-                - Id. Decision Makers
-                - Perception Analysis
-                - Proposal/Price Quote
-                - Negotiation/Review
+                - Cultivation
+                - Solicitation
+                - Proposal/Review
+                - Verbal Commitment
                 - Closed Lost
                 #- Pledged NPSP Sales Process does not include the Pledged value by default
 
