@@ -22,8 +22,8 @@
 
 ### ----------- [               CLI RUN                ]---------- ###
 
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --num_records 1 --num_records_tablename Opportunity --org dev
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --plugin-option org_name dev
+# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --num_records 1 --num_records_tablename Opportunity --org dev
+# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --plugin-option org_name dev
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
@@ -51,7 +51,7 @@
           Last_Membership_Start_Date__c: ${{Opportunity.CloseDate}}
           First_Membership_Start_Date__c: ${{Opportunity.CloseDate}}
           Membership_End_Date__c: ${{date(Opportunity.CloseDate)+relativedelta(months=12)}}
-          Membership_Status__c: 
+          Membership_Status__c:
             random_choice:
               - Former
               - Lapsed
@@ -68,7 +68,7 @@
           AccountId:
             - object: Account
               fields:
-                Name: 
+                Name:
                   if:
                     - choice:
                         when: ${{Contact.Membership_Type__c == 'Individual'}}
@@ -88,11 +88,11 @@
 
                 # Primary_Membership__c: # Apex automated
                 #   reference: Membership__c
-    
+
     Name: ${{Account.Name}}-${{Type}}-${{(CloseDate).year}}
     AccountId:
       reference: Account
-   
+
     # NPSP fields
     # npe01__Membership_Start_Date__c: ${{CloseDate}}
     # npe01__Membership_End_Date__c: ${{date(CloseDate)+relativedelta(months=12)}}
@@ -101,17 +101,17 @@
     #     - New
     #     - Renewal
     #     - Reacquire
-    
+
     __pricebookentry_from_salesforce:
       SOQLDataset.shuffle:
-        fields: UnitPrice 
+        fields: UnitPrice
         from: PricebookEntry
         where: Product2.Name = '${{Contact.Membership_Type__c}} Membership'
     Amount: ${{__pricebookentry_from_salesforce.UnitPrice}}
 
     __pricebook_from_salesforce:
       SOQLDataset.shuffle:
-        fields: Id 
+        fields: Id
         from: Pricebook2
     Pricebook2Id: ${{__pricebook_from_salesforce.Id}}
 
@@ -129,7 +129,7 @@
       SOQLDataset.shuffle:
         fields: Id, UnitPrice, Product2Id
         from: PricebookEntry
-        where: Product2.name like '${{Contact.Membership_Type__c}} membership' 
+        where: Product2.name like '${{Contact.Membership_Type__c}} membership'
     UnitPrice: ${{__pricebookentry_from_salesforce.UnitPrice}}
 
     Product2Id: ${{__pricebookentry_from_salesforce.Product2Id}}
@@ -157,13 +157,13 @@
               - Current
           Type__c:
             if:
-              - choice: 
+              - choice:
                   when: ${{__product_from_salesforce.Name == 'Individual Membership'}}
                   pick: Individual
-              - choice: 
+              - choice:
                   when: ${{__product_from_salesforce.Name == 'Household Membership'}}
                   pick: Household
-              - choice: 
+              - choice:
                   when: ${{__product_from_salesforce.Name == 'Corporate Membership'}}
                   pick: Corporate
 
@@ -186,4 +186,3 @@
 
           #     Membership__c: REFERENCE
           #     Contact__c: REFERENCE
-
