@@ -14,9 +14,14 @@
 #   Queue Topic Setting
 #   Appointment
 #   Appointment Attendee
+#   Success Plan Template
+#   Success Plan Task Template
+#   Success Plan
+#   Success Plan Task
+#   Task
 
 # Run this to generate data in a scratch org:
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
+# cci task run snowfakery --recipe snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
 
 # Run this to generate records in an output JSON file (NOTE: update the org_name to the CCI org you are using)
 # snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json --plugin-option org_name dev
@@ -41,23 +46,6 @@
     MailingPostalCode:
       fake: postalcode
     MailingCountry: "United States"
-    MailingLatitude:
-      fake: latitude
-    MailingLongitude:
-      fake: longitude
-    MailingGeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     Phone:
       fake: phone_number
     MobilePhone:
@@ -258,3 +246,62 @@
             - No Show
             - Checked In
         sfal__StatusComments__c: ${{fake.Text(max_nb_chars=50)}}
+
+# Objects nested with Success Plan Template
+- object: sfal__SuccessPlanTemplate__c
+  count: 2
+  nickname: SuccessPlanTemplate
+  fields:
+    sfal__Active__c: true
+    sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+    sfal__UsageCount__c: 1
+  friends:
+    - object: sfal__SuccessPlan__c
+      count: 2
+      fields:
+        sfal__AdviseeRecord__c:
+          reference: SampleAdvisingCase
+        sfal__Advisee__c:
+          reference: Contact
+        sfal__AutoApply__c: true
+        sfal__Comments__c:
+          reference: SuccessPlanTemplate.sfal__Comments__c
+        sfal__FromTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__IsCancelled__c: false
+        sfal__IsPublished__c: true
+        sfal__Status__c:
+          random_choice: ${{fake.RandomElement(elements=('Open', 'Completed'))}}
+      friends:
+        - object: Task
+          count: 3
+          fields:
+            WhatId:
+              reference: sfal__SuccessPlan__c
+            OwnerId:
+              SalesforceQuery.find_record:
+                from: User
+                where: UserType='Standard'
+            Subject: ${{fake.Text(max_nb_chars=50)}}
+            ActivityDate:
+              date_between:
+                start_date: today
+                end_date: +2d
+    - object: sfal__SuccessPlanTemplateTask__c
+      fields:
+        sfal__Active__c: true
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Priority__c:
+          random_choice:
+            - High
+            - Normal
+            - Low
+        sfal__RelativeDueDate__c: 2
+        sfal__SuccessPlanTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__Type__c:
+          random_choice:
+            - Call
+            - Meeting
+            - Other
+            - Email
