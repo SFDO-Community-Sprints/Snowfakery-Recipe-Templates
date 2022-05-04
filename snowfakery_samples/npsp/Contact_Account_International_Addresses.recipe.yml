@@ -1,9 +1,9 @@
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe 00 times in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Contact_Account_International_Addresses.yml -o num_records 30 -o num_records_tablename Contact --org dev
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Contact_Account_International_Addresses.recipe.yml -o num_records 30 -o num_records_tablename Contact --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
-# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Contact_Account_International_Addresses.yml
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Contact_Account_International_Addresses.recipe.yml
 ### -----------
 ########## Contact Macros ##########
 - macro: International_Contacts
@@ -13,7 +13,7 @@
     LastName:
       fake: LastName
     Description: ${{snowfakery_locale}}           #The randomly chosen locale of the record being created will have the locale written to Description field for clarity/traceability
-    MailingStreet:                  
+    MailingStreet:
       fake: street_address
     MailingCity:
       fake: city
@@ -28,7 +28,7 @@
     Email:
       fake: email
 
-    
+
 
 ########## Organization Account Macros ##########
 
@@ -94,7 +94,7 @@
 ### Contacts ###
 
 - var: snowfakery_locale
-  value: 
+  value:
     random_choice:
       - en_GB   # English (Great Britain)
       - en_AU   # English (Australia)
