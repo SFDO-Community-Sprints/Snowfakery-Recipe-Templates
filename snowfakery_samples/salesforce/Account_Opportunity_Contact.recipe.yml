@@ -1,0 +1,275 @@
+## Salesforce Account, Contact and  Example
+
+# To run this code:
+#
+# ## Salesforce Account Example
+
+# To run this code:
+#
+# cci task run generate_and_load_from_yaml -o generator_yaml Account_Opportuniy_Contact.recipe.yml -o num_records 300 -o num_records_tablename Account --org qa
+
+# hard-coded values
+- object: Account
+  nickname: SnowFaker_Company
+  __city: 
+  fake: city
+  __billingStreet: 
+  fake: StreetAddress
+  __billingState:
+  fake: state
+  __billingCountry:
+  fake: country
+  __billingPostalCode:
+  fake: postalcode
+  __billingLatitude:
+  fake: latitude
+  __billingLongitude:
+  fake: longitude
+  fields:
+    Name: SnowFaker Company
+    Type:
+      random_choice: Technology Partner
+    BillingStreet: ${{__billingStreet}}
+    BillingCity: ${{__city}}
+    BillingState:  ${{__billingState}}
+    BillingPostalCode: ${{__billingPostalCode}}
+    BillingCountry: ${{__billingCountry}}
+    BillingLatitude: ${{__billingLatitude}}
+    BillingLongitude: ${{__billingLongitude}}
+    BillingGeocodeAccuracy: Address
+    ShippingStreet: ${{__billingStreet}}
+    ShippingCity: ${{__city}}
+    ShippingState:  ${{__billingState}}
+    ShippingPostalCode: ${{__billingPostalCode}}
+    ShippingCountry: ${{__billingCountry}}
+    ShippingLatitude: ${{__billingLatitude}}
+    ShippingLongitude: ${{__billingLongitude}}
+    ShippingGeocodeAccuracy: Address
+    Phone:
+      fake: phone_number
+    Fax:
+      fake: phone_number
+    AccountNumber:
+      fake.text:
+        max_nb_chars: 30
+    Website:
+      fake: url
+    Sic: ${{__billingPostalCode}}
+    Industry:
+      random_choice: Technology
+    AnnualRevenue:
+      random_number:
+        min: 1
+        max: 100000
+    NumberOfEmployees: 6000
+    Ownership:
+      random_choice:
+        - Public
+        - Private
+        - Subsidiary
+        - Other
+    TickerSymbol:
+      fake.text:
+        max_nb_chars: 20
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    Rating:
+      random_choice:
+        - choice:
+            probability: 50%
+            pick:
+              - reference: Hot
+        - choice:
+            probability: 25%
+            pick:
+              - reference: Warm
+        - choice:
+            probability: 25%
+            pick:
+              - reference: Cold
+    Site:
+      fake.text:
+        max_nb_chars: 80
+    Jigsaw:
+      fake.text:
+        max_nb_chars: 20
+    CleanStatus:
+      random_choice:
+        - Matched
+        - Different
+        - Acknowledged
+        - NotFound
+        - Inactive
+        - Pending
+        # - SelectMatch  # causes problems sometimes
+        - Skipped
+    AccountSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    DunsNumber:
+      fake.text:
+        max_nb_chars: 9
+    Tradestyle:
+      fake.text:
+        max_nb_chars: 100
+    NaicsCode:
+      fake: postalcode
+    NaicsDesc:
+      fake.text:
+        max_nb_chars: 100
+    YearStarted:
+      fake: year
+    SicDesc:
+      fake.text:
+        max_nb_chars: 80
+- object: Contact
+  fields:
+    AccountId:
+      reference: SnowFaker_Company 
+    LastName:
+      fake: first_name
+    FirstName:
+      fake: last_name
+    Salutation:
+      random_choice:
+        Mr.: 40%
+        Ms.: 40%
+        Dr.: 10%
+        Prof.: 10%
+    OtherStreet:
+      fake.text:
+        max_nb_chars: 100
+    OtherCity:
+      fake: city
+    OtherState:
+      fake: state
+    OtherPostalCode:
+      fake: postalcode
+    OtherCountry:
+      fake: country
+    OtherLatitude:
+      fake: latitude
+    OtherLongitude:
+      fake: longitude
+    OtherGeocodeAccuracy:
+      random_choice:
+        - Address
+        - NearAddress
+        - Block
+        - Street
+        - ExtendedZip
+        - Zip
+        - Neighborhood
+        - City
+        - County
+        - State
+        - Unknown
+    MailingStreet: ${{__billingStreet}}
+    MailingCity: ${{__city}}
+    MailingState: ${{__billingState}}
+    MailingPostalCode: ${{__billingPostalCode}}
+    MailingCountry: ${{__billingCountry}}
+    MailingLatitude: ${{__billingLatitude}}
+    MailingLongitude: ${{__billingLongitude}}
+    MailingGeocodeAccuracy: Address
+    Phone:
+      fake: phone_number
+    Fax:
+      fake: phone_number
+    MobilePhone:
+      fake: phone_number
+    HomePhone:
+      fake: phone_number
+    OtherPhone:
+      fake: phone_number
+    AssistantPhone:
+      fake: phone_number
+    # ReportsToId:
+    #   reference: BossContact # you need to have defined this Contact elsewhere
+    Email:
+      fake: email
+    Title:
+      fake.text:
+        max_nb_chars: 100
+    Department:
+      fake.text:
+        max_nb_chars: 80
+    AssistantName:
+      fake: name
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    Birthdate:
+      date_between:
+        start_date: -1y
+        end_date: today
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    EmailBouncedReason:
+      fake.text:
+        max_nb_chars: 100
+    EmailBouncedDate: ${{fake.date}}T${{fake.time}}Z
+   ## Creating the Oppotunity related to our account and contact now
+    - object: Opportunity
+  fields:
+    AccountId:
+      reference: SnowFaker_Company
+    Name: ${{Account.Name}} ${{fake.date}}
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    StageName:
+      random_choice:
+        - Prospecting
+        - Qualification
+        - Needs Analysis
+        - Value Proposition
+        - Id. Decision Makers
+        - Perception Analysis
+        - Proposal/Price Quote
+        - Negotiation/Review
+        - Closed Won
+        - Closed Lost
+        - Pledged
+    Amount:
+      random_number:
+        min: 1
+        max: 100000
+    TotalOpportunityQuantity:
+      random_number:
+        min: 1
+        max: 100000
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: today
+    Type:
+      random_choice:
+        - Existing Customer - Upgrade
+        - Existing Customer - Replacement
+        - Existing Customer - Downgrade
+        - New Customer
+    NextStep:
+      fake.text:
+        max_nb_chars: 100
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    CampaignId:
+      reference: Campaign
+    ContactId:
+      reference: Contact
