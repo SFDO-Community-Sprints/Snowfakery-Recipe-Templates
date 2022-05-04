@@ -54,6 +54,7 @@
       random_number:
         min: 10000
         max: 500000
+        step: 5000 #steps Opportunity Amount by $5,000
     RecordType: MajorGift
     CloseDate:
       date_between:
