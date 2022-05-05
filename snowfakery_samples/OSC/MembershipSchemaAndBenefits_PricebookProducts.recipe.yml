@@ -11,8 +11,10 @@
 
 
 ### ----------- [               CLI RUN                ]---------- ###
-
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --org dev
+# use this command to run the recipe in a scratch org called dev
+# cci task run snowfakery --recipe snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --org dev
+#
+#use this command to run the recipe locally to an output JSON file in your temp folder called output.json
 # snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --plugin-option org_name dev
 ### ----------- [            Recipe Starts             ]---------- ###
 
