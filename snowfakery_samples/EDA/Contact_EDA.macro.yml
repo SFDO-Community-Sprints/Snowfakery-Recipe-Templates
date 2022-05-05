@@ -1,0 +1,207 @@
+## EDA Contacts Example
+
+# Requirments
+# Install cci: See https://cumulusci.readthedocs.io/en/latest/get_started.html
+# Install the fake_edu Faker: See https://pypi.org/project/faker-edu/
+
+# To run this code against a fresh scratch org called ("qa"):
+#
+# cci flow run eda:trial_org --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Contact_EDA.recipe.yml -o num_records 300 -o num_records_tablename Contact --org qa
+
+# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+# - include_file: standard_EDA_objs_recipe.yml
+
+- plugin: snowfakery.standard_plugins.datasets.Dataset
+
+- macro: eda_contact_base
+  fields:
+    # Open countries.csv once for each field that will use it
+    __countries1_from_csv:
+      Dataset.shuffle:
+        dataset: data/countries.csv
+    __countries2_from_csv:
+      Dataset.shuffle:
+        dataset: data/countries.csv
+    __countries3_from_csv:
+      Dataset.shuffle:
+        dataset: data/countries.csv
+    # EDA Contact Details section
+    Salutation:
+      random_choice:
+        - Mr.
+        - Ms.
+        - Mrs.
+        - Dr.
+        - Prof.
+    FirstName:
+      fake: first_name
+    LastName:
+      fake: last_name
+    Title:
+      fake: job
+    # Reccomendation: Only use a first name for hed__Chosen_Full_Name__c
+    hed__Chosen_Full_Name__c:
+      fake: first_name
+    hed__Gender__c:
+      random_choice:
+        - Female
+        - Male
+        - Decline to State
+    hed__Country_of_Origin__c: ${{__countries1_from_csv.name}}
+    hed__FERPA__c:
+      # XXX 0 How can we set chance of %?
+      random_choice:
+        - ${{'On'}}
+        - ${{'Off'}}
+    Birthdate:
+      date_between:
+        start_date: -90y
+        end_date: -18y
+    hed__Social_Security_Number__c:
+      random_number:
+          min: 100000000
+          max: 999999999
+    hed__Citizenship__c: ${{__countries2_from_csv.name}}
+    hed__Dual_Citizenship__c: ${{__countries3_from_csv.name}}
+    hed__Citizenship_Status__c:
+      random_choice:
+        - U.S. Citizen or U.S. National
+        - U.S. Dual Citizen
+        - U.S. Permanent Resident
+        - U.S. Refugee or Asylee
+        - Temporary Resident
+        - Other (Non-U.S.)
+    # EDA Contact Details section
+    hed__Military_Service__c:
+      random_choice:
+        - ${{'Off'}}
+        - ${{'On'}}
+    hed__Military_Background__c:
+      # xxx only fill if hed__Military_Service__c = TRUE
+      ${{fake.Paragraph(nb_sentences=5)}}
+    hed__HIPAA__c:
+      random_choice:
+        - ${{'Off'}}
+        - ${{'On'}}
+    hed__HIPAA_Detail__c:
+       # xxx only fill if hed__HIPAA__c = TRUE
+      ${{fake.Paragraph(nb_sentences=5)}}
+    hed__Financial_Aid_Applicant__c:
+      random_choice:
+        - ${{'Off'}}
+        - ${{'On'}}
+    hed__Ethnicity__c:
+      # How to we pick none?
+      random_choice:
+        - Hispanic or Latino
+        - Not Hispanic or Latino
+    hed__Race__c:
+      # How can we do multip pick?
+      # How to we pick none?
+      random_choice:
+        - American Indian or Alaska Native
+        - Asian
+        - Black or African American
+        - Hispanic or Latino
+        - Native Hawaiian or Other Pacific Islander
+        - White
+    hed__Religion__c:
+      # How to we pick none?
+      random_choice:
+        - Atheist
+        - Buddhist
+        - Christian
+        - Hindu
+        - Jewish
+        - Muslim
+        - Other
+    hed__Deceased__c:
+      random_choice:
+        - ${{'Off'}}
+        - ${{'On'}}
+    # Not on page layout
+    hed__Date_Deceased__c:
+      # Set only if hed__Deceased__c = TRUE
+      # How can make sure hed__Date_Deceased__c is > Birthdate
+      date_between:
+        start_date: -50y
+        end_date: -1d
+    # Primary Affiliations Section
+    # Need to first create related Account records
+    # hed__Primary_Household__c:
+    # hed__Primary_Organization__c:
+    # Contact Information Section
+    HomePhone:
+      fake: phone_number
+    MobilePhone:
+      fake: phone_number
+    hed__WorkPhone__c:
+      fake: phone_number
+    OtherPhone:
+      fake: phone_number
+    hed__PreferredPhone__c:
+      random_choice:
+        - Home Phone
+        - Work Phone
+        - Mobile Phone
+        - Other Phone
+    hed__UniversityEmail__c:
+      fake: email
+    hed__WorkEmail__c:
+      fake: email
+    hed__AlternateEmail__c:
+      fake: email
+    hed__Preferred_Email__c:
+      random_choice:
+        - Alternate Email
+        - University Email
+        - Work Email
+    # Communication Preferences Section
+    hed__Do_Not_Contact__c:
+      random_choice:
+        - ${{'Off'}}
+        - ${{'On'}}
+    # Address Information Section
+    # Mailing Address
+    MailingStreet:
+      fake: streetaddress
+    MailingCity:
+      fake: city
+    MailingState:
+      fake: state
+    MailingPostalCode:
+      fake: postalcode
+    MailingCountry:
+      fake: country
+    # Other Address
+    OtherStreet:
+      fake: streetaddress
+    OtherCity:
+      fake: city
+    OtherState:
+      fake: state
+    OtherPostalCode:
+      fake: postalcode
+    OtherCountry:
+      fake: country
+    hed__Primary_Address_Type__c:
+      random_choice:
+        - Home
+        - Vacation Residence
+        - Work
+        - Other
+    hed__Secondary_Address_Type__c:
+      random_choice:
+        # Should not equal hed__Primary_Address_Type__c
+        - Home
+        - Vacation Residence
+        - Work
+        - Other
+    hed__is_Address_Override__c:
+      random_choice:
+        # When selected, this Contact's address won't be synced
+        # with the Household Default or Seasonal Address. Applies
+        # to Household Contacts only.
+        - ${{'Off'}}
+        - ${{'On'}}

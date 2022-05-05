@@ -15,6 +15,8 @@ sources:
         github: https://github.com/SalesforceFoundation/NPSP
     sal:
         github: https://github.com/SalesforceFoundation/SAL-CumulusCI
+    pmm:
+        github: https://github.com/SalesforceFoundation/PMM
 
 tasks:
     robot:
@@ -52,7 +54,6 @@ tasks:
                 pricebook2 book = [SELECT Id FROM pricebook2 WHERE isStandard = true];
                 book.isActive = true;
                 update book;
-
     load_membership_products:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         group: OSC
