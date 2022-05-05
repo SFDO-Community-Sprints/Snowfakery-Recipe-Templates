@@ -1,34 +1,34 @@
-## Salesforce Account, Contact and  Example
-
+# ## Salesforce Standard sales process example
+# recipe will contain:
+# Single Account a contact and an opportunity for the parent account and 
+# Single Account, mutiple contacts and multiple opportunities for different contacts and same Account
+# 
+# MultiBranch_Company has been in business with our company for 5 years and over the course of 5 years we had 50 ooprtunities from them
+# and all if them were closed under 3 months and 50% of those came from Boss_Contact and 40% from Second_Contact
+#
 # To run this code:
 #
-# ## Salesforce Account Example
+# cci task run snowfakery --recipe snowfakery_samples/salesforce/Account_Opportunity_Contact.recipe.yml
 
-# To run this code:
-#
-# cci task run generate_and_load_from_yaml -o generator_yaml Account_Opportuniy_Contact.recipe.yml -o num_records 300 -o num_records_tablename Account --org qa
-
-# hard-coded values
 - object: Account
   nickname: SnowFaker_Company
-  __city: 
-  fake: city
-  __billingStreet: 
-  fake: StreetAddress
-  __billingState:
-  fake: state
-  __billingCountry:
-  fake: country
-  __billingPostalCode:
-  fake: postalcode
-  __billingLatitude:
-  fake: latitude
-  __billingLongitude:
-  fake: longitude
   fields:
+    __city: 
+      fake: city
+    __billingStreet: 
+      fake: StreetAddress
+    __billingState:
+      fake: state
+    __billingCountry:
+      fake: country
+    __billingPostalCode:
+      fake: postalcode
+    __billingLatitude:
+      fake: latitude
+    __billingLongitude:
+      fake: longitude
     Name: SnowFaker Company
-    Type:
-      random_choice: Technology Partner
+    Type: Technology Partner
     BillingStreet: ${{__billingStreet}}
     BillingCity: ${{__city}}
     BillingState:  ${{__billingState}}
@@ -55,8 +55,7 @@
     Website:
       fake: url
     Sic: ${{__billingPostalCode}}
-    Industry:
-      random_choice: Technology
+    Industry: Technology
     AnnualRevenue:
       random_number:
         min: 1
@@ -78,16 +77,13 @@
       random_choice:
         - choice:
             probability: 50%
-            pick:
-              - reference: Hot
+            pick: Hot
         - choice:
             probability: 25%
-            pick:
-              - reference: Warm
+            pick: Warm 
         - choice:
             probability: 25%
-            pick:
-              - reference: Cold
+            pick: Cold
     Site:
       fake.text:
         max_nb_chars: 80
@@ -102,7 +98,6 @@
         - NotFound
         - Inactive
         - Pending
-        # - SelectMatch  # causes problems sometimes
         - Skipped
     AccountSource:
       random_choice:
@@ -127,6 +122,8 @@
     SicDesc:
       fake.text:
         max_nb_chars: 80
+
+## Contact for the Account
 - object: Contact
   fields:
     AccountId:
@@ -177,22 +174,6 @@
     MailingLatitude: ${{__billingLatitude}}
     MailingLongitude: ${{__billingLongitude}}
     MailingGeocodeAccuracy: Address
-    Phone:
-      fake: phone_number
-    Fax:
-      fake: phone_number
-    MobilePhone:
-      fake: phone_number
-    HomePhone:
-      fake: phone_number
-    OtherPhone:
-      fake: phone_number
-    AssistantPhone:
-      fake: phone_number
-    # ReportsToId:
-    #   reference: BossContact # you need to have defined this Contact elsewhere
-    Email:
-      fake: email
     Title:
       fake.text:
         max_nb_chars: 100
@@ -219,12 +200,17 @@
       fake.text:
         max_nb_chars: 100
     EmailBouncedDate: ${{fake.date}}T${{fake.time}}Z
-   ## Creating the Oppotunity related to our account and contact now
-    - object: Opportunity
+
+##Oppotunity related to our account and contact
+- object: Opportunity
   fields:
+    __closeDate:
+      date_between:
+        start_date: -1y
+        end_date: today
     AccountId:
       reference: SnowFaker_Company
-    Name: ${{Account.Name}} ${{fake.date}}
+    Name: ${{Account.Name}} ${{today}}
     Description:
       fake.text:
         max_nb_chars: 100
@@ -249,10 +235,7 @@
       random_number:
         min: 1
         max: 100000
-    CloseDate:
-      date_between:
-        start_date: -1y
-        end_date: today
+    CloseDate: ${{__closeDate}}
     Type:
       random_choice:
         - Existing Customer - Upgrade
@@ -269,7 +252,419 @@
         - Partner Referral
         - Purchased List
         - Other
-    CampaignId:
-      reference: Campaign
     ContactId:
       reference: Contact
+
+## Creating new account that will have multiple contacts and opportunities related to it
+- object: Account
+  nickname: MultiBranch_Company
+  fields:
+    __city: 
+      fake: city
+    __billingStreet: 
+      fake: StreetAddress
+    __billingState:
+      fake: state
+    __billingCountry:
+      fake: country
+    __billingPostalCode:
+      fake: postalcode
+    __billingLatitude:
+      fake: latitude
+    __billingLongitude:
+      fake: longitude
+    Name: MultiBranch Company
+    Type:
+      random_choice: Channel Partner / Reseller
+    BillingStreet: ${{__billingStreet}}
+    BillingCity: ${{__city}}
+    BillingState:  ${{__billingState}}
+    BillingPostalCode: ${{__billingPostalCode}}
+    BillingCountry: ${{__billingCountry}}
+    BillingLatitude: ${{__billingLatitude}}
+    BillingLongitude: ${{__billingLongitude}}
+    BillingGeocodeAccuracy: Address
+    ShippingStreet: ${{__billingStreet}}
+    ShippingCity: ${{__city}}
+    ShippingState:  ${{__billingState}}
+    ShippingPostalCode: ${{__billingPostalCode}}
+    ShippingCountry: ${{__billingCountry}}
+    ShippingLatitude: ${{__billingLatitude}}
+    ShippingLongitude: ${{__billingLongitude}}
+    ShippingGeocodeAccuracy: Address
+    Phone:
+      fake: phone_number
+    Fax:
+      fake: phone_number
+    AccountNumber:
+      fake.text:
+        max_nb_chars: 30
+    Website:
+      fake: url
+    Sic: ${{__billingPostalCode}}
+    Industry: Technology
+    AnnualRevenue:
+      random_number:
+        min: 1
+        max: 100000
+    NumberOfEmployees: 6000
+    Ownership:
+      random_choice:
+        - Public
+        - Private
+        - Subsidiary
+        - Other
+    TickerSymbol:
+      fake.text:
+        max_nb_chars: 20
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    Rating:
+      random_choice:
+        - choice:
+            probability: 50%
+            pick: Hot
+        - choice:
+            probability: 25%
+            pick: Warm 
+        - choice:
+            probability: 25%
+            pick: Cold
+    Site:
+      fake.text:
+        max_nb_chars: 80
+    Jigsaw:
+      fake.text:
+        max_nb_chars: 20
+    CleanStatus:
+      random_choice:
+        - Matched
+        - Different
+        - Acknowledged
+        - NotFound
+        - Inactive
+        - Pending
+        - Skipped
+    AccountSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    DunsNumber:
+      fake.text:
+        max_nb_chars: 9
+    Tradestyle:
+      fake.text:
+        max_nb_chars: 100
+    NaicsCode:
+      fake: postalcode
+    NaicsDesc:
+      fake.text:
+        max_nb_chars: 100
+    YearStarted:
+      fake: year
+    SicDesc:
+      fake.text:
+        max_nb_chars: 80
+- object: Contact
+  nickname: Boss_Contact
+  fields:
+    AccountId:
+      reference: MultiBranch_Company 
+    LastName:
+      fake: first_name
+    FirstName:
+      fake: last_name
+    Salutation:
+      random_choice:
+        Mr.: 40%
+        Ms.: 40%
+        Dr.: 10%
+        Prof.: 10%
+    OtherStreet:
+      fake.text:
+        max_nb_chars: 100
+    OtherCity:
+      fake: city
+    OtherState:
+      fake: state
+    OtherPostalCode:
+      fake: postalcode
+    OtherCountry:
+      fake: country
+    OtherLatitude:
+      fake: latitude
+    OtherLongitude:
+      fake: longitude
+    OtherGeocodeAccuracy: 
+      random_choice:
+        - Address
+        - NearAddress
+        - Block
+        - Street
+        - ExtendedZip
+        - Zip
+        - Neighborhood
+        - City
+        - County
+        - State
+        - Unknown
+    MailingStreet: ${{__billingStreet}}
+    MailingCity: ${{__city}}
+    MailingState: ${{__billingState}}
+    MailingPostalCode: ${{__billingPostalCode}}
+    MailingCountry: ${{__billingCountry}}
+    MailingLatitude: ${{__billingLatitude}}
+    MailingLongitude: ${{__billingLongitude}}
+    MailingGeocodeAccuracy: Address
+    Title:
+      fake.text:
+        max_nb_chars: 100
+    Department:
+      fake.text:
+        max_nb_chars: 80
+    AssistantName:
+      fake: name
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    Birthdate:
+      date_between:
+        start_date: -50y
+        end_date: -30y
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    EmailBouncedReason:
+      fake.text:
+        max_nb_chars: 100
+    EmailBouncedDate: ${{fake.date}}T${{fake.time}}Z
+- object: Contact
+  nickname: Second_Contact
+  fields:
+    AccountId:
+      reference: MultiBranch_Company 
+    LastName:
+      fake: first_name
+    FirstName:
+      fake: last_name
+    Salutation:
+      random_choice:
+        Mr.: 40%
+        Ms.: 40%
+        Dr.: 10%
+        Prof.: 10%
+    OtherStreet:
+      fake.text:
+        max_nb_chars: 100
+    OtherCity:
+      fake: city
+    OtherState:
+      fake: state
+    OtherPostalCode:
+      fake: postalcode
+    OtherCountry:
+      fake: country
+    OtherLatitude:
+      fake: latitude
+    OtherLongitude:
+      fake: longitude
+    OtherGeocodeAccuracy:
+      random_choice:
+        - Address
+        - NearAddress
+        - Block
+        - Street
+        - ExtendedZip
+        - Zip
+        - Neighborhood
+        - City
+        - County
+        - State
+        - Unknown
+    MailingStreet: ${{__billingStreet}}
+    MailingCity: ${{__city}}
+    MailingState: ${{__billingState}}
+    MailingPostalCode: ${{__billingPostalCode}}
+    MailingCountry: ${{__billingCountry}}
+    MailingLatitude: ${{__billingLatitude}}
+    MailingLongitude: ${{__billingLongitude}}
+    MailingGeocodeAccuracy: Address
+    ReportsToId:
+      reference: Boss_Contact 
+    Title:
+      fake.text:
+        max_nb_chars: 100
+    Department:
+      fake.text:
+        max_nb_chars: 80
+    AssistantName:
+      fake: name
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    Birthdate:
+      date_between:
+        start_date: -30y
+        end_date: -20y
+    Description:
+      fake.text:
+        max_nb_chars: 100   
+- object: Contact
+  nickname: Third_Contact
+  fields:
+    AccountId:
+      reference: MultiBranch_Company 
+    LastName:
+      fake: first_name
+    FirstName:
+      fake: last_name
+    Salutation:
+      random_choice:
+        Mr.: 40%
+        Ms.: 40%
+        Dr.: 10%
+        Prof.: 10%
+    OtherStreet:
+      fake.text:
+        max_nb_chars: 100
+    OtherCity:
+      fake: city
+    OtherState:
+      fake: state
+    OtherPostalCode:
+      fake: postalcode
+    OtherCountry:
+      fake: country
+    OtherLatitude:
+      fake: latitude
+    OtherLongitude:
+      fake: longitude
+    OtherGeocodeAccuracy:
+      random_choice:
+        - Address
+        - NearAddress
+        - Block
+        - Street
+        - ExtendedZip
+        - Zip
+        - Neighborhood
+        - City
+        - County
+        - State
+        - Unknown
+    MailingStreet: ${{__billingStreet}}
+    MailingCity: ${{__city}}
+    MailingState: ${{__billingState}}
+    MailingPostalCode: ${{__billingPostalCode}}
+    MailingCountry: ${{__billingCountry}}
+    MailingLatitude: ${{__billingLatitude}}
+    MailingLongitude: ${{__billingLongitude}}
+    MailingGeocodeAccuracy: Address
+    ReportsToId:
+      reference: Boss_Contact 
+    Title:
+      fake.text:
+        max_nb_chars: 100
+    Department:
+      fake.text:
+        max_nb_chars: 80
+    AssistantName:
+      fake: name
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    Birthdate:
+      date_between:
+        start_date: -40y
+        end_date: -30y
+    Description:
+      fake.text:
+        max_nb_chars: 100   
+
+## Creating the Oppotunities using count to create multiple opps and assign them to different contacts based on probablity
+- object: Opportunity
+  count: 50
+  fields:
+    __randomMonths:
+      random_number:
+        min: 1
+        max: 3
+        step: 1
+    __startDate:
+      date_between:
+        start_date: -5y
+        end_date: today
+    AccountId:
+      reference: MultiBranch_Company
+    Name: ${{Account.Name}} ${{__startDate}}
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    StageName:
+      random_choice:
+        - Prospecting
+        - Qualification
+        - Needs Analysis
+        - Value Proposition
+        - Id. Decision Makers
+        - Perception Analysis
+        - Proposal/Price Quote
+        - Negotiation/Review
+        - Closed Won
+        - Closed Lost
+        - Pledged
+    Amount:
+      random_number:
+        min: 1
+        max: 100000
+    TotalOpportunityQuantity:
+      random_number:
+        min: 1
+        max: 100000
+    CloseDate: ${{ date(__startDate) + relativedelta(months=__randomMonths) }}
+    Type:
+      random_choice:
+        - Existing Customer - Upgrade
+        - Existing Customer - Replacement
+        - Existing Customer - Downgrade
+        - New Customer
+    NextStep:
+      fake.text:
+        max_nb_chars: 100
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    ContactId:
+      random_choice:
+        - choice:
+            probability: 50%
+            pick:
+              - reference: Boss_Contact
+        - choice:
+            probability: 40%
+            pick:
+              - reference: Second_Contact
+        - choice:
+            probability: 10%
+            pick:
+              - reference: Third_Contact
