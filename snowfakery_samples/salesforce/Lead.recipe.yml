@@ -70,19 +70,6 @@
       fake: postalcode
     Country:
       fake: country
-    GeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     Description:
       fake.text:
         max_nb_chars: 10000

@@ -30,13 +30,11 @@
     BillingState:  ${{__billingState}}
     BillingPostalCode: ${{__billingPostalCode}}
     BillingCountry: ${{__billingCountry}}
-    BillingGeocodeAccuracy: Address
     ShippingStreet: ${{__billingStreet}}
     ShippingCity: ${{__city}}
     ShippingState:  ${{__billingState}}
     ShippingPostalCode: ${{__billingPostalCode}}
     ShippingCountry: ${{__billingCountry}}
-    ShippingGeocodeAccuracy: Address
     Phone:
       fake: phone_number
     Fax:
@@ -141,19 +139,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherGeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     MailingStreet: ${{__billingStreet}}
     MailingCity: ${{__city}}
     MailingState: ${{__billingState}}
@@ -161,7 +146,6 @@
     MailingCountry: ${{__billingCountry}}
     MailingLatitude: ${{__billingLatitude}}
     MailingLongitude: ${{__billingLongitude}}
-    MailingGeocodeAccuracy: Address
     Title:
       fake.text:
         max_nb_chars: 100
@@ -267,7 +251,6 @@
     BillingCountry: ${{__billingCountry}}
     BillingLatitude: ${{__billingLatitude}}
     BillingLongitude: ${{__billingLongitude}}
-    BillingGeocodeAccuracy: Address
     ShippingStreet: ${{__billingStreet}}
     ShippingCity: ${{__city}}
     ShippingState:  ${{__billingState}}
@@ -275,7 +258,6 @@
     ShippingCountry: ${{__billingCountry}}
     ShippingLatitude: ${{__billingLatitude}}
     ShippingLongitude: ${{__billingLongitude}}
-    ShippingGeocodeAccuracy: Address
     Phone:
       fake: phone_number
     Fax:
@@ -379,19 +361,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherGeocodeAccuracy: 
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     MailingStreet: ${{__billingStreet}}
     MailingCity: ${{__city}}
     MailingState: ${{__billingState}}
@@ -399,7 +368,6 @@
     MailingCountry: ${{__billingCountry}}
     MailingLatitude: ${{__billingLatitude}}
     MailingLongitude: ${{__billingLongitude}}
-    MailingGeocodeAccuracy: Address
     Title:
       fake.text:
         max_nb_chars: 100
@@ -452,19 +420,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherGeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     MailingStreet: ${{__billingStreet}}
     MailingCity: ${{__city}}
     MailingState: ${{__billingState}}
@@ -472,7 +427,6 @@
     MailingCountry: ${{__billingCountry}}
     MailingLatitude: ${{__billingLatitude}}
     MailingLongitude: ${{__billingLongitude}}
-    MailingGeocodeAccuracy: Address
     ReportsToId:
       reference: Boss_Contact 
     Title:
@@ -523,19 +477,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherGeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     MailingStreet: ${{__billingStreet}}
     MailingCity: ${{__city}}
     MailingState: ${{__billingState}}
@@ -543,7 +484,6 @@
     MailingCountry: ${{__billingCountry}}
     MailingLatitude: ${{__billingLatitude}}
     MailingLongitude: ${{__billingLongitude}}
-    MailingGeocodeAccuracy: Address
     ReportsToId:
       reference: Boss_Contact 
     Title:
