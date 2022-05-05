@@ -15,6 +15,7 @@ This project focuses on products developed and maintained by Salesforce and the 
 - [ ] Program Management Module
 - [ ] just vanilla Salesforce
 - [ ] Membership Schema
+- [ ] Other: 
 
 ## What is the scenario you're trying to support with fake data?
 I want to demonstrate 

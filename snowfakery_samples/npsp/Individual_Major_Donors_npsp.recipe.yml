@@ -12,13 +12,28 @@
 #
 #
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe 10 times in a Salesforce scratch org called "dev":
-# cci task run snowfakery --recipe snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --run_until_recipe_repeated 10 --org dev 
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --org dev
+#
+# Use this command to run this recipe 100 times in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --org dev --run-until-recipe-repeated 100
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml
 #
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --target-number 100 Contact
+#
 ### ----------- [            Recipe Starts             ]---------- ###
+
+
+# Define Opportunity Amount ranges
+- var: amount_min # minimum Amount value
+  value: 10000
+- var: amount_max # maximum Amount value
+  value: 500000
+- var: step_amount # ensure the amount is rounded off to clean numbers based on the value provided
+  value: 5000
 
 
 
@@ -45,14 +60,16 @@
     random_number: 
       min: 1
       max: 9
+  nickname: MajorGiftOpportunity
   fields:
     AccountId:
       reference: MajorDonorHHAccount
     Name: Major Donor Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
     Amount: #assumption: these Opportunities will all be paid in one installment
       random_number:
-        min: 10000
-        max: 500000
+        min: ${{amount_min}}
+        max: ${{amount_max}}
+        step: ${{step_amount}}
     RecordType: MajorGift
     CloseDate:
       date_between:
@@ -65,17 +82,16 @@
             pick: Closed Won #assumptions: (a) there are no Closed Lost Opportunities (b) Close Date is accurate
         - choice:
             pick:
-              random_choice:
-                - Prospecting
+              random_choice: # Use the values from the Major Gift Sales Process
+                - Identification
                 - Qualification
-                - Needs Analysis
-                - Value Proposition
-                - Id. Decision Makers
-                - Perception Analysis
-                - Proposal/Price Quote
-                - Negotiation/Review
+                - Cultivation
+                - Solicitation
+                - Proposal/Review
+                - Verbal Commitment
                 - Closed Lost
                 #- Pledged NPSP Sales Process does not include the Pledged value by default
+
 
 
 - object: npsp__Engagement_Plan_Template__c
@@ -83,25 +99,17 @@
   count: 1
   fields:
     Name: Major Giving Engagement Plan
-    npsp__Description__c: 
-      fake: Sentence
+    npsp__Description__c: Follow-up tasks for major donors
     #npsp__Default_Assignee__c:
     npsp__Skip_Weekends__c: true
     npsp__Reschedule_To__c: Monday
   friends:
     - object: npsp__Engagement_Plan_Task__c
-      count: 3
       fields:
         npsp__Engagement_Plan_Template__c:
           reference: MajorGivingEngagementPlanTemplate
-        Name:
-            fake: Sentence #this recipe could be enhanced with realistic tasks
-        npsp__Type__c:
-          random_choice:
-            - Call
-            - Meeting
-            - Other
-            - Email
+        Name: Call donor to thank them
+        npsp__Type__c: Call
         npsp__Priority__c:
           random_choice:
             - High
@@ -118,21 +126,68 @@
         npsp__Reminder__c: false
         npsp__Comments__c:
           fake: Paragraph
-        npsp__Days_After__c: 
+        npsp__Days_After__c: 2
+    - object: npsp__Engagement_Plan_Task__c
+      fields:
+        npsp__Engagement_Plan_Template__c:
+          reference: MajorGivingEngagementPlanTemplate
+        Name: Schedule in-person meeting
+        npsp__Type__c: Meeting
+        npsp__Priority__c:
+          random_choice:
+            - High
+            - Medium
+            - Low
+        npsp__Status__c:
+          random_choice:
+            - Not Started
+            - In Progress
+            - Completed
+            - Waiting on someone else
+            - Deferred
+        npsp__Send_Email__c: false
+        npsp__Reminder__c: false
+        npsp__Comments__c:
+          fake: Paragraph
+        npsp__Days_After__c: 14
+    - object: npsp__Engagement_Plan_Task__c
+      fields:
+        npsp__Engagement_Plan_Template__c:
+          reference: MajorGivingEngagementPlanTemplate
+        Name: Invite to gala
+        npsp__Type__c: Email
+        npsp__Priority__c:
+          random_choice:
+            - High
+            - Medium
+            - Low
+        npsp__Status__c:
+          random_choice:
+            - Not Started
+            - In Progress
+            - Completed
+            - Waiting on someone else
+            - Deferred
+        npsp__Send_Email__c: false
+        npsp__Reminder__c: false
+        npsp__Comments__c:
+          fake: Paragraph
+        npsp__Days_After__c: 30
 
 
-   
-    
+
+
 - object: npsp__Engagement_Plan__c #The authors chose to map this Engagement Plan to the Account.  If you want to map this to a Contact or Opportunity, comment out the Account reference and uncomment the relationship for the intended object
   count: 1
   fields:
     npsp__Account__c:
       reference: MajorDonorHHAccount
     #npsp__Contact__c: uncomment this if you want to map to a Contact
+      #reference: MajorDonorContact
     #npsp__Opportunity__c: uncomment this line if you want to map to an Opportunity
+      #reference: MajorGiftOpportunity
     npsp__Engagement_Plan_Template__c:
       reference: MajorGivingEngagementPlanTemplate
-    
 
 
 
@@ -141,6 +196,3 @@
 
 
 
-
-
-    
