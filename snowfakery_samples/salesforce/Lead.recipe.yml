@@ -70,10 +70,6 @@
       fake: postalcode
     Country:
       fake: country
-    Latitude:
-      fake: latitude
-    Longitude:
-      fake: longitude
     GeocodeAccuracy:
       random_choice:
         - Address

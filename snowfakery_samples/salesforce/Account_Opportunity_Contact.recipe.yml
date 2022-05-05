@@ -23,10 +23,6 @@
       fake: country
     __billingPostalCode:
       fake: postalcode
-    __billingLatitude:
-      fake: latitude
-    __billingLongitude:
-      fake: longitude
     Name: SnowFaker Company
     Type: Technology Partner
     BillingStreet: ${{__billingStreet}}
@@ -34,16 +30,12 @@
     BillingState:  ${{__billingState}}
     BillingPostalCode: ${{__billingPostalCode}}
     BillingCountry: ${{__billingCountry}}
-    BillingLatitude: ${{__billingLatitude}}
-    BillingLongitude: ${{__billingLongitude}}
     BillingGeocodeAccuracy: Address
     ShippingStreet: ${{__billingStreet}}
     ShippingCity: ${{__city}}
     ShippingState:  ${{__billingState}}
     ShippingPostalCode: ${{__billingPostalCode}}
     ShippingCountry: ${{__billingCountry}}
-    ShippingLatitude: ${{__billingLatitude}}
-    ShippingLongitude: ${{__billingLongitude}}
     ShippingGeocodeAccuracy: Address
     Phone:
       fake: phone_number
@@ -149,10 +141,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherLatitude:
-      fake: latitude
-    OtherLongitude:
-      fake: longitude
     OtherGeocodeAccuracy:
       random_choice:
         - Address
@@ -269,10 +257,6 @@
       fake: country
     __billingPostalCode:
       fake: postalcode
-    __billingLatitude:
-      fake: latitude
-    __billingLongitude:
-      fake: longitude
     Name: MultiBranch Company
     Type:
       random_choice: Channel Partner / Reseller
@@ -395,10 +379,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherLatitude:
-      fake: latitude
-    OtherLongitude:
-      fake: longitude
     OtherGeocodeAccuracy: 
       random_choice:
         - Address
@@ -472,10 +452,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherLatitude:
-      fake: latitude
-    OtherLongitude:
-      fake: longitude
     OtherGeocodeAccuracy:
       random_choice:
         - Address
@@ -547,10 +523,6 @@
       fake: postalcode
     OtherCountry:
       fake: country
-    OtherLatitude:
-      fake: latitude
-    OtherLongitude:
-      fake: longitude
     OtherGeocodeAccuracy:
       random_choice:
         - Address
