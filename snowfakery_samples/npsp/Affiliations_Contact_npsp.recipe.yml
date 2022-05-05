@@ -1,12 +1,25 @@
+
+
+
+## NPSP Affiliations Contact Example Recipe
+
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Contact (1)
+# 2.0. Account (2)
+# 3.0. Affiliations (1 each for a total of 2)
+# 
+### ----------- [ Affiliations_Contact_npsp.recipe.yml Summary ]---------- ###
 # This will create a Contact (NPSP will create the corresponding Household Account)
 # Then create 2 Organization Accounts and the corresponding Affiliations with the Contact
-
+#
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe 10 times in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Affiliations_Contact_npsp.recipe.yml -o num_records 10 -o num_records_tablename Contact --org dev
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Affiliations_Contact_npsp.recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Affiliations_Contact_npsp.recipe.yml
+#
+### ----------- [            Important Notes           ]---------- ###
 #
 ### ----------- [            Recipe Starts             ]---------- ###
 #

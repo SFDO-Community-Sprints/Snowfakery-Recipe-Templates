@@ -1,15 +1,25 @@
+## NPSP BDI.npsp.recipe.yml Example Recipe
+#
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. npsp__DataImportBatch (1)
+# 2.0. npsp__DataImport (between 1-10)
+#
+### ----------- [ BDI_npsp.recipe.yml Summary ]---------- ###
 # NPSP Data Import Recipe with new Style Guide
 # This will first create a macro called donation, which includes the fields used for data import.
 # Then the recipe will create a Data Import Batch with between 1 and 10 opportunities.
-
-
+#
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe 10 times in a Salesforce scratch org called "qa":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/BDI_npsp.recipe.yml -o num_records 10 -o num_records_tablename npsp__DataImportBatch__c --org qa
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/BDI_npsp.recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/BDI_npsp.recipe.yml
-### -----------
+#
+### ----------- [            Important Notes           ]---------- ###
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
 
 # macro for donation fields
 - macro: donation
