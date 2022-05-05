@@ -249,32 +249,57 @@
 
 # Objects nested with Success Plan Template
 - object: sfal__SuccessPlanTemplate__c
-  count: 2
+  count: 3
   nickname: SuccessPlanTemplate
   fields:
+    Name: ${{fake.RandomElement(elements=('Failed Assessment', 'Lack of Academic Activity', 'New Course Enrollment'))}}
     sfal__Active__c: true
     sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
     sfal__UsageCount__c: 1
   friends:
-    - object: sfal__SuccessPlan__c
-      count: 2
+    - object: sfal__SuccessPlanTemplateTask__c
+      nickname: TemplateTask1
       fields:
+        Name: Call Student
+        sfal__Active__c: true
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Priority__c: ${{fake.RandomElement(elements=('High', 'Medium', 'Low'))}}
+        sfal__RelativeDueDate__c: 2
+        sfal__SuccessPlanTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__Type__c: Call
+    - object: sfal__SuccessPlanTemplateTask__c
+      nickname: TemplateTask2
+      fields:
+        Name: Meet with Student
+        sfal__Active__c: true
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Priority__c: ${{fake.RandomElement(elements=('High', 'Medium', 'Low'))}}
+        sfal__RelativeDueDate__c: 5
+        sfal__SuccessPlanTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__Type__c: Meeting
+    - object: sfal__SuccessPlan__c
+      fields:
+        Name: ${{SuccessPlanTemplate.Name}}
         sfal__AdviseeRecord__c:
           reference: SampleAdvisingCase
         sfal__Advisee__c:
           reference: Contact
         sfal__AutoApply__c: true
-        sfal__Comments__c:
-          reference: SuccessPlanTemplate.sfal__Comments__c
+        sfal__Comments__c: ${{SuccessPlanTemplate.sfal__Comments__c}}
         sfal__FromTemplate__c:
           reference: SuccessPlanTemplate
         sfal__IsCancelled__c: false
         sfal__IsPublished__c: true
         sfal__Status__c:
           random_choice: ${{fake.RandomElement(elements=('Open', 'Completed'))}}
+        sfal__NumberOfTasks__c: 2
+        sfal__NumberOfOpenTasks__c: 2
+        sfal__NumberOfOverdueTasks__c: 0
       friends:
         - object: Task
-          count: 3
+          nickname: Task1
           fields:
             WhatId:
               reference: sfal__SuccessPlan__c
@@ -282,26 +307,28 @@
               SalesforceQuery.find_record:
                 from: User
                 where: UserType='Standard'
-            Subject: ${{fake.Text(max_nb_chars=50)}}
+            Subject: ${{TemplateTask1.Name}}
             ActivityDate:
               date_between:
                 start_date: today
                 end_date: +2d
-    - object: sfal__SuccessPlanTemplateTask__c
-      fields:
-        sfal__Active__c: true
-        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
-        sfal__Priority__c:
-          random_choice:
-            - High
-            - Normal
-            - Low
-        sfal__RelativeDueDate__c: 2
-        sfal__SuccessPlanTemplate__c:
-          reference: SuccessPlanTemplate
-        sfal__Type__c:
-          random_choice:
-            - Call
-            - Meeting
-            - Other
-            - Email
+            Description: ${{TemplateTask1.sfal__Comments__c}}
+            Type: ${{TemplateTask1.sfal__Type__c}}
+            Priority: ${{TemplateTask1.sfal__Priority__c}}
+        - object: Task
+          nickname: Task2
+          fields:
+            WhatId:
+              reference: sfal__SuccessPlan__c
+            OwnerId:
+              SalesforceQuery.find_record:
+                from: User
+                where: UserType='Standard'
+            Subject: ${{TemplateTask2.Name}}
+            ActivityDate:
+              date_between:
+                start_date: today
+                end_date: +5d
+            Description: ${{TemplateTask2.sfal__Comments__c}}
+            Type: ${{TemplateTask2.sfal__Type__c}}
+            Priority: ${{TemplateTask2.sfal__Priority__c}}
