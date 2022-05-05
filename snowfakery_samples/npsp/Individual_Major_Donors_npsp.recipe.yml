@@ -21,7 +21,7 @@
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml
 #
-# Use this command to run this recipe locally and output to a JSON file called output.json
+# Use this command to run this recipe locally and output to a JSON file called output.json, targeting 100 Contact records created
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Individual_Major_Donors_npsp.recipe.yml --target-number 100 Contact
 #
 ### ----------- [            Recipe Starts             ]---------- ###
@@ -37,12 +37,14 @@
 
 
 
-- object: Account 
+- object: Account
   count: 1
   nickname: MajorDonorHHAccount
   fields:
     name: Household
     RecordType: HH_Account
+
+
 
 - object: Contact #NPSP will set this Contact as Primary for the household and add a donor contact role and hard credit for all Opportunities
   count: 1
@@ -55,7 +57,9 @@
     LastName: 
       fake: LastName
 
-- object: Opportunity 
+
+
+- object: Opportunity
   count: 
     random_number: 
       min: 1
@@ -65,7 +69,7 @@
     AccountId:
       reference: MajorDonorHHAccount
     Name: Major Donor Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
-    Amount: #assumption: these Opportunities will all be paid in one installment
+    Amount:
       random_number:
         min: ${{amount_min}}
         max: ${{amount_max}}
@@ -77,9 +81,9 @@
         end_date: +1y #assuming major gifts are planned in the coming year
     StageName: 
       if:
-        - choice: 
+        - choice:
             when: ${{date(CloseDate) <= today}}
-            pick: Closed Won #assumptions: (a) there are no Closed Lost Opportunities (b) Close Date is accurate
+            pick: Closed Won #assumptions: (a) there are no past Closed Lost Opportunities (b) Close Date is accurate
         - choice:
             pick:
               random_choice: # Use the values from the Major Gift Sales Process
@@ -88,10 +92,40 @@
                 - Cultivation
                 - Solicitation
                 - Proposal/Review
+                - Pledged # NPSP Sales Process does not include the Pledged value by default, but this should still populate Opportunities with this Stage
                 - Verbal Commitment
                 - Closed Lost
-                #- Pledged NPSP Sales Process does not include the Pledged value by default
-
+    npe01__Do_Not_Automatically_Create_Payment__c: TRUE #because we are creating them from this recipe
+  friends:
+    - object: npe01__OppPayment__c
+      count:
+        if:
+          - choice: # If the Opportunity is Pledged, create 4 Payments
+              when: ${{MajorGiftOpportunity.StageName=='Pledged'}}
+              pick: 4
+          - choice: # If the Opportunity is not Pledged, create just 1 Payment
+              pick: 1
+      fields:
+        npe01__Opportunity__c:
+          reference: MajorGiftOpportunity
+        npe01__Payment_Amount__c:
+          if:
+            - choice: # If the Opportunity is Pledged, divide the Payment Amount by 4 to split it evenly between the four Payments
+                when: ${{MajorGiftOpportunity.StageName=='Pledged'}}
+                pick: ${{MajorGiftOpportunity.Amount / 4}}
+            - choice: # If only one Payment, Payment Amount = Opportunity Amount
+                pick: ${{MajorGiftOpportunity.Amount}}
+        # If only one Payment, Payment Date = Opportunity Close Date.
+        # If more than one Payment, space out the four Payment Dates in 4 month installments, with the final Payment being the Opportunity Close Date.
+        npe01__Payment_Date__c: ${{date(MajorGiftOpportunity.CloseDate) - relativedelta(months=child_index * 4)}}
+        npe01__Scheduled_Date__c: ${{npe01__Payment_Date__c}}
+        npe01__Paid__c:
+          if:
+            - choice: # this assumes there are no overdue unpaid Payments
+                when: ${{date(npe01__Payment_Date__c) <= today}}
+                pick: TRUE
+            - choice:
+                pick: FALSE
 
 
 - object: npsp__Engagement_Plan_Template__c
@@ -176,7 +210,6 @@
 
 
 
-
 - object: npsp__Engagement_Plan__c #The authors chose to map this Engagement Plan to the Account.  If you want to map this to a Contact or Opportunity, comment out the Account reference and uncomment the relationship for the intended object
   count: 1
   fields:
@@ -188,11 +221,3 @@
       #reference: MajorGiftOpportunity
     npsp__Engagement_Plan_Template__c:
       reference: MajorGivingEngagementPlanTemplate
-
-
-
-
-
-
-
-
