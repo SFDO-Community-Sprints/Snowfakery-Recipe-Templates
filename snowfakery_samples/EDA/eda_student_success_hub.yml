@@ -20,6 +20,7 @@
 #   Success Plan Task
 #   Task
 #   Alert
+#   Prediction
 
 # Run this to generate data in a scratch org:
 # cci task run snowfakery --recipe snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
@@ -334,7 +335,7 @@
             Type: ${{TemplateTask2.sfal__Type__c}}
             Priority: ${{TemplateTask2.sfal__Priority__c}}
 
-# Alert object
+# Alert and Prediction objects
 - object: sfal__Alert__c
   count: 3
   fields:
@@ -346,4 +347,19 @@
     sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
     sfal__Priority__c: ${{fake.RandomElement(elements=('Urgent', 'Normal', 'Low'))}}
     sfal__Reason__c: ${{fake.RandomElement(elements=('Grade Concern', 'Failure Concern', 'Missing/Late Assignment', 'Attendance Concern', 'Participation Concern', 'Preparedness Concern', 'Academic Integrity', 'Recognition', 'Missing/Late Application', 'Qualification Not Met', 'General Health', 'Room Change'))}}
-    sfal__Status__c: ${{fake.RandomElement(elements=('New', 'Acknowledged"&#x20;" In Progress', 'Acknowledged"&#x20;" Redirected'))}}
+    sfal__Status__c:
+      random_choice:
+        - New
+        - "Acknowledged: In Progress"
+        - "Acknowledged: Redirected"
+  friends:
+    - object: sfal__Prediction__c
+      fields:
+        sfal__Alert__c:
+          reference: sfal__Alert__c
+        sfal__Appointment__c:
+          reference: SampleAppointment
+        sfal__Case__c:
+          reference: SampleAdvisingCase
+        sfal__Model__c: ${{fake.Text(max_nb_chars=20)}}
+        sfal__Type__c: ${{fake.Text(max_nb_chars=20)}}
