@@ -1,9 +1,23 @@
+
+## Standar NPSP Objects Example Recipe
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Houshold Account (1)
+# 2-0. Account (1)
+# 3-0. Address for the Household Account
+### ----------- [ standard_npsp_objs_recipe.yml Summary ]---------- ###
+# This recipe creates one Household Account with an address and one Account.
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/standard_npsp_objs_recipe.yml --org dev
+# cci task run snowfakery --recipe snowfakery_samples/npsp/standard_npsp_objs_recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/standard_npsp_objs_recipe.yml
+#
+### ----------- [            Important Notes           ]---------- ###
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+
 
 - object: Account
   just_once: True

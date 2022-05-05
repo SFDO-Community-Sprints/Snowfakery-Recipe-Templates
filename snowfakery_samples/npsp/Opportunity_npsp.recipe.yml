@@ -1,13 +1,16 @@
 ## NPSP Opportunities Example
 ### ------------- [          ORDER OF INSERT         ]------------ ###
-# 1-0. Opportunity (2)
-
+# 1-0.  Account: (3)                                                                                                                                    
+# 2-0.  Contact: (1)                                                                                                                                        
+# 3-0.  Campaign: (1)                                                                                                                                      
+# 4-0.  npsp__Address__c: (1)                                                                                                                               
+# 5-0.  Opportunity: (2) 
 ### ----------- [ Opportunity_npsp.recipe.yml Summary ]---------- ###
 # This recipe creates 2 Opportunities and includes Account information from other files.
 #
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Opportunity_npsp.recipe.yml -o num_records 300 -o num_records_tablename Account --org dev
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Opportunity_npsp.recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Opportunity_npsp.recipe.yml

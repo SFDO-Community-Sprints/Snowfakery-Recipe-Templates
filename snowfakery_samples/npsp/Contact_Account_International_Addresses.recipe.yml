@@ -1,10 +1,25 @@
+## Contact Account International Addresses Recipe
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Contact (3)
+# 1-1. Account (1)
+# 1-2. npe5__Affiliation__c (1)
+# 1-3. npe4__Relationship__c (1)
+#
+### ----------- [ Contact_Account_International_Addresses.recipe.yml Summary ]---------- ###
+# This Recipe creates (3) international Contacts and (1) international Account, Each from a random locale. 
+# It then creates an affliation between one of the contacts and the account with a "current" status 75% of the time and "former" status 25%. The role is random. 
+# It then creates a relationship between two of the contacts with a random with a "current" status 50% of the time and "former" status 50%. The type is random.
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe 00 times in a Salesforce scratch org called "dev":
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/Contact_Account_International_Addresses.recipe.yml -o num_records 30 -o num_records_tablename Contact --org dev
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Contact_Account_International_Addresses.recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Contact_Account_International_Addresses.recipe.yml
-### -----------
+#
+### ----------- [            Important Notes           ]---------- ###
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
 ########## Contact Macros ##########
 - macro: International_Contacts
   fields:

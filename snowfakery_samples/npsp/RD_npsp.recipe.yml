@@ -12,9 +12,9 @@
 # https://powerofus.force.com/s/article/NPSP-Recurring-Donations-Overview-and-Setup
 
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe in a Salesforce org
+# Use this command to run this recipe in a Salesforce org called "dev":
 # To run this command, you must have Enhanced Recurring Donations enabled in the target org
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/npsp/RD_npsp.recipe.yml --org dev
+# cci task run snowfakery --recipe snowfakery_samples/npsp/RD_npsp.recipe.yml --org dev
 
 # Use this command to run this recipe locally
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/RD_npsp.recipe.yml
