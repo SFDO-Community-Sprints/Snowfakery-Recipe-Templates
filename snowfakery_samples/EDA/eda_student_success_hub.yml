@@ -1,5 +1,5 @@
 # Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
-# Work in progress that creates data for the following objects:
+# Creates data for the following objects:
 #   Contact
 #   Case (Advising Record)
 #   Account (University Department)
@@ -19,6 +19,7 @@
 #   Success Plan
 #   Success Plan Task
 #   Task
+#   Alert
 
 # Run this to generate data in a scratch org:
 # cci task run snowfakery --recipe snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
@@ -29,7 +30,7 @@
 # Load plugin for querying Salesforce, used to link records to internal advisor user
 - plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
 
-# Create Contact; dependency for Case (Advising)
+# Create Contact', 'dependency for Case (Advising)
 - object: Contact
   fields:
     LastName:
@@ -90,7 +91,7 @@
             end_date: +1y
         hed__Role__c: "Student"
 
-# Create Case (Advising) record; dependency for Appointment, Appointment Attendee, Alert, Prediction, Success Plan, Task
+# Create Case (Advising) record', 'dependency for Appointment, Appointment Attendee, Alert, Prediction, Success Plan, Task
 - object: Case
   nickname: SampleAdvisingCase
   fields:
@@ -112,7 +113,7 @@
     name: Sample Academic Department
     RecordType: "University_Department"
 
-# Create Advising Pool; dependency for Queue Topic Setting
+# Create Advising Pool', 'dependency for Queue Topic Setting
 - object: sfal__AdvisingPool__c
   nickname: AdvisingPool
   fields:
@@ -332,3 +333,17 @@
             Description: ${{TemplateTask2.sfal__Comments__c}}
             Type: ${{TemplateTask2.sfal__Type__c}}
             Priority: ${{TemplateTask2.sfal__Priority__c}}
+
+# Alert object
+- object: sfal__Alert__c
+  count: 3
+  fields:
+    sfal__AdviseeRecord__c:
+      reference: SampleAdvisingCase
+    sfal__Advisee__c:
+      reference: Contact
+    sfal__AssignUsingRules__c: true
+    sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+    sfal__Priority__c: ${{fake.RandomElement(elements=('Urgent', 'Normal', 'Low'))}}
+    sfal__Reason__c: ${{fake.RandomElement(elements=('Grade Concern', 'Failure Concern', 'Missing/Late Assignment', 'Attendance Concern', 'Participation Concern', 'Preparedness Concern', 'Academic Integrity', 'Recognition', 'Missing/Late Application', 'Qualification Not Met', 'General Health', 'Room Change'))}}
+    sfal__Status__c: ${{fake.RandomElement(elements=('New', 'Acknowledged"&#x20;" In Progress', 'Acknowledged"&#x20;" Redirected'))}}
