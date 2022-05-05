@@ -2,6 +2,9 @@
 # Creates data for the following objects:
 #   Contact
 #   Case (Advising Record)
+#   Case Team Role
+#   Case Team Member
+#   Case Comment
 #   Account (University Department)
 #   Advising Pool
 #   Queue Waiting Room Resource
@@ -106,6 +109,30 @@
       reference: AdvisingPool
     sfal__Location__c: "Other"
     hed__Location__c: "Other"
+  friends:
+    - object: CaseTeamRole
+      fields:
+        AccessLevel: Edit
+        # CaseTeamRoles must be unique so random number is added to allow recipe to run multiple times in same org
+        Name: Advisor ${{random_number(min=5, max=20)}}
+        PreferencesVisibleInCSP: true
+      friends:
+        - object: CaseTeamMember
+          fields:
+            MemberId:
+              SalesforceQuery.find_record:
+                from: User
+                where: UserType='Standard'
+            ParentId:
+              reference: SampleAdvisingCase
+            TeamRoleId:
+              reference: CaseTeamRole
+    - object: CaseComment
+      count: 3
+      fields:
+        ParentId:
+          reference: SampleAdvisingCase
+        CommentBody: ${{fake.Text(max_nb_chars=200)}}
 
 # Create University Department
 - object: Account
