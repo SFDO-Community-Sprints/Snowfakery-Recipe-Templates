@@ -1,0 +1,88 @@
+## Salesforce Lead Example
+
+# To run this code:
+#
+# cci task run snowfakery --recipe snowfakery_samples/salesforce/Lead.recipe.yml
+
+# hard-coded values
+- object: Lead
+  fields:
+    Title: SnowFake Lead
+    Company: SnowFake_Company
+    Status: Open - Not Contacted
+    LastName: Gob  
+
+# randomized values
+- object: Lead
+  fields:
+    Company:
+      fake: company
+    LastName:
+      fake: last_name
+    Title:
+      fake.text:
+        max_nb_chars: 100
+    Status:
+      random_choice:
+        - Open - Not Contacted
+        - Open - Not Contacted
+        - Closed - Not Converted
+        - Working - Contacted 
+
+# almost all fields
+- object: Lead
+  count: 100
+  fields:
+    Company:
+      fake: company
+    LastName:
+      fake: last_name
+    Title:
+      fake.text:
+        max_nb_chars: 100
+    Status:
+      random_choice:
+        - choice:
+            probability: 50%
+            pick: Open - Not Contacted
+        - choice:
+            probability: 10%
+            pick: Open - Not Contacted
+        - choice:
+            probability: 10%
+            pick: Closed - Not Converted
+        - choice:
+            probability: 30%
+            pick: Working - Contacted 
+    Rating:
+      random_choice:
+        Hot: 40%
+        Warm: 40%
+        Cold: 20%
+    Street:
+      fake.text:
+        max_nb_chars: 100
+    City:
+      fake: city
+    State:
+      fake: state
+    PostalCode:
+      fake: postalcode
+    Country:
+      fake: country
+    Description:
+      fake.text:
+        max_nb_chars: 10000
+    Phone:
+      fake: phone_number
+    Fax:
+      fake: phone_number
+    Email:
+      fake: email
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other

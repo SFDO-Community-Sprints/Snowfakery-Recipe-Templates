@@ -2,7 +2,7 @@
 
 # To run this code against an org named 'qa':
 #
-# cci task run generate_and_load_from_yaml -o generator_yaml examples/salesforce/OpportunityAndContact.recipe.yml -o num_records 300 -o num_records_tablename Opportunity --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml examples/salesforce/Opportunity_Contact.recipe.yml -o num_records 300 -o num_records_tablename Opportunity --org qa
 
 - object: Contact
   fields:
