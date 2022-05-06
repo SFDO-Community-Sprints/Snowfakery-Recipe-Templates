@@ -1,12 +1,15 @@
 ## NPSP Opportunities Example
 ### ------------- [          ORDER OF INSERT         ]------------ ###
-# 1-0.  Account: (3)                                                                                                                                    
-# 2-0.  Contact: (1)                                                                                                                                        
+# 1-0.  Organization Account: (3)                                                                                                                                    
+# 2-0.  Contact: (4) NPSP will create Household                                                                                                                                       
 # 3-0.  Campaign: (1)                                                                                                                                      
-# 4-0.  npsp__Address__c: (1)                                                                                                                               
-# 5-0.  Opportunity: (2) 
+# 4-0.  Grant Opportunity (1)                                                                                                                              
+# 5-0.  Donation Opportunity: (1-5)
+# 6.0.  In-Kind Opportunity: (1)
+# 7.0.  Membership Opportunity: (1) 
 ### ----------- [ Opportunity_npsp.recipe.yml Summary ]---------- ###
-# This recipe creates 2 Opportunities and includes Account information from other files.
+# This recipe creates 3 Organizations, 4 Contacts, a Campaign, A Grant, In-Kind, Membership and 1-5 Donation Opportunites.
+# 
 #
 ### ----------- [               CLI RUN                ]---------- ###
 # Use this command to run this recipe in a Salesforce scratch org called "dev":
@@ -18,84 +21,144 @@
 ### ----------- [            Recipe Starts             ]---------- ###
 #
 # Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
-
-
-- include_file: ../salesforce/standard_objs.recipe.yml #this defines standard objects for reference in later sections
-- include_file: standard_npsp_objs_recipe.yml #this defines simple custom objects in the NPSP architecture (referenced later)
-
-#This is a "template" version of an Opportunity definition.  You may want to copy it and create iterations for various Record Types/use cases.  Sample fields and random options are included in the longer definition of a more complex Opportunity below.  If you are running this in a Salesforce environment, your data will be subject to validation rules.
+# Creating an Organization Account
+- object: Account
+  nickname: Organization
+  count: 3
+  fields:
+    Name:
+      fake: Company
+    RecordType: Organization
+    Description: 
+      fake: CatchPhrase
+    BillingStreet: 
+      fake: StreetAddress
+    BillingCity:
+      fake: City
+    BillingState:
+      fake: State
+    BillingPostalCode:
+      fake: PostalCode
+    BillingCountry: United States # hardcoded to US here for simplicity
+    Phone: 
+      fake: PhoneNumber
+    Website:
+      fake: Uri
+#
+# Creating a Contact
+- object: Contact
+  nickname: Contact
+  count: 4
+  fields:
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+# If you're not familiar with NPSP, there is automation to populate the standard Email and Phone fields based on the data below.
+# NPSP will also automatically create the Household Accounts
+    npe01__HomeEmail__c:
+      fake: Email
+    npe01__WorkEmail__c:
+      fake: Email
+    npe01__Preferred_Email__c:
+      random_choice:
+        - Personal 
+        - Work   
+    npe01__WorkPhone__c:
+      fake: PhoneNumber
+    HomePhone:
+      fake: PhoneNumber
+    MobilePhone:
+      fake: PhoneNumber
+    npe01__PreferredPhone__c:
+      random_choice:
+        - Home 
+        - Work
+        - Mobile 
+    MailingStreet:
+      fake: StreetAddress
+    MailingCity:
+      fake: City
+    MailingState:
+      fake: State
+    MailingPostalCode:
+      fake: PostalCode
+    MailingCountry: United States # hardcoded to US here for simplicity
+    npe01__Primary_Address_Type__c: Home # hardcoded to home for simplicity
+    Title:
+      fake: Job
+    Birthdate:
+      date_between:
+        start_date: -60y
+        end_date: -20y
+# Create a Campaign 
+- object: Campaign
+  nickname: Campaign
+  just_once: True
+  fields:
+    name: Annual ${{fake.Word}} Appeal Campaign
+    description: CatchPhrase
+    StartDate:
+      date_between:
+        start_date: -1y
+        end_date: -1m
+    EndDate:
+      date_between:
+        start_date: 4m
+        end_date: 6m
+    Status: In Progress
+    Type: Email
+    ExpectedRevenue: 500000
+    IsActive: True
+#Create a Grant Opportunity
 - object: Opportunity
   nickname: GrantOpportunity
   fields:
+    RecordType: Grant
     AccountId: 
-      reference: Organization #this Organization is being created in the file referenced in "Include_File" and Organization is a nickname for a set of instructions
+      reference: Organization 
     Name: Grant Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
     Description: A Grant Opportunity
+    CampaignId:
+      reference: Campaign
     Amount:
       random_number:
-        min: 1
+        min: 5000
         max: 100000
-    RecordType: Grant
     CloseDate:
       date_between:
         start_date: +1m
         end_date: +1y
     StageName: Prospecting
-
-#The example below shows options for advanced customization and random choice variables, plus less common NPSP fields 
+# Create 1-5 Donation Opportunities with Honoree Information
 - object: Opportunity
+  nickname: donation
+  count:
+    random_number:
+      min: 1
+      max: 5
   fields:
-    AccountId:
-      reference: Account # you need to have declared an account elsewhere
-    Name:
-      fake: name
+    RecordType: Donation
+    npsp__Primary_Contact__c: 
+      random_reference: Contact #snowfakery doesn't currently generate random reference on nickname, so this needs to be the object name    
+    Name: ${{RecordType}} ${{CloseDate}}
     Description:
       fake.text:
         max_nb_chars: 100
+    CampaignId:
+      reference: Campaign
     CloseDate:
       date_between:
         start_date: -1y
         end_date: today
     StageName:
       random_choice:
-        - Prospecting
-        - Qualification
-        - Needs Analysis
-        - Value Proposition
-        - Id. Decision Makers
-        - Perception Analysis
-        - Proposal/Price Quote
-        - Negotiation/Review
         - Closed Won
-        - Closed Lost
         - Pledged
     Amount:
       random_number:
         min: 1
-        max: 100000
-    ContactId:
-      reference: Contact
-    npe01__Contact_Id_for_Role__c:
-      fake.text:
-        max_nb_chars: 100
-    npe01__Member_Level__c:
-      random_choice:
-        - Gold
-        - Silver
-        - Bronze
-    npe01__Membership_End_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npe01__Membership_Origin__c:
-      random_choice:
-        - New
-        - Renewal
-        - Reacquire
-    npe01__Membership_Start_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
+        max: 1000
     npsp__Acknowledgment_Date__c:
       date_between:
         start_date: -1y
@@ -107,65 +170,10 @@
         - Do Not Acknowledge
         - Email Acknowledgment Now
         - Email Acknowledgment Not Sent
-    npsp__Ask_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Closed_Lost_Reason__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Fair_Market_Value__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Gift_Strategy__c:
-      random_choice:
-        - New Donor
-        - Renewal
-        - Upgrade
-    npsp__Grant_Contract_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Grant_Contract_Number__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Grant_Period_End_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Grant_Period_Start_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Grant_Program_Area_s__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Grant_Requirements_Website__c:
-      fake: url
     npsp__Honoree_Contact__c:
       reference: Contact
     npsp__Honoree_Name__c:
       fake: name
-    npsp__In_Kind_Description__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__In_Kind_Type__c:
-      random_choice:
-        - Goods
-        - Services
-    npsp__Matching_Gift_Account__c:
-      reference: Organization
-    npsp__Matching_Gift_Employer__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Matching_Gift_Status__c:
-      random_choice:
-        - Potential
-        - Submitted
-        - Received
-    #npsp__Matching_Gift__c:
-    #  reference: MatchingGift  #We deleted the matching gift example.  If you want to use this, create another Opportunity definition above with a nickname of MatchingGift
     npsp__Notification_Message__c:
       fake.text:
         max_nb_chars: 100
@@ -182,26 +190,230 @@
         max_nb_chars: 100
     npsp__Notification_Recipient_Name__c:
       fake: name
-    npsp__Previous_Grant_Opportunity__c:  #this may have a NPSP validation rule about being a date in the past
-      reference: GrantOpportunity
+    npsp__Primary_Contact__c:
+      reference: Contact
+    npsp__Tribute_Type__c: Honor
+#
+# #Create an In-Kind Opportunity
+- object: Opportunity
+  nickname: InKindOpp
+  fields:
+    RecordType: InKindGift
+    npsp__Primary_Contact__c: 
+      random_reference: Contact #snowfakery doesn't currently generate random reference on nickname, so this needs to be the object name    
+    Name: ${{RecordType}} ${{CloseDate}}
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    CampaignId:
+      reference: Campaign
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: today
+    StageName:
+      random_choice:
+        - Closed Won
+        - Pledged
+    Amount:
+      random_number:
+        min: 1
+        max: 10000
+    npsp__Acknowledgment_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    npsp__Acknowledgment_Status__c:
+      random_choice:
+        - To Be Acknowledged
+        - Acknowledged
+        - Do Not Acknowledge
+        - Email Acknowledgment Now
+        - Email Acknowledgment Not Sent
+    npsp__Ask_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    npsp__Fair_Market_Value__c:
+      random_number:
+        min: 200
+        max: 12000
+    npsp__In_Kind_Description__c:
+      fake.text:
+        max_nb_chars: 100
+    npsp__In_Kind_Type__c:
+      random_choice:
+        - Goods
+        - Services
     npsp__Primary_Contact_Campaign_Member_Status__c:
       fake.text:
         max_nb_chars: 40
     npsp__Primary_Contact__c:
       reference: Contact
-    npsp__Qualified_Date__c:
+# #
+# # Create a Membership Opportunity
+- object: Opportunity
+  nickname: memOpp
+  fields:
+    RecordType: Membership
+    npsp__Primary_Contact__c: 
+      random_reference: Contact #snowfakery doesn't currently generate random reference on nickname, so this needs to be the object name    
+    Name: Membership ${{CloseDate}}
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    CampaignId:
+      reference: Campaign
+    npsp__Primary_Contact_Campaign_Member_Status__c:
+      fake.text:
+        max_nb_chars: 40
+    CloseDate:
       date_between:
         start_date: -1y
         end_date: today
-    npsp__Recurring_Donation_Installment_Number__c:
+    StageName: Closed Won
+    Amount:
       random_number:
         min: 1
-        max: 100000
-    npsp__Requested_Amount__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Tribute_Type__c:
+        max: 1000
+    npe01__Member_Level__c:
+      if:
+        - choice:
+            when: ${{Amount<100}}
+            pick: Bronze
+        - choice:
+            when: ${{Amount<500}}
+            pick: Silver
+        - choice:
+            pick: Gold
+    npe01__Membership_End_Date__c:
+      date_between:
+        start_date: 3m
+        end_date: 9m
+    npe01__Membership_Origin__c:
       random_choice:
-        - Honor
-        - Memorial
+        - New
+        - Renewal
+        - Reacquire
+    npe01__Membership_Start_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: -1m
+    npsp__Acknowledgment_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    npsp__Acknowledgment_Status__c:
+      random_choice:
+        - To Be Acknowledged
+        - Acknowledged
+        - Do Not Acknowledge
+        - Email Acknowledgment Now
+        - Email Acknowledgment Not Sent
+#
+# #Uncomment the following example and remove unneeded items to build out other opportunity types
+# ##The example below shows options for advanced customization and random choice variables, plus less common NPSP fields 
+#  - object: Opportunity
+#   fields:
+#     npsp__Primary_Contact__c: 
+#       random_reference: Contact #snowfakery doesn't currently generate random reference on nickname, so this needs to be the object name    
+#     Name:
+#       fake: name
+#     Description:
+#       fake.text:
+#         max_nb_chars: 100
+#     CloseDate:
+#       date_between:
+#         start_date: -1y
+#         end_date: today
+#     StageName:
+#       random_choice:
+#         - Prospecting
+#         - Qualification
+#         - Closed Won
+#         - Closed Lost
+#         - Pledged
+#     Amount:
+#       random_number:
+#         min: 1
+#         max: 100000
+#     npe01__Member_Level__c:
+#       random_choice:
+#         - Gold
+#         - Silver
+#         - Bronze
+#     npe01__Membership_End_Date__c:
+#       date_between:
+#         start_date: -1y
+#         end_date: today
+#     npe01__Membership_Origin__c:
+#       random_choice:
+#         - New
+#         - Renewal
+#         - Reacquire
+#     npe01__Membership_Start_Date__c:
+#       date_between:
+#         start_date: -1y
+#         end_date: today
+#     npsp__Acknowledgment_Date__c:
+#       date_between:
+#         start_date: -1y
+#         end_date: today
+#     npsp__Acknowledgment_Status__c:
+#       random_choice:
+#         - To Be Acknowledged
+#         - Acknowledged
+#         - Do Not Acknowledge
+#         - Email Acknowledgment Now
+#         - Email Acknowledgment Not Sent
+#     npsp__Ask_Date__c:
+#       date_between:
+#         start_date: -1y
+#         end_date: today
+#     npsp__Closed_Lost_Reason__c:
+#       fake.text:
+#         max_nb_chars: 100
+#     npsp__Fair_Market_Value__c:
+#       random_number:
+#         min: 1
+#         max: 100000
+#     npsp__Gift_Strategy__c:
+#       random_choice:
+#         - New Donor
+#         - Renewal
+#         - Upgrade
+#     npsp__In_Kind_Description__c:
+#       fake.text:
+#         max_nb_chars: 100
+#     npsp__In_Kind_Type__c:
+#       random_choice:
+#         - Goods
+#         - Services
+#     npsp__Matching_Gift_Account__c:
+#       reference: Organization
+#     npsp__Matching_Gift_Employer__c:
+#       fake.text:
+#         max_nb_chars: 100
+#     npsp__Matching_Gift_Status__c:
+#       random_choice:
+#         - Potential
+#         - Submitted
+#         - Received
+#     npsp__Primary_Contact_Campaign_Member_Status__c:
+#       fake.text:
+#         max_nb_chars: 40
+#     npsp__Primary_Contact__c:
+#       reference: Contact
+#     npsp__Qualified_Date__c:
+#       date_between:
+#         start_date: -1y
+#         end_date: today
+#     npsp__Recurring_Donation_Installment_Number__c:
+#       random_number:
+#         min: 1
+#         max: 100000
+#     npsp__Requested_Amount__c:
+#       random_number:
+#         min: 1
+#         max: 100000
+
