@@ -1,0 +1,33 @@
+Account (count: 2)
+        Fields: 
+            Name
+            External_Id__c
+        Related Objects:
+            Contact
+                count: 1 per Account
+                fields:
+                    firstname
+                    lastname
+                    External_Id__c
+            Opportunity 
+                count: 1 per Account
+                fields:
+                    Stagename (random from standard stages)
+                    CloseDate (random this month)
+            Case
+                Count: 1 per Account
+                Fields:
+                    External_Id__c
+                    ContactId
+                    AccountId
+                    Status (hard-coded to New)
+                    Origin (mix of standard Origins)
+Campaign 
+    count: 2
+    Fields
+        Name
+        External_Id__c
+    Related Objects:
+        CampaignMember
+            Count: 1 per Contact, per campaign
+            Status: Sent

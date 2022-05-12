@@ -1,16 +1,162 @@
 - object: Account
-  just_once: True
+  count: 25
   fields:
-    name: The Account
+    Name:
+      fake: company
+    Type:
+      random_choice:
+        - Prospect
+        - Customer - Direct
+        - Customer - Channel
+        - Channel Partner / Reseller
+        - Installation Partner
+        - Technology Partner
+        - Other
+    BillingStreet:
+      fake: StreetAddress
+    BillingCity:
+      fake: city
+    BillingState:
+      fake: state
+    BillingPostalCode:
+      fake: postalcode
+    BillingCountry:
+      fake: country
+    BillingGeocodeAccuracy:
+      random_choice:
+        - Address
+        - NearAddress
+        - Block
+        - Street
+        - ExtendedZip
+        - Zip
+        - Neighborhood
+        - City
+        - County
+        - State
+        - Unknown
+    Phone:
+      fake: phone_number
+    Fax:
+      fake: phone_number
+    Website:
+      fake: url
+    Industry:
+      random_choice:
+        - Agriculture
+        - Apparel
+        - Banking
+        - Biotechnology
+        - Chemicals
+        - Communications
+        - Construction
+        - Consulting
+        - Education
+        - Electronics
+        - Energy
+        - Engineering
+        - Entertainment
+        - Environmental
+        - Finance
+        - Food & Beverage
+        - Government
+        - Healthcare
+        - Hospitality
+        - Insurance
+        - Machinery
+        - Manufacturing
+        - Media
+        - Not For Profit
+        - Recreation
+        - Retail
+        - Shipping
+        - Technology
+        - Telecommunications
+        - Transportation
+        - Utilities
+        - Other
+    AnnualRevenue:
+      random_number:
+        min: 1
+        max: 100000
+    NumberOfEmployees:
+      random_number:
+        min: 1
+        max: 100000
+    Ownership:
+      random_choice:
+        - Public
+        - Private
+        - Subsidiary
+        - Other
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    Rating:
+      random_choice:
+        - Hot
+        - Warm
+        - Cold
+    Site:
+      fake.text:
+        max_nb_chars: 80
+    YearStarted:
+      fake: year
+    SicDesc:
+      fake.text:
+        max_nb_chars: 80
+  friends:
+    - object: Contact
+      count:
+        random_number:
+          min: 1
+          max: 20
+      fields:
+        AccountId:
+          reference: Account # you need to have defined an Account elsewhere
+        LastName:
+          fake: first_name
+        FirstName:
+          fake: last_name
+        Salutation:
+          random_choice:
+            - Mr.
+            - Ms.
+            - Dr.
+            - Prof.
+            - null
+    - object: Opportunity
+      count:
+        random_number:
+          min: 1
+          max: 5
+      fields:
+        AccountId:
+          reference: Account # you need to have declared an account elsewhere
 
-- object: Contact
-  nickname: BossContact
-  just_once: True
-  fields:
-    FirstName: Da
-    LastName: Boss
-
-- object: Campaign
-  just_once: True
-  fields:
-    name: The Campaign
+        CloseDate:
+          date_between:
+            start_date: -1y
+            end_date: today
+        Description:
+          fake.text:
+            max_nb_chars: 100
+        StageName:
+          random_choice:
+            - Prospecting
+            - Qualification
+            - Needs Analysis
+            - Value Proposition
+            - Id. Decision Makers
+            - Perception Analysis
+            - Proposal/Price Quote
+            - Negotiation/Review
+            - Closed Won
+            - Closed Lost
+            - Pledged
+        Amount:
+          random_number:
+            min: 100
+            max: 100000
+            step: 100
+        Name: ${{Account.Name}} $${{Amount}} Opportunity
