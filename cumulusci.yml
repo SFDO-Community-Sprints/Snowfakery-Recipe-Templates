@@ -23,7 +23,7 @@ sources:
 orgs:
     scratch:
         eda:
-            config_file: orgs/dev.json
+            config_file: orgs/eda.json
 tasks:
     robot:
         options:
@@ -77,7 +77,12 @@ tasks:
     npsp_settings:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
-            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml     
+            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
+    eda_org_alias:
+        description: create a new eda org alias
+        class_path: cumulusci.cli
+        options:
+            command: "cci org scratch dev eda"    
 flows:
     osc_memberships_project:
         description: OSC Membership Schema and Benefits project
@@ -134,14 +139,16 @@ flows:
             2:
                 flow: obf:install_npsp
     eda_scratch:
-        description: install Education Data Architecture
+        # $ cci flow run sal_eda_scratch --org eda
+        description: install Education Data Architecture.
         steps:
             1:
                 flow: eda:install_prod
                 options:
                     org: eda
     sal_eda_scratch:
-        description: install Advisor Link with Education Data Architecture dependencies
+        # $ cci flow run sal_eda_scratch --org eda
+        description: install Advisor Link with Education Data Architecture dependencies.
         steps:
             1:
                 flow: sal:install_prod
