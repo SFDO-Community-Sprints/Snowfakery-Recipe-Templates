@@ -3,7 +3,7 @@ project:
     name: DataGenerationToolkit
     package:
         name: DataGenerationToolkit
-        api_version: '50.0'
+        api_version: '53.0'
     git:
         default_branch: 'main/'
     source_format: sfdx
@@ -17,7 +17,13 @@ sources:
         github: https://github.com/SalesforceFoundation/SAL-CumulusCI
     pmm:
         github: https://github.com/SalesforceFoundation/PMM
+    obf:
+        github: https://github.com/SalesforceFoundation/OutboundFundsModule
 
+orgs:
+    scratch:
+        eda:
+            config_file: orgs/dev.json
 tasks:
     robot:
         options:
@@ -71,8 +77,7 @@ tasks:
     npsp_settings:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
-            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
-            
+            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml     
 flows:
     osc_memberships_project:
         description: OSC Membership Schema and Benefits project
@@ -105,3 +110,43 @@ flows:
                 task: generate_and_load_from_yaml
                 options:
                     generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
+    pmm_scratch:
+        description: install PMM package independent of NPSP
+        steps:
+            1:
+                flow: pmm:install_prod
+                options:
+                    org: dev
+    obf_scratch:
+        description: install Outbound Funds Module independent of NPSP
+        steps:
+            1:
+                flow: obf:install_prod
+                options:
+                    org: dev
+    obf_npsp_scratch:
+        description: install Outbound Funds Module with NPSP extension
+        steps:
+            1:
+                flow: obf:install_prod
+                options:
+                    org: dev
+            2:
+                flow: obf:install_npsp
+    eda_scratch:
+        description: install Education Data Architecture
+        steps:
+            1:
+                flow: eda:install_prod
+                options:
+                    org: eda
+    sal_eda_scratch:
+        description: install Advisor Link with Education Data Architecture dependencies
+        steps:
+            1:
+                flow: sal:install_prod
+                options:
+                    org: eda  
+        
+
+    
