@@ -24,6 +24,7 @@ orgs:
     scratch:
         eda:
             config_file: orgs/eda.json
+            days: 7
 tasks:
     robot:
         options:
