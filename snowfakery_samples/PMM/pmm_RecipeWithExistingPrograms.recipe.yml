@@ -1,0 +1,88 @@
+### This recipe creates records for the following objects, in a PMM org which already has Programs and Services:
+# - Contacts
+# - Accounts
+# - Program Engagements
+# - Service Deliveries
+#
+# Setup: run the following commands in order to set up your org and install PMM:
+#   Step 1: create a scratch org and set it as your default.
+#     cci org scratch dev jlNPSPAndPMM --default 
+#   Step 2: Install npsp
+#     cci flow run npsp_scratch
+#   Step 3: Install pmm
+#     cci flow run pmm:install_prod
+#
+# Run the following command to load this recipe:
+# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/PMM/pmm_RecipeWithExistingPrograms.recipe.yml
+#
+# The following plugins enable us to query records and iterate through a SOQL dataset:
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+- plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset
+#
+# Assumptions: 
+# 1. Job Readiness Program and Mobile Middle School STEM Programs already exist in the target org, and have related Services.  
+# 2. Copy and modify this template as needed, for your use case.
+# 3. This org does not necessarily have NPSP installed, and is record-type agnostic.
+
+# Find existing Program records and give them nicknames to reference later:
+- var: JobReadinessProgram
+  value: 
+    SalesforceQuery.find_record:
+      from: pmdm__Program__c
+      where: name='Job Readiness Program'
+
+- var: MobileMiddleSchoolSTEMProgram
+  value: 
+    SalesforceQuery.find_record:
+      from: pmdm__Program__c
+      where: name='Mobile Middle School STEM Program'
+
+# Create 100 Contacts, and an Account for each Contact.  Record types will default to the "Master" Record Type in the org. 
+- object: Contact
+  count: 100
+  fields:
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+    AccountID:
+      - object: Account
+        fields: 
+          Name: ${{LastName}} Household
+    Email:
+      fake: Email
+  friends:
+    # Create a special hidden 'object' called __Engagement, which will help us sync Contacts with Program Engagements and Service Deliveries
+    # 5 Programs Engagements will be created for each Contact.  
+    - object: __Engagement
+      count: 5
+      friends:
+        - object: pmdm__ProgramEngagement__c
+          fields: 
+            # Create a special hidden 'field' called __Service, which will allow us to synchronize the Program and Service assignments
+            # The first Contact will be associated with the first Service, the second Contact with the second Service, etc.  
+            # Make sure that Programs have related Services before running this recipe.  You will get an error if no Services are found. 
+            __Service: 
+              SOQLDataset.iterate:
+                fields: Id, pmdm__Program__c
+                from: pmdm__Service__c
+                where: pmdm__Program__r.Name IN ('Job Readiness Program','Mobile Middle School STEM Program')
+            pmdm__Contact__c:
+              reference: Contact
+            pmdm__Program__c: ${{__Service.pmdm__Program__c}}
+            Name: thisNameWillBeOverwritten 
+            # Future Enhancement: add some past, present, future dates
+        # Create 1-3 Service Deliveries to connect each Contact to Program Engagements and Services 
+        - object: pmdm__ServiceDelivery__c
+          count: 
+            random_number: 
+              min: 1
+              max: 3
+          fields:
+            Name: thisNameWillBeOverwritten
+            pmdm__Contact__c:
+              reference: Contact
+            pmdm__Service__c:
+              ${{pmdm__ProgramEngagement__c.__Service.Id}}
+            pmdm__ProgramEngagement__c:
+              reference: pmdm__ProgramEngagement__c
