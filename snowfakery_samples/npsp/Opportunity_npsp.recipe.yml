@@ -1,34 +1,89 @@
 ## NPSP Opportunities Example
 ### ------------- [          ORDER OF INSERT         ]------------ ###
-# 1-0.  Account: (3)                                                                                                                                    
-# 2-0.  Contact: (1)                                                                                                                                        
-# 3-0.  Campaign: (1)                                                                                                                                      
-# 4-0.  npsp__Address__c: (1)                                                                                                                               
-# 5-0.  Opportunity: (2) 
+
+# 1-0. Account (1)
+# 1-1. Opportunity (6)
+
 ### ----------- [ Opportunity_npsp.recipe.yml Summary ]---------- ###
-# This recipe creates 2 Opportunities and includes Account information from other files.
+# This recipe creates 1 Account and 6 Opportunities, one for each NPSP Opportunity Record Type,
+# with field values particular to that RecordType
 #
 ### ----------- [               CLI RUN                ]---------- ###
-# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# Use this command to run this recipe 1 time in a Salesforce scratch org called "dev":
 # cci task run snowfakery --recipe snowfakery_samples/npsp/Opportunity_npsp.recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
 # snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Opportunity_npsp.recipe.yml
 #
+# $ cci task run get_existing_record_types
+# The above command gives this result, reminding us of the DEVELOPER name to use for each Record Type:
+# Found existing Record Types: defaultdict(<class 'list'>, {'Account': ['HH_Account', 'Organization'], 'Opportunity':
+#                    ['NPSP_Default', 'Donation', 'Grant', 'InKindGift', 'MajorGift', 'MatchingGift', 'Membership']})
 ### ----------- [            Recipe Starts             ]---------- ###
 #
-# Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
+# Look at snowfakery_samples/salesforce/Account_npsp.recipe.yml for more examples.
 
+# Setup Step 1: Create 1 Account
+- object: Account
+  count: 1
+  nickname: Organization
+  fields:
+    Name:
+      fake: company
 
-- include_file: ../salesforce/standard_objs.recipe.yml #this defines standard objects for reference in later sections
-- include_file: standard_npsp_objs_recipe.yml #this defines simple custom objects in the NPSP architecture (referenced later)
+### Scenario 1: Create a Donation Opportunity 
+- object: Opportunity
+  nickname: DonationOpportunity
+  fields:
+    AccountId: 
+      reference: Organization
+    Name: Donation Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
+    Description: A Donation Opportunity
+    Amount:
+      random_number:
+        min: 1
+        max: 10000
+    RecordType: Donation
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: +1m
+    StageName: Closed Won    
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    npsp__Acknowledgment_Status__c:
+      random_choice:
+        - To Be Acknowledged
+        - Acknowledged
+        - Do Not Acknowledge
+        - Email Acknowledgment Now
+        - Email Acknowledgment Not Sent
+    npsp__Acknowledgment_Date__c:
+      if:
+        - choice:
+            when: ${{npsp__Acknowledgment_Status__c=='Acknowledged'}}
+            pick:
+              date_between:
+                start_date: ${{CloseDate}}
+                end_date: ${{date(Opportunity.CloseDate)+relativedelta(days=14)}}
+        - choice:
+            pick: null
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
 
-#This is a "template" version of an Opportunity definition.  You may want to copy it and create iterations for various Record Types/use cases.  Sample fields and random options are included in the longer definition of a more complex Opportunity below.  If you are running this in a Salesforce environment, your data will be subject to validation rules.
+### Scenario 2: Create a Grant Opportunity 
 - object: Opportunity
   nickname: GrantOpportunity
   fields:
     AccountId: 
-      reference: Organization #this Organization is being created in the file referenced in "Include_File" and Organization is a nickname for a set of instructions
+      reference: Organization
     Name: Grant Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
     Description: A Grant Opportunity
     Amount:
@@ -41,167 +96,216 @@
         start_date: +1m
         end_date: +1y
     StageName: Prospecting
-
-#The example below shows options for advanced customization and random choice variables, plus less common NPSP fields 
-- object: Opportunity
-  fields:
-    AccountId:
-      reference: Account # you need to have declared an account elsewhere
-    Name:
-      fake: name
-    Description:
-      fake.text:
-        max_nb_chars: 100
-    CloseDate:
-      date_between:
-        start_date: -1y
-        end_date: today
-    StageName:
+    Type:
       random_choice:
-        - Prospecting
-        - Qualification
-        - Needs Analysis
-        - Value Proposition
-        - Id. Decision Makers
-        - Perception Analysis
-        - Proposal/Price Quote
-        - Negotiation/Review
-        - Closed Won
-        - Closed Lost
-        - Pledged
-    Amount:
+        - Existing Funding
+        - New Funding
+    npsp__Requested_Amount__c:
       random_number:
-        min: 1
+        min: 100
         max: 100000
-    ContactId:
-      reference: Contact
-    npe01__Contact_Id_for_Role__c:
+    npsp__Grant_Program_Area_s__c:
       fake.text:
         max_nb_chars: 100
-    npe01__Member_Level__c:
-      random_choice:
-        - Gold
-        - Silver
-        - Bronze
-    npe01__Membership_End_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npe01__Membership_Origin__c:
-      random_choice:
-        - New
-        - Renewal
-        - Reacquire
-    npe01__Membership_Start_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Acknowledgment_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Acknowledgment_Status__c:
-      random_choice:
-        - To Be Acknowledged
-        - Acknowledged
-        - Do Not Acknowledge
-        - Email Acknowledgment Now
-        - Email Acknowledgment Not Sent
-    npsp__Ask_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Closed_Lost_Reason__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Fair_Market_Value__c:
-      random_number:
-        min: 1
-        max: 100000
-    npsp__Gift_Strategy__c:
-      random_choice:
-        - New Donor
-        - Renewal
-        - Upgrade
+    npsp__Grant_Contract_Number__c: ${{fake.Swift(length=8)}}
     npsp__Grant_Contract_Date__c:
-      date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Grant_Contract_Number__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Grant_Period_End_Date__c:
       date_between:
         start_date: -1y
         end_date: today
     npsp__Grant_Period_Start_Date__c:
       date_between:
-        start_date: -1y
-        end_date: today
-    npsp__Grant_Program_Area_s__c:
-      fake.text:
-        max_nb_chars: 100
+        start_date: ${{npsp__Grant_Contract_Date__c}}
+        end_date: ${{date(Opportunity.npsp__Grant_Contract_Date__c)+relativedelta(days=60)}}
+    npsp__Grant_Period_End_Date__c:
+      date_between:
+        start_date: ${{date(Opportunity.npsp__Grant_Period_Start_Date__c)+relativedelta(days=90)}}
+        end_date: ${{date(Opportunity.npsp__Grant_Period_Start_Date__c)+relativedelta(months=36)}}
     npsp__Grant_Requirements_Website__c:
       fake: url
-    npsp__Honoree_Contact__c:
-      reference: Contact
-    npsp__Honoree_Name__c:
-      fake: name
-    npsp__In_Kind_Description__c:
-      fake.text:
-        max_nb_chars: 100
+    npsp__Is_Grant_Renewal__c:
+      random_choice:
+        - choice:
+            probability: 20%
+            pick: true
+        - choice:
+            probability: 80%
+            pick: false
+
+### Scenario 3: Create an In-Kind Donation Opportunity 
+- object: Opportunity
+  nickname: InKindOpportunity
+  fields:
+    AccountId: 
+      reference: Organization
+    Name: In-Kind Gift Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
+    Description: Goods or Services received as In-Kind
+    Amount:
+      random_number:
+        min: 1
+        max: 10000
+    RecordType: InKindGift
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: +1m
+    StageName: In-Kind Gift Received
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
     npsp__In_Kind_Type__c:
       random_choice:
         - Goods
         - Services
-    npsp__Matching_Gift_Account__c:
+    npsp__In_Kind_Description__c:
+      fake.text:
+        max_nb_chars: 100
+    npsp__In_Kind_Donor_Declared_Value__c:
+      random_choice:
+        - choice:
+            probability: 80%
+            pick: true
+        - choice:
+            probability: 20%
+            pick: false
+    npsp__Fair_Market_Value__c: ${{Amount}}
+
+### Scenario 4: Create a Major Gift Opportunity 
+- object: Opportunity
+  nickname: MajorGiftOpportunity
+  fields:
+    AccountId: 
       reference: Organization
-    npsp__Matching_Gift_Employer__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Matching_Gift_Status__c:
-      random_choice:
-        - Potential
-        - Submitted
-        - Received
-    #npsp__Matching_Gift__c:
-    #  reference: MatchingGift  #We deleted the matching gift example.  If you want to use this, create another Opportunity definition above with a nickname of MatchingGift
-    npsp__Notification_Message__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Notification_Preference__c:
-      random_choice:
-        - Email
-        - Postal Mail
-        - Phone
-        - Do Not Notify
-    npsp__Notification_Recipient_Contact__c:
-      reference: Contact
-    npsp__Notification_Recipient_Information__c:
-      fake.text:
-        max_nb_chars: 100
-    npsp__Notification_Recipient_Name__c:
-      fake: name
-    npsp__Previous_Grant_Opportunity__c:  #this may have a NPSP validation rule about being a date in the past
-      reference: GrantOpportunity
-    npsp__Primary_Contact_Campaign_Member_Status__c:
-      fake.text:
-        max_nb_chars: 40
-    npsp__Primary_Contact__c:
-      reference: Contact
-    npsp__Qualified_Date__c:
+    Name: Major Gift Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
+    Description: Large Donation from a Major Donor
+    Amount:
+      random_number:
+        min: 1
+        max: 500000
+    RecordType: MajorGift
+    CloseDate:
       date_between:
         start_date: -1y
-        end_date: today
-    npsp__Recurring_Donation_Installment_Number__c:
-      random_number:
-        min: 1
-        max: 100000
+        end_date: +1m
+    StageName: Cultivating      #Solicitation
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
     npsp__Requested_Amount__c:
       random_number:
-        min: 1
+        min: 100
         max: 100000
-    npsp__Tribute_Type__c:
+    npsp__Qualified_Date__c:
+      date_between:
+                start_date: ${{date(Opportunity.CloseDate)-relativedelta(months=12)}}
+                end_date: ${{date(Opportunity.CloseDate)-relativedelta(days=28)}}
+    npsp__Ask_Date__c:
+      date_between:
+                start_date: ${{(npsp__Qualified_Date__c)}}
+                end_date: ${{date(Opportunity.CloseDate)-relativedelta(days=7)}}
+    npsp__Gift_Strategy__c:
       random_choice:
-        - Honor
-        - Memorial
+        - New Donor
+        - Renewal
+        - Upgrade
+    npsp__Grant_Program_Area_s__c:
+      fake.text:
+        max_nb_chars: 100
+    npsp__Closed_Lost_Reason__c:
+      fake.text:
+        max_nb_chars: 100
+
+### Scenario 5: Create a Matching Gift Opportunity 
+- object: Opportunity
+  nickname: MatchingGiftOpportunity
+  fields:
+    AccountId: 
+      reference: Organization
+    Name: Matching Gift Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
+    Description: Matching Donation from an Donor's Employer or other Organization
+    Amount:
+      random_number:
+        min: 1
+        max: 50000
+    RecordType: MatchingGift
+    CloseDate:
+      date_between:
+        start_date: -6m
+        end_date: +1m
+    StageName: Posted
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+
+### Scenario 6: Create a Membership Opportunity 
+- object: Opportunity
+  nickname: MembershipOpportunity
+  fields:
+    AccountId: 
+      reference: Organization
+    Name: Membership Opportunity #if the NPSP Naming Convention feature is activated, this name will be replaced
+    Description: A membership record type
+    Amount:
+      random_number:
+        min: 1
+        max: 5000
+    RecordType: Membership
+    CloseDate:
+      date_between:
+        start_date: -1y
+        end_date: +1m
+    StageName: Posted
+    Type:
+      random_choice:
+        - Existing Funding
+        - New Funding
+    LeadSource:
+      random_choice:
+        - Web
+        - Phone Inquiry
+        - Partner Referral
+        - Purchased List
+        - Other
+    npe01__Membership_Start_Date__c:
+      date_between:
+        start_date: ${{CloseDate}}
+        end_date: ${{date(CloseDate)+relativedelta(days=30)}}
+    npe01__Membership_End_Date__c: 
+      random_choice:
+        - choice:
+            probability: 80%
+            pick: ${{date(npe01__Membership_Start_Date__c)+relativedelta(months=12)}}
+        - choice:
+            probability: 20%
+            pick: ${{date(npe01__Membership_Start_Date__c)+relativedelta(months=24)}}
+    npe01__Member_Level__c:
+      random_choice:
+        - choice:
+            probability: 20%
+            pick: Gold
+        - choice:
+            probability: 40%
+            pick: Silver
+        - choice:
+            probability: 40%
+            pick: Bronze
+    npe01__Membership_Origin__c:
+      random_choice:
+        - choice:
+            probability: 20%
+            pick: New
+        - choice:
+            probability: 70%
+            pick: Renewal
+        - choice:
+            probability: 10%
+            pick: Reacquire
