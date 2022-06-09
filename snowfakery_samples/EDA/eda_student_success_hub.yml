@@ -342,7 +342,8 @@
                 start_date: today
                 end_date: +2d
             Description: ${{TemplateTask1.sfal__Comments__c}}
-            Type: ${{TemplateTask1.sfal__Type__c}}
+            # Uncomment the type field if using a build flow or persistent org that grants running user access to this field
+            #Type: ${{TemplateTask1.sfal__Type__c}}
             Priority: ${{TemplateTask1.sfal__Priority__c}}
         - object: Task
           nickname: Task2
@@ -359,7 +360,8 @@
                 start_date: today
                 end_date: +5d
             Description: ${{TemplateTask2.sfal__Comments__c}}
-            Type: ${{TemplateTask2.sfal__Type__c}}
+            # Uncomment the type field if using a build flow or persistent org that grants running user access to this field
+            #Type: ${{TemplateTask2.sfal__Type__c}}
             Priority: ${{TemplateTask2.sfal__Priority__c}}
 
 # Alert and Prediction objects
