@@ -29,7 +29,7 @@
 # cci task run snowfakery --recipe snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
 
 # Run this to generate records in an output JSON file (NOTE: update the org_name to the CCI org you are using)
-# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json --plugin-option org_name dev
+# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=snowfakery_samples/temp/output.json --plugin-option org_name dev
 
 # Load plugin for querying Salesforce, used to link records to internal advisor user
 - plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
