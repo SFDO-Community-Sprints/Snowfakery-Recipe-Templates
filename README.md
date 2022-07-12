@@ -12,6 +12,24 @@
 4. Snowfakery also supports seeding files as [ContentVersions](https://snowfakery.readthedocs.io/en/docs/salesforce.html#contentversions) using standard plugins.
 5. You can [query](https://snowfakery.readthedocs.io/en/docs/salesforce.html#incorporating-information-from-salesforce) existing Salesforce data and relate to snowfakery recipe.
 6. The usage of Snowfakery is not limited to NPSP nor EDA; however, Data Gen Toolkit team develops resources to advocate nonprofits and education community.
+## Tooling 
+### Tools for Participating
+Most people who participate in this project have access to [VS Code](https://code.visualstudio.com/Download).
+
+This project is not installable.
+
+We have orgs ready for you to use during a sprint. You can request access in Slack in the snowfakery-recipe-makers channel.
+
+We keep track of next steps in GitHub in the [Issues tab](https://github.com/SFDO-Community-Sprints/Snowfakery-Recipe-Templates/issues)
+
+
+### Tools for Contributing
+The items checked below are needed to actively contribute to the project.
+[Find more details about these tools](https://sfdo-community-sprints.github.io/docs/tools/)
+- [X] GitHub
+- [ ] Metecho
+- [X] CumulusCI
+- [ ] Google Drive (not needed, but we do have a folder. Ask for access in Slack in the snowfakery-recipe-makers channel.)
 
 ## Development
 
