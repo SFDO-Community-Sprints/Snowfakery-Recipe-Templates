@@ -3,7 +3,7 @@ project:
     name: DataGenerationToolkit
     package:
         name: DataGenerationToolkit
-        api_version: '50.0'
+        api_version: '53.0'
     git:
         default_branch: 'main/'
     source_format: sfdx
@@ -17,7 +17,17 @@ sources:
         github: https://github.com/SalesforceFoundation/SAL-CumulusCI
     pmm:
         github: https://github.com/SalesforceFoundation/PMM
-
+    obf:
+        github: https://github.com/SalesforceFoundation/OutboundFundsModule
+    osc_memberships:
+        github: https://github.com/SFDO-Community-Sprints/MembershipSchemaAndBenefits
+        # cci flow run osc_memberships:dev_org --org dev
+        # assign Manage_Memberships perm set
+orgs:
+    scratch:
+        eda:
+            config_file: orgs/eda.json
+            days: 7
 tasks:
     robot:
         options:
@@ -64,7 +74,7 @@ tasks:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         group: OSC
         options:
-            generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml
+            generator_yaml: snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml
             num_records: 10
             num_records_tablename: Opportunity
 
@@ -72,7 +82,11 @@ tasks:
         class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
         options:
             generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
-            
+    eda_org_alias:
+        description: create a new eda org alias
+        class_path: cumulusci.cli
+        options:
+            command: "cci org scratch dev eda"    
 flows:
     osc_memberships_project:
         description: OSC Membership Schema and Benefits project
@@ -105,3 +119,45 @@ flows:
                 task: generate_and_load_from_yaml
                 options:
                     generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
+    pmm_scratch:
+        description: install PMM package independent of NPSP
+        steps:
+            1:
+                flow: pmm:install_prod
+                options:
+                    org: dev
+    obf_scratch:
+        description: install Outbound Funds Module independent of NPSP
+        steps:
+            1:
+                flow: obf:install_prod
+                options:
+                    org: dev
+    obf_npsp_scratch:
+        description: install Outbound Funds Module with NPSP extension
+        steps:
+            1:
+                flow: obf:install_prod
+                options:
+                    org: dev
+            2:
+                flow: obf:install_npsp
+    eda_scratch:
+        # $ cci flow run eda_scratch --org eda
+        description: install Education Data Architecture.
+        steps:
+            1:
+                flow: eda:install_prod
+                options:
+                    org: eda
+    sal_eda_scratch:
+        # $ cci flow run sal_eda_scratch --org eda
+        description: install Advisor Link with Education Data Architecture dependencies.
+        steps:
+            1:
+                flow: sal:install_prod
+                options:
+                    org: eda  
+        
+
+    
