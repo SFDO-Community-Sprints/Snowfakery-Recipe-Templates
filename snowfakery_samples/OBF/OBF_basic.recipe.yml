@@ -12,7 +12,7 @@
 # cci task run snowfakery --recipe snowfakery_samples/OBF/OBF_basic.recipe.yml --run_until_recipe_repeated 10 --org dev
 #
 # Run this to generate records in an output:
-# snowfakery ./OBF_basic.recipe.yml --output-format=json --output-file=foo.json
+# snowfakery snowfakery_samples/OBF/OBF_basic.recipe.yml --output-format=json --output-file=snowfakery_samples/temp/foo.json
 #
 ### -------------- [ IMPORTANT NOTES ] --------------------- ###
 #requires you to have the Outbound Funds Module Schema
