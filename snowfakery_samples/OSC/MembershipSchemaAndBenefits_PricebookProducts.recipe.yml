@@ -15,7 +15,7 @@
 # cci task run snowfakery --recipe snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --org dev
 #
 #use this command to run the recipe locally to an output JSON file in your temp folder called output.json
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --plugin-option org_name dev
+# snowfakery snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --output-format=json --output-file=snowfakery_samples/temp/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_PricebookProducts.recipe.yml --plugin-option org_name dev
 ### ----------- [            Recipe Starts             ]---------- ###
 
 - plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset
