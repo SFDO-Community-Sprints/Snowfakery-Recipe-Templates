@@ -7,7 +7,7 @@
 # 1-7. Opportunity (1)
 # 1-8. OpportunityLineItem (1)
 # 1-5. Membership__c (1)
-# 1-6. Membership_Contact_Role__c (automaticakly handled by Apex)
+# 1-6. Membership_Contact_Role__c (automatically handled by Apex)
 
 
 ### ----------- [ MembershipSchemaAndBenefits_basic.recipe.yml Summary ]---------- ###
@@ -18,13 +18,15 @@
 # Membership Contact role differenciates the membership details on each household member.
 # There is an apex trigger handler that creates a membership contact role for primary contact.
 # https://github.com/SFDO-Community-Sprints/MembershipSchemaAndBenefits
-
-
+#
+#
 ### ----------- [               CLI RUN                ]---------- ###
-
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --num_records 1 --num_records_tablename Opportunity --org dev
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --plugin-option org_name dev
-
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --output-format=json --output-file=snowfakery_samples/temp/foo.json --plugin-option org_name dev
+#
 ### ----------- [            Recipe Starts             ]---------- ###
 
 - plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset

@@ -1,13 +1,23 @@
-# This will create 1 Funding Program and 5 Contacts
+# OBF Basic Recipe Example
+###--------------- [   ORDER OF INSERT    ] --------------###
+#
+#
+### --------------- [ OBF_basic.recipe.yml Summary ] --------- ###
+# This recipe will create 1 Funding Program and 5 Contacts
 # Within the Funding Program, there will be 5 Funding Requests 
 # The 5 Funding Requests will each have a random number of Disbursements
-
-# Run this to generate data in a QA scratch org:
-# cci task run generate_and_load_from_yaml --generator_yaml ../snowfakery/OBF_basic.recipe.yml --num_records 10 --num_records_tablename outfunds__Funding_Program__c --org qa
-
+#
+### --------------- [ CLI RUN ] ------------------------------ ###
+# Run this to generate data 10 times in a scratch org called dev:
+# cci task run snowfakery --recipe snowfakery_samples/OBF/OBF_basic.recipe.yml --run_until_recipe_repeated 10 --org dev
+#
 # Run this to generate records in an output:
-# snowfakery ./OBF_basic.recipe.yml --output-format=json --output-file=foo.json
-
+# snowfakery snowfakery_samples/OBF/OBF_basic.recipe.yml --output-format=json --output-file=snowfakery_samples/temp/foo.json
+#
+### -------------- [ IMPORTANT NOTES ] --------------------- ###
+#requires you to have the Outbound Funds Module Schema
+#
+### --------------- [ RECIPE STARTS ] -------------------###
 # First, let's create the Funding Program
 - object: outfunds__Funding_Program__c
   nickname: FundingProgram
