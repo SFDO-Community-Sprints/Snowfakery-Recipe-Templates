@@ -25,7 +25,7 @@
 # cci task run snowfakery --recipe snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --org dev
 #
 # Use this command to run this recipe locally and output to a JSON file called output.json
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --plugin-option org_name dev
+# snowfakery snowfakery_samples/OSC/MembershipSchemaAndBenefits.recipe.yml --output-format=json --output-file=snowfakery_samples/temp/foo.json --plugin-option org_name dev
 #
 ### ----------- [            Recipe Starts             ]---------- ###
 
