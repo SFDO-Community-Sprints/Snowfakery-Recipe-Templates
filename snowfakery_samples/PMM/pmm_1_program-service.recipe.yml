@@ -54,7 +54,7 @@
     pmdm__StartDate__c:
       date_between:
         start_date: -1y
-        end_date: -4m
+        end_date: -4M
     pmdm__Status__c:
         random_choice:
           - Planned
@@ -82,10 +82,10 @@
     pmdm__EndDate__c:
       date_between:
         start_date: today
-        end_date: +1m
+        end_date: +1M
     pmdm__StartDate__c:
       date_between:
-        start_date: -1m
+        start_date: -1M
         end_date: today
     pmdm__Status__c: # customize picklist values
       random_choice:
@@ -112,7 +112,7 @@
     pmdm__EndDate__c:
       date_between:
         start_date: today
-        end_date: +1m      
+        end_date: +1M
     pmdm__Role__c:
       random_choice:
         - Client
@@ -129,7 +129,7 @@
         - Withdrawn      
     pmdm__StartDate__c:
       date_between:
-        start_date: -1m
+        start_date: -1M
         end_date: today
     pmdm__Account__c:
         random_reference: Account  # npsp Household | standard Account
@@ -223,8 +223,8 @@
         max: 10
     pmdm__ServiceScheduleEndDate__c:
       fake.date_between:
-        start_date: -1m
-        end_date: +1m
+        start_date: -1M
+        end_date: +1M
     pmdm__ServiceScheduleEnds__c:
       random_choice:
         - ${{'On'}}  # 'On' is a reserved word for boolean 1, or True
@@ -271,8 +271,8 @@
             # Custom Fields
     pmdm__SignUpDate__c:
       fake.date_between:
-        start_date: -5m
-        end_date: +5m              
+        start_date: -5M
+        end_date: +5M
     pmdm__Status__c:
       random_choice:
         - Waitlisted

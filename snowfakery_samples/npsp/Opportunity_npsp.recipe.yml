@@ -47,7 +47,7 @@
     CloseDate:
       date_between:
         start_date: -1y
-        end_date: +1m
+        end_date: +1M
     StageName: Closed Won    
     Type:
       random_choice:
@@ -93,7 +93,7 @@
     RecordType: Grant
     CloseDate:
       date_between:
-        start_date: +1m
+        start_date: +1M
         end_date: +1y
     StageName: Prospecting
     Type:
@@ -147,7 +147,7 @@
     CloseDate:
       date_between:
         start_date: -1y
-        end_date: +1m
+        end_date: +1M
     StageName: In-Kind Gift Received
     Type:
       random_choice:
@@ -186,7 +186,7 @@
     CloseDate:
       date_between:
         start_date: -1y
-        end_date: +1m
+        end_date: +1M
     StageName: Cultivating      #Solicitation
     Type:
       random_choice:
@@ -231,8 +231,8 @@
     RecordType: MatchingGift
     CloseDate:
       date_between:
-        start_date: -6m
-        end_date: +1m
+        start_date: -6M
+        end_date: +1M
     StageName: Posted
     Type:
       random_choice:
@@ -262,7 +262,7 @@
     CloseDate:
       date_between:
         start_date: -1y
-        end_date: +1m
+        end_date: +1M
     StageName: Posted
     Type:
       random_choice:

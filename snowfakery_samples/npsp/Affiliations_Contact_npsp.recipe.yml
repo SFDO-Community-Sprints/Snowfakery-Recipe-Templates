@@ -1,6 +1,3 @@
-
-
-
 ## NPSP Affiliations Contact Example Recipe
 
 ### ------------- [          ORDER OF INSERT         ]------------ ###
@@ -26,7 +23,6 @@
 # Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
 
 - object: Contact
-  nickname: Contact
   count: 1
   fields: 
     FirstName:
@@ -100,7 +96,7 @@
         npe5__StartDate__c:
           date_between:
             start_date: -2y
-            end_date: -3m
+            end_date: -3M
         npe5__Status__c: 
           random_choice:
             - Current
@@ -111,7 +107,7 @@
                 when: ${{npe5__Status__c=='Former'}}
                 pick:
                   date_between:
-                    start_date: -3m
+                    start_date: -3M
                     end_date: -1d
             - choice:
                 pick: null

@@ -111,7 +111,7 @@
                 when: ${{npe5__Status__c=='Former'}}
                 pick:
                   date_between:
-                    start_date: -3m
+                    start_date: -3M
                     end_date: -1d
             - choice:
                 pick: null
@@ -143,7 +143,7 @@
     CloseDate:
       date_between:
         start_date: -5y
-        end_date: 3m
+        end_date: 3M
     Amount:
       random_number:
         min: 500
