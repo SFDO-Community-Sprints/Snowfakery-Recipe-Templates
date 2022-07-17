@@ -40,7 +40,6 @@
 
 # Now we can create the Contacts
 - object: Contact
-  nickname: Contact
   count: 5
   fields: 
     FirstName:
