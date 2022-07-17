@@ -23,7 +23,6 @@
 # Look at snowfakery_samples/salesforce/Contact.recipe.yml for more examples.
 
 - object: Contact
-  nickname: Contact
   count: 1
   fields: 
     FirstName:
