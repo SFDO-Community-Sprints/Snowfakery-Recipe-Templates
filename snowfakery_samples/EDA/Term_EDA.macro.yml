@@ -1,0 +1,48 @@
+## EDA Account Example
+
+# Requirments
+# Install cci: See https://cumulusci.readthedocs.io/en/latest/get_started.html
+# Install the fake_edu Faker: See https://pypi.org/project/faker-edu/
+
+# To run this code against a fresh scratch org called ("qa"):
+#
+# cci flow run eda:trial_org --org qa
+# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/Term_EDA.recipe.yml -o num_records 300 -o num_records_tablename Acount --org qa
+
+# Look at snowfakery_samples/salesforce/Account.recipe.yml for more examples.
+# - include_file: standard_EDA_objs_recipe.yml
+
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+- plugin: faker_edu.Provider
+
+- macro: eda_term_base
+  fields:
+    Name: Term
+    hed__Account__c:
+      SalesforceQuery.random_record:
+        from: Account
+        where: RecordTypeId != null AND RecordType.Name!='Educational_Institution'
+    hed__Start_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    hed__End_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    hed__Parent_Term__c:
+    hed__Type__c:
+      random_choice:
+        - Quarter
+        - Semester
+        - School Year
+        - Part of Term
+    hed__Grading_Period_Sequence__c:
+      random_number:
+        min: 1
+        max: 100
+    hed__Instructional_Days__c:
+      random_number:
+        min: 50
+        max: 100
+

@@ -1,0 +1,73 @@
+# See Course_Connection_EDA.recipie.yml for usage
+
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+- plugin: faker_edu.Provider
+
+- macro: eda_course_connection_base
+  fields:
+    RecordType:
+      random_choice:
+        Student: 20
+        Faculty: 1
+    hed__Account__c:  # The Academic Program that the student or faculty member is associated with.
+      SalesforceQuery.random_record:
+        from: Account
+        where: RecordTypeId != null AND RecordType.Name!='Academic_Program'
+    # hed__Affiliation__c: If this Contact is affiliated with an Academic Program through an existing Program Enrollment record, and that Program Enrollment is related to this Course Connection, this Affiliation field is auto-populated with the Program Enrollment's Affiliation. If both conditions aren't true, then this Affiliation field is left blank.
+    hed__Contact__c:
+      SalesforceQuery.random_record:
+        from: Contact
+    hed__Course_Offering__c:
+      SalesforceQuery.random_record:
+        from: hed__Course_Offering__c
+    hed__Credits_Attempted__c:
+      random_number:
+        min: 1
+        max: 4
+    hed__Credits_Earned__c:
+      random_number:
+        min: 1
+        max: ${{hed__Credits_Attempted__c}}
+    hed__Grade__c:
+      random_number:
+        min: 1
+        max: 4
+    hed__Primary__c:
+      random_choice:
+        - True
+        - False  
+    # hed__Program_Enrollment__c:   Need to create records first
+    hed__Status__c:
+      random_choice:
+        - Current
+        - Former
+        - In Progress
+        - Completed
+        - Enrolled
+        - Failed
+        - On Hold
+        - Withdrew
+        - Audit
+    hed__Credentialing_Identifier__c: ${{fake.bothify(text='#########')}}
+    hed__Display_Grade__c:
+      random_choice:
+        - A+
+        - A
+        - A-
+        - B+
+        - B
+        - B-
+        - C+
+        - C
+        - C-
+        - D+
+        - D
+        - D-
+        - F
+    hed__Verification_Status__c:
+      random_choice:
+        - Verified
+        - Pending
+        - Unverified
+        - Revoked
+      
