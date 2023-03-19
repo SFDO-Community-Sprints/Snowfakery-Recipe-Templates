@@ -15,6 +15,8 @@ sources:
         github: https://github.com/SalesforceFoundation/NPSP
     sal:
         github: https://github.com/SalesforceFoundation/SAL-CumulusCI
+    osc_memberships:
+        github: https://github.com/SFDO-Community-Sprints/MembershipSchemaAndBenefits
 
 tasks:
     robot:
@@ -65,10 +67,10 @@ flows:
                 task: load_membership_products
             3:
                 task: load_membership_opportunities
-    npsp_settings:
-        class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
-        options:
-            generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
+    # npsp_settings:
+    #     class_path: cumulusci.tasks.bulkdata.generate_and_load_data_from_yaml.GenerateAndLoadDataFromYaml
+    #     options:
+    #         generator_yaml: snowfakery_samples/npsp/NPSP_Settings.recipe.yml
 
     # cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
     npsp_scratch:

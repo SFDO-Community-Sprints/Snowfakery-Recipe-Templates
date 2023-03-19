@@ -22,73 +22,75 @@
 
 ### ----------- [               CLI RUN                ]---------- ###
 
-# cci task run generate_and_load_from_yaml --generator_yaml snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --num_records 1 --num_records_tablename Opportunity --org dev
-# snowfakery --output-format json --output-file src/foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --plugin-option org_name dev
+# cci task run snowfakery --recipe snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --drop_missing_schema True --org membership
+# snowfakery --output-format json --output-file foo.json snowfakery_samples/OSC/MembershipSchemaAndBenefits_basic.recipe.yml --plugin-option org_name membership
 
 ### ----------- [            Recipe Starts             ]---------- ###
 
 - plugin: snowfakery.standard_plugins.Salesforce.SOQLDataset
 
+- object: temp
+  fields:
+    __oppDate:
+      date_between:
+        start_date: -1y
+        end_date: today
+
+- object: Contact
+  fields:
+    # MembershipSchemaAndBenefits custom fields -- expected to be handled by Apex
+    Last_Membership_Start_Date__c: ${{temp.__oppDate}}
+    First_Membership_Start_Date__c: ${{temp.__oppDate}}
+    Membership_End_Date__c: ${{temp.__oppDate+relativedelta(months=12)}}
+    Membership_Status__c: 
+      random_choice:
+        - Former
+        - Lapsed
+        - Renewal
+        - Current
+    Membership_Type__c:
+      random_choice:
+        - Individual
+        - Household
+        - Corporate
+    FirstName: ${{fake.firstname}}
+    LastName: ${{fake.lastname}}
+    Email: ${{fake.email}}
+    AccountId:
+      - object: Account
+        fields:
+          Name: 
+            if:
+              - choice:
+                  when: ${{Contact.Membership_Type__c == 'Individual'}}
+                  pick: ${{Contact.FirstName}} ${{Contact.LastName}} Household
+              - choice:
+                  when: ${{Contact.Membership_Type__c == 'Household'}}
+                  pick: ${{Contact.FirstName}} ${{Contact.LastName}} Household
+              - choice:
+                  when: ${{Contact.Membership_Type__c == 'Corporate'}}
+                  pick: ${{fake.company}}
+
+        # MembershipSchemaAndBenefits custom fields -- expected to be handled by Apex
+          First_Membership_Start_Date__c: ${{temp.__oppDate}}
+          Membership_End_Date__c: ${{temp.__oppDate+relativedelta(months=12)}}
+          Membership_Status__c: ${{Contact.Membership_Status__c}}
+          Membership_Type__c: ${{Contact.Membership_Type__c}}
+
+          # Primary_Membership__c: # Apex automated
+          #   reference: Membership__c
+
 - object: Opportunity
   count: 1
   fields:
     Type: Membership
-    CloseDate:
-      date_between:
-        start_date: -1y
-        end_date: today
+    CloseDate: ${{temp.__oppDate}}
     Description:
       fake.text:
         max_nb_chars: 100
 
     StageName: Closed Won
     # Contact
-
-    ContactId:
-      - object: Contact
-        fields:
-          # MembershipSchemaAndBenefits custom fields -- expected to be handled by Apex
-          Last_Membership_Start_Date__c: ${{Opportunity.CloseDate}}
-          First_Membership_Start_Date__c: ${{Opportunity.CloseDate}}
-          Membership_End_Date__c: ${{date(Opportunity.CloseDate)+relativedelta(months=12)}}
-          Membership_Status__c: 
-            random_choice:
-              - Former
-              - Lapsed
-              - Renewal
-              - Current
-          Membership_Type__c:
-            random_choice:
-              - Individual
-              - Household
-              - Corporate
-          FirstName: ${{fake.firstname}}
-          LastName: ${{fake.lastname}}
-          Email: ${{fake.email}}
-          AccountId:
-            - object: Account
-              fields:
-                Name: 
-                  if:
-                    - choice:
-                        when: ${{Contact.Membership_Type__c == 'Individual'}}
-                        pick: ${{Contact.FirstName}} ${{Contact.LastName}} Household
-                    - choice:
-                        when: ${{Contact.Membership_Type__c == 'Household'}}
-                        pick: ${{Contact.FirstName}} ${{Contact.LastName}} Household
-                    - choice:
-                        when: ${{Contact.Membership_Type__c == 'Corporate'}}
-                        pick: ${{fake.company}}
-
-              # MembershipSchemaAndBenefits custom fields -- expected to be handled by Apex
-                First_Membership_Start_Date__c: ${{Opportunity.CloseDate}}
-                Membership_End_Date__c: ${{Opportunity.CloseDate+relativedelta(months=12)}}
-                Membership_Status__c: ${{Contact.Membership_Status__c}}
-                Membership_Type__c: ${{Contact.Membership_Type__c}}
-
-                # Primary_Membership__c: # Apex automated
-                #   reference: Membership__c
-    
     Name: ${{Account.Name}}-${{Type}}-${{(CloseDate).year}}
     AccountId:
       reference: Account
