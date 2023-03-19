@@ -47,6 +47,10 @@ If you want to use a scratch org to play with Snowfakery, you may want to instal
 - **Install EDA** Run `cci flow run eda:trial_org --org dev`
 - Optional for EDA orgs: **Install Advisor Link** Run `cci flow run sal:install_base --org dev`
 - **Install NPSP** Run `cci flow run npsp:install_prod --org dev`
+
+#### OSC Collaboration
+**MembershipSchemaAndBenefits**
+- **Create memberhisp cci org definition** Run `cci org scratch dev membership --days 30`
 - **Install OSC MembershipSchemaAndBenefits** Run `cci flow run osc_memberships:dev_org --org membership`
   - **Load OSC MembershipSchemaAndBenefits Snofakery Generated Data** Run `cci flow run osc_memberships_project --org membership`
 
