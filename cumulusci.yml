@@ -17,6 +17,8 @@ sources:
         github: https://github.com/SalesforceFoundation/SAL-CumulusCI
     pmm:
         github: https://github.com/SalesforceFoundation/PMM
+    membership:
+        github: https://github.com/SFDO-Community-Sprints/MembershipSchemaAndBenefits
 
 tasks:
     robot:
