@@ -1,7 +1,10 @@
 # Snowfakery recipe for the Student Success Hub (formerly known as Adivsor Link)
-# Work in progress that creates data for the following objects:
+# Creates data for the following objects:
 #   Contact
 #   Case (Advising Record)
+#   Case Team Role
+#   Case Team Member
+#   Case Comment
 #   Account (University Department)
 #   Advising Pool
 #   Queue Waiting Room Resource
@@ -14,17 +17,24 @@
 #   Queue Topic Setting
 #   Appointment
 #   Appointment Attendee
+#   Success Plan Template
+#   Success Plan Task Template
+#   Success Plan
+#   Success Plan Task
+#   Task
+#   Alert
+#   Prediction
 
 # Run this to generate data in a scratch org:
-# cci task run generate_and_load_from_yaml -o generator_yaml snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
+# cci task run snowfakery --recipe snowfakery_samples/EDA/eda_student_success_hub.yml --org dev
 
 # Run this to generate records in an output JSON file (NOTE: update the org_name to the CCI org you are using)
-# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=foo.json --plugin-option org_name dev
+# snowfakery ./snowfakery_samples/EDA/eda_student_success_hub.yml --output-format=json --output-file=snowfakery_samples/temp/output.json --plugin-option org_name dev
 
 # Load plugin for querying Salesforce, used to link records to internal advisor user
 - plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
 
-# Create Contact; dependency for Case (Advising)
+# Create Contact', 'dependency for Case (Advising)
 - object: Contact
   fields:
     LastName:
@@ -41,23 +51,6 @@
     MailingPostalCode:
       fake: postalcode
     MailingCountry: "United States"
-    MailingLatitude:
-      fake: latitude
-    MailingLongitude:
-      fake: longitude
-    MailingGeocodeAccuracy:
-      random_choice:
-        - Address
-        - NearAddress
-        - Block
-        - Street
-        - ExtendedZip
-        - Zip
-        - Neighborhood
-        - City
-        - County
-        - State
-        - Unknown
     Phone:
       fake: phone_number
     MobilePhone:
@@ -102,7 +95,7 @@
             end_date: +1y
         hed__Role__c: "Student"
 
-# Create Case (Advising) record; dependency for Appointment, Appointment Attendee, Alert, Prediction, Success Plan, Task
+# Create Case (Advising) record', 'dependency for Appointment, Appointment Attendee, Alert, Prediction, Success Plan, Task
 - object: Case
   nickname: SampleAdvisingCase
   fields:
@@ -116,6 +109,30 @@
       reference: AdvisingPool
     sfal__Location__c: "Other"
     hed__Location__c: "Other"
+  friends:
+    - object: CaseTeamRole
+      fields:
+        AccessLevel: Edit
+        # CaseTeamRoles must be unique so random number is added to allow recipe to run multiple times in same org
+        Name: Advisor ${{random_number(min=5, max=20)}}
+        PreferencesVisibleInCSP: true
+      friends:
+        - object: CaseTeamMember
+          fields:
+            MemberId:
+              SalesforceQuery.find_record:
+                from: User
+                where: UserType='Standard'
+            ParentId:
+              reference: SampleAdvisingCase
+            TeamRoleId:
+              reference: CaseTeamRole
+    - object: CaseComment
+      count: 3
+      fields:
+        ParentId:
+          reference: SampleAdvisingCase
+        CommentBody: ${{fake.Text(max_nb_chars=200)}}
 
 # Create University Department
 - object: Account
@@ -124,7 +141,7 @@
     name: Sample Academic Department
     RecordType: "University_Department"
 
-# Create Advising Pool; dependency for Queue Topic Setting
+# Create Advising Pool', 'dependency for Queue Topic Setting
 - object: sfal__AdvisingPool__c
   nickname: AdvisingPool
   fields:
@@ -258,3 +275,120 @@
             - No Show
             - Checked In
         sfal__StatusComments__c: ${{fake.Text(max_nb_chars=50)}}
+
+# Objects nested with Success Plan Template
+- object: sfal__SuccessPlanTemplate__c
+  count: 3
+  nickname: SuccessPlanTemplate
+  fields:
+    Name: ${{fake.RandomElement(elements=('Failed Assessment', 'Lack of Academic Activity', 'New Course Enrollment'))}}
+    sfal__Active__c: true
+    sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+    sfal__UsageCount__c: 1
+  friends:
+    - object: sfal__SuccessPlanTemplateTask__c
+      nickname: TemplateTask1
+      fields:
+        Name: Call Student
+        sfal__Active__c: true
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Priority__c: ${{fake.RandomElement(elements=('High', 'Medium', 'Low'))}}
+        sfal__RelativeDueDate__c: 2
+        sfal__SuccessPlanTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__Type__c: Call
+    - object: sfal__SuccessPlanTemplateTask__c
+      nickname: TemplateTask2
+      fields:
+        Name: Meet with Student
+        sfal__Active__c: true
+        sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+        sfal__Priority__c: ${{fake.RandomElement(elements=('High', 'Medium', 'Low'))}}
+        sfal__RelativeDueDate__c: 5
+        sfal__SuccessPlanTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__Type__c: Meeting
+    - object: sfal__SuccessPlan__c
+      fields:
+        Name: ${{SuccessPlanTemplate.Name}}
+        sfal__AdviseeRecord__c:
+          reference: SampleAdvisingCase
+        sfal__Advisee__c:
+          reference: Contact
+        sfal__AutoApply__c: true
+        sfal__Comments__c: ${{SuccessPlanTemplate.sfal__Comments__c}}
+        sfal__FromTemplate__c:
+          reference: SuccessPlanTemplate
+        sfal__IsCancelled__c: false
+        sfal__IsPublished__c: true
+        sfal__Status__c:
+          random_choice: ${{fake.RandomElement(elements=('Open', 'Completed'))}}
+        sfal__NumberOfTasks__c: 2
+        sfal__NumberOfOpenTasks__c: 2
+        sfal__NumberOfOverdueTasks__c: 0
+      friends:
+        - object: Task
+          nickname: Task1
+          fields:
+            WhatId:
+              reference: sfal__SuccessPlan__c
+            OwnerId:
+              SalesforceQuery.find_record:
+                from: User
+                where: UserType='Standard'
+            Subject: ${{TemplateTask1.Name}}
+            ActivityDate:
+              date_between:
+                start_date: today
+                end_date: +2d
+            Description: ${{TemplateTask1.sfal__Comments__c}}
+            # Uncomment the type field if using a build flow or persistent org that grants running user access to this field
+            #Type: ${{TemplateTask1.sfal__Type__c}}
+            Priority: ${{TemplateTask1.sfal__Priority__c}}
+        - object: Task
+          nickname: Task2
+          fields:
+            WhatId:
+              reference: sfal__SuccessPlan__c
+            OwnerId:
+              SalesforceQuery.find_record:
+                from: User
+                where: UserType='Standard'
+            Subject: ${{TemplateTask2.Name}}
+            ActivityDate:
+              date_between:
+                start_date: today
+                end_date: +5d
+            Description: ${{TemplateTask2.sfal__Comments__c}}
+            # Uncomment the type field if using a build flow or persistent org that grants running user access to this field
+            #Type: ${{TemplateTask2.sfal__Type__c}}
+            Priority: ${{TemplateTask2.sfal__Priority__c}}
+
+# Alert and Prediction objects
+- object: sfal__Alert__c
+  count: 3
+  fields:
+    sfal__AdviseeRecord__c:
+      reference: SampleAdvisingCase
+    sfal__Advisee__c:
+      reference: Contact
+    sfal__AssignUsingRules__c: true
+    sfal__Comments__c: ${{fake.Text(max_nb_chars=200)}}
+    sfal__Priority__c: ${{fake.RandomElement(elements=('Urgent', 'Normal', 'Low'))}}
+    sfal__Reason__c: ${{fake.RandomElement(elements=('Grade Concern', 'Failure Concern', 'Missing/Late Assignment', 'Attendance Concern', 'Participation Concern', 'Preparedness Concern', 'Academic Integrity', 'Recognition', 'Missing/Late Application', 'Qualification Not Met', 'General Health', 'Room Change'))}}
+    sfal__Status__c:
+      random_choice:
+        - New
+        - "Acknowledged: In Progress"
+        - "Acknowledged: Redirected"
+  friends:
+    - object: sfal__Prediction__c
+      fields:
+        sfal__Alert__c:
+          reference: sfal__Alert__c
+        sfal__Appointment__c:
+          reference: SampleAppointment
+        sfal__Case__c:
+          reference: SampleAdvisingCase
+        sfal__Model__c: ${{fake.Text(max_nb_chars=20)}}
+        sfal__Type__c: ${{fake.Text(max_nb_chars=20)}}
