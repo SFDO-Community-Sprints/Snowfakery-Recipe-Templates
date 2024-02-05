@@ -60,11 +60,16 @@ $ git clone https://github.com/SFDO-Community-Sprints/Snowfakery-Recipe-Template
 - [Set up CumulusCI](https://cumulusci.readthedocs.io/en/latest/get_started.html) : this repository includes a project initialization in cumulusci.yml file. You can skip the project initialization `cci project init`
 
 ### Set up the right flavor of scratch org
-If you want to use a scratch org to play with Snowfakery, you may want to install NPSP or EDA as well.
-- Run `cci org scratch dev dev --default` to create a new scratch org and set it as a default
-- **Install EDA** Run `cci flow run eda:trial_org --org dev`
-- Optional for EDA orgs: **Install Advisor Link** Run `cci flow run sal:install_base --org dev`
-- **Install NPSP** Run `cci flow run npsp:install_prod --org dev`
+If you want to use a scratch org to play with Snowfakery recipes in this repository, you may want to install NPSP, EDA, Outbound Funds (OBF), or Program Management Module (PMM) as well.
+- For EDA recipes, run `cci org scratch eda eda --default` to create a new scratch org and set it as a default
+  - **Install EDA** Run `cci flow run eda_scratch --org eda`
+    - Optional for EDA orgs: **Install Advisor Link** Run `cci flow run sal_eda_scratch --org eda`
+- For NPSP, OBF, or PMM recipes, run `cci org scratch dev dev --default` to create a new scratch org and set it as a default
+  - **Install NPSP** Run `cci flow run npsp:install_prod --org dev`
+  - **Install OBF** Run `cci flow run obf_scratch --org dev`
+    - Optional for OBF orgs: **Install NPSP** Run `cci flow run obf_npsp_scratch --org dev`
+  - **Install PMM** Run `cci flow run pmm_scratch --org dev`
+    - Optional for PMM orgs: **Install NPSP** Run `cci flow run npsp_scratch --org dev`
 
 ### Instructions for the Collaborators
 

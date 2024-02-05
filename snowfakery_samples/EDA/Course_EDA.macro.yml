@@ -1,0 +1,58 @@
+# See Course_EDA.recipie.yml for usage
+
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+- plugin: faker_edu.Provider
+
+- macro: eda_course_base
+  fields:
+    name: ${{fake.department_name}} ${{fake.random_int(min=100, max=500)}}
+    hed__Account__c:
+      SalesforceQuery.random_record:
+        from: Account
+        where: RecordTypeId != null AND RecordType.Name!='University_Department'
+    hed__Course_ID__c: fake.bothify(text='#########')}}
+    hed__Credit_Hours__c: ${{fake.random_int(min=1, max=5)}}.${{fake.random_int(min=0, max=99, step=25)}}
+    # hed__Description__c This field has been replaced by the Extended Description field
+    hed__Extended_Description__c: ${{fake.paragraph(nb_sentences=5)}}
+    hed__Academic_Level__c:
+      random_choice:
+        - Pre-K/Preschool
+        - Elementary
+        - Middle School
+        - High School
+        - Undergraduate
+        - Graduate
+        - Doctoral
+        - Post-Baccalaureate Certificate
+        - Adult Education
+        - Professional Education
+    #hed__Credentialing_Identifier__c An International Resource Identifier that uniquely identifies this credential.
+    hed__Issuer__c:
+      SalesforceQuery.random_record:
+        from: Account
+        where: RecordTypeId != null AND RecordType.Name!='Educational_Institution'
+    hed__Subject__c:
+      random_choice:
+        - Agriculture
+        - Architecture
+        - Biology
+        - Business
+        - Management, and Marketing
+        - Communication
+        - Computer and Information Sciences
+        - Education
+        - Engineering
+        - English Language and Literature/Letters
+        - Family and Consumer Sciences
+        - Foreign Languages
+        - General Studies and Humanities
+        - Health Professions
+        - History
+        - Legal Professions and Studies
+        - Mathematics and Statistics
+        - Natural Resources and Conservation
+        - Philosophy and Religious Studies
+        - Physical Sciences
+        - Psychology
+        - Social Sciences
+        - Visual and Performing Arts

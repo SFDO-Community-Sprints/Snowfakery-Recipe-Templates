@@ -1,0 +1,266 @@
+## NPSP Indicators Demo
+### ------------- [          ORDER OF INSERT         ]------------ ###
+# 1-0. Account (1)
+# 2.0. Contact (random 1-5)
+# 3-1. Campaign (1)
+# 3-2. CampaignMemberStatus (2)
+# 3-3. Campaign Member
+# 4.0. Affiliations 
+# 5.0. Opportunities (varying stages, spanning 5 years), Random (5-10)
+# 6.0. Non-affiliated Contacts
+# 6.1. Partial Soft Credit
+### ----------- [ Indicators_demo.recipe.yml Summary ]---------- ###
+# This recipe creates an Organization Account, with a random number of affiliated Contacts, and NPSP will auto-create the associated Household Account and Address objects.
+# And then creates Opportunities (5-10) spanning 5 years, their associated soft credits (partial and account).
+# It also creates a single Campaign record 
+# The Campaign has two Campaign Statuses added, one IsResponded = true and one IsResponded = false 
+# The selected number (?) of Contacts are added and NPSP will auto-create the associated Household Account.
+# The Contacts are added to the Campaign with one of the Campaign Member Statuses randomly chosen. 
+#
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe 300 times in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/npsp/Indicators_demo.recipe.yml --run_until_recipe_repeated 300 --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/npsp/Indicators_demo.recipe.yml
+#
+### ----------- [            Important Notes           ]---------- ###
+# Within the sections that generate Opportunites, please make sure the StageNames and Record Types are appropriate for your org
+#
+### ----------- [            Recipe Starts             ]---------- ###
+#
+# Creating the Organization Account which is the Corporate Sponsor
+- object: Account
+  nickname: donor_acct
+  fields:
+    Name:
+      fake: Company
+    RecordType: Organization
+    Description: 
+      fake: CatchPhrase
+    BillingStreet: 
+      fake: StreetAddress
+    BillingCity:
+      fake: City
+    BillingState:
+      fake: State
+    BillingPostalCode:
+      fake: PostalCode
+    BillingCountry: United States # hardcoded to US here for simplicity
+    Phone: 
+      fake: PhoneNumber
+    Website:
+      fake: Uri
+# Let's create between 1-5 Contacts associated with the Corporate donor
+- object: Contact
+  nickname: contact
+  count:
+    random_number:
+      min: 1
+      max: 5
+  fields:
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+# If you're not familiar with NPSP, there is automation to populate the standard Email and Phone fields based on the data below.
+    npe01__HomeEmail__c:
+      fake: Email
+    npe01__WorkEmail__c:
+      fake: Email
+    npe01__Preferred_Email__c:
+      random_choice:
+        - Personal 
+        - Work   
+    npe01__WorkPhone__c:
+      fake: PhoneNumber
+    HomePhone:
+      fake: PhoneNumber
+    MobilePhone:
+      fake: PhoneNumber
+    npe01__PreferredPhone__c:
+      random_choice:
+        - Home 
+        - Work
+        - Mobile 
+    MailingStreet:
+      fake: StreetAddress
+    MailingCity:
+      fake: City
+    MailingState:
+      fake: State
+    MailingPostalCode:
+      fake: PostalCode
+    MailingCountry: United States # hardcoded to US here for simplicity
+    npe01__Primary_Address_Type__c: Home # hardcoded to home for simplicity
+    Title:
+      fake: Job
+    Birthdate:
+      date_between:
+        start_date: -60y
+        end_date: -20y
+# Create Campaign
+- object: Campaign
+  just_once: True
+  fields: 
+    Name: ${{fake.Bs | title}} Campaign
+    Type:
+      random_choice:
+        - Conference
+        - Webinar
+        - Email
+        - Telemarketing    
+    Status: In Progress
+    IsActive: True
+    Description:
+      fake.text:
+        max_nb_chars: 100
+    StartDate:
+      date_between:
+        start_date: -30d
+        end_date: today
+    EndDate: ${{fake.FutureDate}}        
+# related to the Campaign record just created:
+  friends:
+  - object: CampaignMemberStatus
+    fields: 
+      CampaignId:
+        reference: Campaign
+      Label: On List
+      HasResponded: False
+  - object: CampaignMemberStatus
+    fields: 
+      CampaignId:
+        reference: Campaign
+      Label: Attended
+      HasResponded: True
+- object: CampaignMember
+  fields:
+    ContactId:
+      reference: Contact
+    Status:       
+      random_choice:
+      - Sent
+      - Responded
+      - Attended
+      - On List
+    CampaignId: 
+      reference: Campaign
+# now we are creating the affiliation between the contact and the corporate donor
+  friends:
+    - object: npe5__Affiliation__c
+      fields: 
+        npe5__StartDate__c:
+          date_between:
+            start_date: -10y
+            end_date: -1y
+        npe5__Status__c: 
+          random_choice:
+            - Current
+            - Former
+        npe5__EndDate__c:
+          if:
+            - choice:
+                when: ${{npe5__Status__c=='Former'}}
+                pick:
+                  date_between:
+                    start_date: -3M
+                    end_date: -1d
+            - choice:
+                pick: null
+        npe5__Contact__c:
+          reference: contact
+        npe5__Organization__c:
+          reference: donor_acct
+        npe5__Role__c: ${{contact.Title}}
+        npe5__Primary__c:
+          if:
+            - choice:
+                when: ${{npe5__Status__c=='Former'}}
+                pick: FALSE
+            - choice:
+                pick: TRUE
+# Let's create Opportunites (5-10) (with NO associated payment records)
+- object: Opportunity
+  nickname: donation
+  count:
+    random_number:
+      min: 5
+      max: 10
+  fields:
+    RecordType: 
+      random_choice: #ensure these match valid record types in your org
+        - Donation
+        - Major Gift
+    CloseDate:
+      date_between:
+        start_date: -5y
+        end_date: 3M
+    Amount:
+      random_number:
+        min: 500
+        max: 50000
+    Name: ${{donor_acct.Name}} ${{RecordType}} ${{CloseDate}}
+    StageName:
+      random_choice: #ensure these stages match valid stages in your org
+        - Closed Won
+        - Prospecting
+        - Pledged
+        - Closed Lost
+    AccountId: 
+      reference: donor_acct
+    npsp__Primary_Contact__c: 
+      random_reference: Contact #snowfakery doesn't currently generate random reference on nickname, so this needs to be the object name
+    npe01__Do_Not_Automatically_Create_Payment__c: False    # NOT adding related Payment record in this recipe
+  friends: 
+    # adding a Contact that will be used for partial soft credit
+    - object: Contact
+      nickname: influencer
+      count: 1
+      fields:
+        FirstName:
+          fake: FirstName
+        LastName:
+          fake: LastName
+        Title:
+          fake: job
+# If you're not familiar with NPSP, there is automation to populate the standard Email and Phone fields based on the data below.
+        npe01__HomeEmail__c:
+          fake: Email
+        npe01__WorkEmail__c:
+          fake: Email
+        npe01__Preferred_Email__c:
+          random_choice:
+            - Personal 
+            - Work   
+        npe01__WorkPhone__c:
+          fake: PhoneNumber
+        HomePhone:
+          fake: PhoneNumber
+        MobilePhone:
+          fake: PhoneNumber
+        npe01__PreferredPhone__c:
+          random_choice:
+            - Home 
+            - Work
+            - Mobile 
+        MailingStreet:
+          fake: StreetAddress
+        MailingCity:
+          fake: City
+        MailingState:
+          fake: State
+        MailingPostalCode:
+          fake: PostalCode
+        MailingCountry: United States # hardcoded to US here for simplicity
+        npe01__Primary_Address_Type__c: Home # hardcoded to home for simplicity
+    # adding a partial soft credit for the influencer
+    - object: npsp__Partial_Soft_Credit__c
+      count: 1
+      fields:
+        npsp__Opportunity__c:
+          reference: donation
+        npsp__Contact__c: 
+          reference: influencer
+        npsp__Amount__c: ${{donation.Amount}}
+        npsp__Role_Name__c: Influencer
