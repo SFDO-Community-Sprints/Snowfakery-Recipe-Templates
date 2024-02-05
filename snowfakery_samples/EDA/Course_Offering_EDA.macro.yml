@@ -1,0 +1,33 @@
+# See Course_Offering_EDA.recipie.yml for usage
+
+- plugin: snowfakery.standard_plugins.Salesforce.SalesforceQuery
+- plugin: faker_edu.Provider
+
+- macro: eda_course_offering_base
+  fields:
+    hed__Course__c:
+      SalesforceQuery.random_record:
+        from: hed__Course__c
+    hed__Term__c:
+      SalesforceQuery.random_record:
+        from:  hed__Term__c
+    Name: ${{fake.bothify(text='#########')}}  # Course Offering ID
+    hed__Section_ID__c: ${{fake.bothify(text='##')}}
+    hed__Start_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    hed__End_Date__c:
+      date_between:
+        start_date: -1y
+        end_date: today
+    hed__Capacity__c:
+      random_number:
+        min: 10
+        max: 300
+        step: 5
+    #hed__Time_Block__c: - Need to create records
+    hed__Faculty__c:
+      SalesforceQuery.random_record:
+        from: contact
+    #hed__Facility__c: - Need to create records
