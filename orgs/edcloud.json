@@ -1,0 +1,52 @@
+{
+  "orgName": "Education Cloud",
+  "edition": "Enterprise",
+  "description": "This generates an Education Cloud scratch org on an enterprise edition org.",
+  "features": [
+    "EducationCloud:10",
+    "AccountingSubledgerGrowthEdition",
+    "AccountingSubledgerUser",
+    "AnalyticsQueryService",
+    "Assessments",
+    "EnableSetPasswordInApi",
+    "Fundraising",
+    "IndustriesActionPlan",
+    "IndustriesSalesExcellenceAddOn",
+    "IndustriesServiceExcellenceAddOn",
+    "LightningScheduler",
+    "LightningServiceConsole",
+    "MarketingUser",
+    "OmniStudioDesigner",
+    "OmniStudioRuntime",
+    "PersonAccounts",
+    "PublicSectorAccess"
+  ],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "chatterSettings": {
+      "enableChatter": true
+    },
+    "apexSettings": {
+      "enableDisableParallelApexTesting": true
+    },
+    "enhancedNotesSettings": {
+      "enableEnhancedNotes": true
+    },
+    "industriesSettings": {
+      "enableIndustriesAssessment": true,
+      "enableDiscoveryFrameworkMetadata": true,
+      "enableEducationCloud": true,
+      "enableStudentSuccess": true,
+      "enableAcademicOperations": true,
+      "enableAlumniRelations": true,
+      "enableCarePlansPreference": true,
+      "enableBenefitManagementPreference": true,
+      "enableBenefitAndGoalSharingPref": true
+    }
+  }
+}

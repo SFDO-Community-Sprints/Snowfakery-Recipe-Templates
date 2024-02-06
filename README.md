@@ -71,7 +71,8 @@ If you want to use a scratch org to play with Snowfakery recipes in this reposit
     - Optional for OBF orgs: **Install NPSP** Run `cci flow run obf_npsp_scratch --org dev`
   - **Install PMM** Run `cci flow run pmm_scratch --org dev`
     - Optional for PMM orgs: **Install NPSP** Run `cci flow run npsp_scratch --org dev`
-  - For Nonprofit Cloud scratch orgs run `cci org scratch npc npc --default; cci org browser` to create a new scratch org and set it as a default. No further packages are required.
+- For Nonprofit Cloud scratch orgs run `cci org scratch npc npc --default; cci org browser` to create a new scratch org and set it as a default. No further packages are required.
+- For Education Cloud recipes, run `cci org scratch edc edc --default; cci org browser` to create a new scratch org, set it as default, and open it. No further installs are required, but education cloud may require additional setup.
 
 ### Instructions for the Collaborators
 

@@ -31,6 +31,9 @@ orgs:
         npc:
             config_file: orgs/npc.json
             days: 7
+        edc:
+            config_file: orgs/edcloud.json
+            days: 7
 tasks:
     robot:
         options:
