@@ -1,0 +1,49 @@
+{
+  "orgName": "Nonprofit Cloud",
+  "edition": "Enterprise",
+  "description": "This generates a Nonprofit Cloud Scratch org on a Enterprise edition org.",
+  "features": [
+    "AccountingSubledgerGrowthEdition",
+    "AccountingSubledgerUser",
+    "AnalyticsQueryService",
+    "Assessments",
+    "EnableSetPasswordInApi",
+    "Fundraising",
+    "Grantmaking",
+    "IndustriesActionPlan",
+    "IndustriesActionPlan",
+    "IndustriesSalesExcellenceAddOn",
+    "IndustriesServiceExcellenceAddOn",
+    "MarketingUser",
+    "OmniStudioDesigner",
+    "OmniStudioRuntime",
+    "OutcomeManagement",
+    "PersonAccounts",
+    "ProgramManagement",
+    "PublicSectorAccess"
+  ],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "chatterSettings": {
+      "enableChatter": true
+    },
+    "apexSettings": {
+      "enableDisableParallelApexTesting": true
+    },
+    "enhancedNotesSettings": {
+      "enableEnhancedNotes": true
+    },
+    "industriesSettings": {
+      "enableBenefitManagementPreference": true,
+      "enableBenefitAndGoalSharingPref": true,
+      "enableCarePlansPreference": true,
+      "enableGrantmaking": true,
+      "enableOutcomes": true
+    }
+  }
+}

@@ -12,7 +12,7 @@
 4. Snowfakery also supports seeding files as [ContentVersions](https://snowfakery.readthedocs.io/en/docs/salesforce.html#contentversions) using standard plugins.
 5. You can [query](https://snowfakery.readthedocs.io/en/docs/salesforce.html#incorporating-information-from-salesforce) existing Salesforce data and relate to snowfakery recipe.
 6. The usage of Snowfakery is not limited to NPSP nor EDA; however, Data Gen Toolkit team develops resources to advocate nonprofits and education community.
-## Tooling 
+## Tooling
 ### Tools for Participating
 Most people who participate in this project have access to [VS Code](https://code.visualstudio.com/Download).
 
@@ -60,6 +60,7 @@ $ git clone https://github.com/SFDO-Community-Sprints/Snowfakery-Recipe-Template
 - [Set up CumulusCI](https://cumulusci.readthedocs.io/en/latest/get_started.html) : this repository includes a project initialization in cumulusci.yml file. You can skip the project initialization `cci project init`
 
 ### Set up the right flavor of scratch org
+
 If you want to use a scratch org to play with Snowfakery recipes in this repository, you may want to install NPSP, EDA, Outbound Funds (OBF), or Program Management Module (PMM) as well.
 - For EDA recipes, run `cci org scratch eda eda --default` to create a new scratch org and set it as a default
   - **Install EDA** Run `cci flow run eda_scratch --org eda`
@@ -70,6 +71,7 @@ If you want to use a scratch org to play with Snowfakery recipes in this reposit
     - Optional for OBF orgs: **Install NPSP** Run `cci flow run obf_npsp_scratch --org dev`
   - **Install PMM** Run `cci flow run pmm_scratch --org dev`
     - Optional for PMM orgs: **Install NPSP** Run `cci flow run npsp_scratch --org dev`
+  - For Nonprofit Cloud scratch orgs run `cci org scratch npc npc --default` to create a new scratch org and set it as a default. No further packages are required.
 
 ### Instructions for the Collaborators
 
