@@ -28,6 +28,9 @@ orgs:
         eda:
             config_file: orgs/eda.json
             days: 7
+        edc:
+            config_file: orgs/edcloud.json
+            days: 7
 tasks:
     robot:
         options:
@@ -55,7 +58,7 @@ tasks:
         group: NPSP
         options:
             generator_yaml: snowfakery_samples/npsp/Contact_npsp.recipe.yml
-            
+
     activate_standard_pricebook:
         description: Activate standard price book
         class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
@@ -86,7 +89,7 @@ tasks:
         description: create a new eda org alias
         class_path: cumulusci.cli
         options:
-            command: "cci org scratch dev eda"    
+            command: "cci org scratch dev eda"
 flows:
     osc_memberships_project:
         description: OSC Membership Schema and Benefits project
@@ -97,14 +100,14 @@ flows:
                 task: load_membership_products
             3:
                 task: load_membership_opportunities
-                
+
     npsp_org:
         steps:
             1:
                 task: npsp_account
             2:
-                task: npsp_contact  
-                
+                task: npsp_contact
+
     # cci flow run npsp_scratch -o npsp_settings__num_records 2 would set a particular option for the subflow
     npsp_scratch:
         description: Requires default org to be set. Installs npsp and creates a bunch of default settings to make the data look more realistic
@@ -157,7 +160,7 @@ flows:
             1:
                 flow: sal:install_prod
                 options:
-                    org: eda  
-        
+                    org: eda
 
-    
+
+

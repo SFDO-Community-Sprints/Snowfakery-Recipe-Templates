@@ -12,7 +12,7 @@
 4. Snowfakery also supports seeding files as [ContentVersions](https://snowfakery.readthedocs.io/en/docs/salesforce.html#contentversions) using standard plugins.
 5. You can [query](https://snowfakery.readthedocs.io/en/docs/salesforce.html#incorporating-information-from-salesforce) existing Salesforce data and relate to snowfakery recipe.
 6. The usage of Snowfakery is not limited to NPSP nor EDA; however, Data Gen Toolkit team develops resources to advocate nonprofits and education community.
-## Tooling 
+## Tooling
 ### Tools for Participating
 Most people who participate in this project have access to [VS Code](https://code.visualstudio.com/Download).
 
@@ -70,6 +70,7 @@ If you want to use a scratch org to play with Snowfakery recipes in this reposit
     - Optional for OBF orgs: **Install NPSP** Run `cci flow run obf_npsp_scratch --org dev`
   - **Install PMM** Run `cci flow run pmm_scratch --org dev`
     - Optional for PMM orgs: **Install NPSP** Run `cci flow run npsp_scratch --org dev`
+- For Education Cloud recipes, run `cci org scratch edc edc --default; cci org browser` to create a new scratch org, set it as default, and open it. No further installs are required, but education cloud may require additional setup.
 
 ### Instructions for the Collaborators
 
