@@ -1,2 +1,1 @@
-This folder will be used to store temporary files that are output via Snowfakery commands.
-Testing changes to readme. 
+This folder will be used to store temporary files that are output via Snowfakery commands. Other files in this directory are ignored by git.
