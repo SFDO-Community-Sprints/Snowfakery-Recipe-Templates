@@ -28,6 +28,9 @@ orgs:
         eda:
             config_file: orgs/eda.json
             days: 7
+        npc:
+            config_file: orgs/npc.json
+            days: 7
         edc:
             config_file: orgs/edcloud.json
             days: 7
