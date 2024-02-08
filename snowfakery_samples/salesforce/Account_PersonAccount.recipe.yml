@@ -1,0 +1,71 @@
+### ----------- [ Account_PersonAccount.recipe.yml Summary ]---------- ###
+#
+# Person Accounts must be turned ON, in order to load this data into a Salesforce org!
+# These 2 Account RecordTypes must exist: (API names) PersonAccount, Business_Account
+#
+# This recipe creates 3 account records: 
+#     - Business Account, hard-coded values
+#     - Business Account, random values
+#     - Person Account, random values
+#
+### ----------- [               CLI RUN                ]---------- ###
+# Use this command to run this recipe in a Salesforce scratch org called "dev":
+# cci task run snowfakery --recipe snowfakery_samples/salesforce/Account_PersonAccount.recipe.yml --org dev
+#
+# Use this command to run this recipe locally and output to a JSON file called output.json
+# snowfakery --output-format json --output-file snowfakery_samples/temp/output.json snowfakery_samples/salesforce/Account_PersonAccount.recipe.yml
+#
+### ----------- [            Recipe Starts             ]---------- ###
+
+# Business Account, hard-coded values
+- object: Account
+  nickname: bluth_co
+  fields:
+    Name: The Bluth Company
+    RecordType: Business_Account
+    Description: Solid as a rock
+    NumberOfEmployees: 6
+
+# Business Account, random values
+- object: Account
+  nickname: a_company
+  fields:
+    Name:
+      fake: company
+    RecordType: Business_Account
+    Description:
+      fake: catch_phrase
+    NumberOfEmployees:
+      random_number:
+        min: 0
+        max: 200000
+
+# IMPORTANT: Person Accounts must be turned ON, in order to load this into a Salesforce org
+# Person Account, random values
+- object: Account
+  nickname: a_household
+  fields:
+    FirstName:
+      fake: FirstName
+    LastName:
+      fake: LastName
+    RecordType: PersonAccount
+    Salutation:
+      random_choice:
+        Ms.: 40%
+        Mr.: 40%
+        Mx.: 10%
+        Dr.: 5%
+        Prof.: 5%
+    PersonHomePhone:
+      fake: PhoneNumber
+    PersonMobilePhone:
+      fake: PhoneNumber
+    PersonTitle:
+      fake: job
+    PersonDepartment:
+      fake: bs
+    PersonBirthdate:
+      date_between:
+        start_date: -100y
+        end_date: -15y
