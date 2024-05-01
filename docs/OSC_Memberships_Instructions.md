@@ -1,4 +1,11 @@
-# Snowfakery for Membership Schema And Benefits OSC Project 
+---
+title: Memberships
+parent: Home
+nav_order: 4
+has_children: false
+---
+
+# Snowfakery for Membership Essentials 
 Write Something
 
 ## Run

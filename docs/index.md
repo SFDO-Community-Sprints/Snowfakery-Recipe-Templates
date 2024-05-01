@@ -1,3 +1,8 @@
+---
+title: Home
+nav_order: 1
+has_children: true
+---
 # Snowfakery Recipe Templates
 
 The Snowfakery Recipe Templates repository showcases all contributed Snowfakery recipes by volunteers from numerous SFDC Community Sprints. All the recipes are under the BSD 3-Clause License and are maintained by the Data Gen Toolkit team.

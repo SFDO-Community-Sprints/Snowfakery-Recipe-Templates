@@ -1,3 +1,9 @@
+---
+title: EDA
+parent: Home
+nav_order: 3
+has_children: false
+---
 # Snowfakery Sample for Education Data Architecture (EDA)
 These instructions explain how to create sample data using for EDA objects using the sample files in the snowfakery_samples directory.
 

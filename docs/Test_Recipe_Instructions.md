@@ -1,3 +1,9 @@
+---
+title: Instructions
+parent: Home
+nav_order: 2
+has_children: false
+---
 # Snowfakery Recipe that Fulfills Your Purpose
 Snowfakery is cool. A Snowfakey recipe file generates synthetic data, which can be exported as a format of SQL, JSON, or loaded into a Salesforce org or any database accessible to SQLAlchemy. Once you have a running recipe, it can be re-run multiple times to accumulate data. It finds its place in the utility - tooling category.
 

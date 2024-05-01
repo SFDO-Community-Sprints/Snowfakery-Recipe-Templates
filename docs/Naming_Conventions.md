@@ -1,3 +1,9 @@
+---
+title: Naming Conventions
+parent: Home
+nav_order: 6
+has_children: false
+---
 # Recipe Project Naming Conventions
 
 This naming convention is intended to encourage clarity and consistency. Getting good recipes into the collection is more important than adhering perfectly to a set of rules. However, it is helpful to have a set of guidelines to give everyone a clear path to follow.
