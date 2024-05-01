@@ -1,7 +1,7 @@
 ---
 title: Naming Conventions
 parent: Home
-nav_order: 2
+nav_order: 6
 has_children: false
 ---
 # Recipe Project Naming Conventions
