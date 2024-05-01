@@ -1,3 +1,10 @@
+---
+title: PMM
+parent: Home
+nav_order: 2
+has_children: false
+---
+
 # Snowfakery Sample for Program Management Module (PMM)
 These instructions explain how to create sample data using for Program Management Module objects using the sample files in the snowfakery_samples directory.
 
